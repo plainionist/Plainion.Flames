@@ -1,0 +1,69 @@
+﻿<Window x:Class="Plainion.Flames.Viewer.Shell"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:r="clr-namespace:Plainion.Flames.Viewer"
+        xmlns:v="clr-namespace:Plainion.Flames.Viewer.Views"
+        xmlns:vm="clr-namespace:Plainion.Flames.Viewer.ViewModels"
+        xmlns:pn="http://github.com/ronin4net/plainion"
+        xmlns:fc="clr-namespace:Plainion.Flames.Infrastructure;assembly=Plainion.Flames.Infrastructure"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:prism="http://www.codeplex.com/prism"
+        xmlns:win32="clr-namespace:Microsoft.Win32;assembly=PresentationFramework"
+        Title="Plainion Flames Viewer" 
+        WindowStartupLocation="CenterScreen"
+        Background="AliceBlue"
+        Height="800" 
+        Width="1200">
+    <i:Interaction.Triggers>
+        <prism:InteractionRequestTrigger SourceObject="{Binding OpenFileRequest, Mode=OneWay}">
+            <pn:PopupFileDialogAction FileDialogType="{x:Type win32:OpenFileDialog}"/>
+        </prism:InteractionRequestTrigger>
+        <prism:InteractionRequestTrigger SourceObject="{Binding SaveFileRequest, Mode=OneWay}">
+            <pn:PopupFileDialogAction FileDialogType="{x:Type win32:SaveFileDialog}"/>
+        </prism:InteractionRequestTrigger>
+        <prism:InteractionRequestTrigger SourceObject="{Binding ShowLogRequest, Mode=OneWay}">
+            <pn:PopupViewAction WindowWidth="800" WindowHeight="600" prism:RegionManager.RegionName="{x:Static r:RegionNames.LogView}"/>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <i:Interaction.Behaviors>
+        <pn:FrameworkElementDropBehavior DropAcceptedEffect="Copy"/>
+    </i:Interaction.Behaviors>
+
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
+        <KeyBinding Key="F4" Modifiers="Alt" Command="{Binding CloseCommand}"/>
+    </Window.InputBindings>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:FlamesBrowserViewModel}">
+            <v:FlamesBrowser DataContext="{Binding}"/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <pn:AdornedControl IsAdornerVisible="{Binding IsBusy}">
+        <pn:AdornedControl.AdornerContent>
+            <pn:CircularProgressIndicator ProgressInfo="{Binding CurrentProgress}"/>
+        </pn:AdornedControl.AdornerContent>
+
+        <DockPanel LastChildFill="True">
+            <Grid DockPanel.Dock="Top" >
+                <Menu Background="Transparent">
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_Open..." Command="{Binding OpenCommand}" InputGestureText="Ctrl+O"/>
+                        <MenuItem Header="_Save as..." Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+S"/>
+                        <MenuItem Header="_Save snapshot..." Command="{Binding SaveSnapshotCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="_Close" Command="{Binding CloseCommand}" InputGestureText="Alt+F4"/>
+                    </MenuItem>
+                </Menu>
+                <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Command="{Binding ShowLogCommand}"
+                        HorizontalAlignment="Right" Margin="3">Log</Button>
+            </Grid>
+            <Grid>
+                <ContentPresenter Content="{Binding FlamesBrowserViewModel}"/>
+            </Grid>
+        </DockPanel>
+    </pn:AdornedControl>
+</Window>

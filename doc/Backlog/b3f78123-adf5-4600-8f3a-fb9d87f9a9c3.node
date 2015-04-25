@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="b3f78123-adf5-4600-8f3a-fb9d87f9a9c3" Created="635602119215561842" LastModified="635619620880410730">
+  <Caption><![CDATA[handle cancel of etw open trace dialog correctly]]></Caption>
+  <Content><![CDATA[currently there is no contract to viewer - we just unload existing trace
+and replace it by an empty one :(]]></Content>
+</Node>

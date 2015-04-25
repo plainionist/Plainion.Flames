@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="18072e0e-4455-476a-9bf0-75a6d0f059c0" Created="635624509526566541" LastModified="635624673347985219">
+  <Caption><![CDATA[User data]]></Caption>
+  <Content><![CDATA[
+- fetch IUserDataSerializer via MEF
+- on shutdown all serializers are asked to serialize
+- on startup all serializers are asked to deserialize
+
+we could have parts to serialze before and after tracelog loading
+to allow storing settings for loading e.g. ETW user selection
+
+if we would go for XML file the user could manually edit the friendly names.
+we could also try "ZipArchive" - if the user has tool to add friendly 
+names (e.g. TPP) then unzip and rezip is necessary]]></Content>
+</Node>

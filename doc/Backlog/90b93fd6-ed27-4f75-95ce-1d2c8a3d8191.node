@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="90b93fd6-ed27-4f75-95ce-1d2c8a3d8191" Created="635572525347874603" LastModified="635655631478648794">
+  <Caption><![CDATA[go for async io]]></Caption>
+  <Content><![CDATA[- filestream args
+- use "task" async apis
+
+- can we use it for string tracing and bflames?]]></Content>
+</Node>

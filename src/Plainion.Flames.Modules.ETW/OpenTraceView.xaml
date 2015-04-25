@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="Plainion.Flames.Modules.ETW.OpenTraceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:Plainion.Flames.Modules.ETW"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:prism="http://www.codeplex.com/prism"
+             xmlns:pn="http://github.com/ronin4net/plainion"
+             xmlns:bfi="https://github.com/ronin4net/Plainion.Flames"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="330">
+
+    <Grid Margin="3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Visibility="{Binding SymbolSettingsVisibility}" Height="130">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Margin="0,0,0,3">Symbol path:</TextBlock>
+                <TextBox Grid.Row="1" Margin="0,0,0,3" Text="{Binding SymbolPath, Mode=TwoWay}" TextWrapping="Wrap" 
+                         AcceptsReturn="True" 
+                         VerticalAlignment="Stretch"/>
+                <CheckBox Grid.Row="2" Margin="0,0,0,5" IsChecked="{Binding UseDefaultWebProxy, Mode=TwoWay}" >Use default web proxy</CheckBox>
+            </Grid>
+
+            <bfi:TracesTreeView Grid.Row="1" TracesSource="{Binding TracesTreeSource}"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,3,0,0">
+            <Grid.Resources>
+                <pn:NotConverter x:Key="NotOp"/>
+            </Grid.Resources>
+
+            <Grid.Visibility>
+                <MultiBinding>
+                    <MultiBinding.Converter>
+                        <pn:OrConverter>
+                            <pn:BoolToVisibilityConverter/>
+                        </pn:OrConverter>
+                    </MultiBinding.Converter>
+                    <Binding Path="HasCpuSamples" Converter="{StaticResource NotOp}"/>
+                    <Binding Path="HasCSwitches"  Converter="{StaticResource NotOp}"/>
+                </MultiBinding>
+            </Grid.Visibility>
+
+            <TextBlock TextWrapping="Wrap"> 
+                <Bold Foreground="Red">Attention:</Bold>
+                <Run>
+                Some important events were not enabled in the trace which results in missing important callstack and thread state chances.
+                Therefore, the thread time might be attributed to the wrong method call.
+                </Run>
+                <LineBreak/>
+                <Run>Missing events:</Run>
+                <Run Text="{Binding MissingEvents, Mode=OneWay}"/>
+            </TextBlock>
+        </Grid>
+
+        <StackPanel Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
+            <Button Grid.Column="1" Content="Load" Margin="0,0,3,0" Command="{Binding LoadCommand}"/>
+            <Button Grid.Column="2" Content="Cancel" Command="{Binding CancelCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Plainion.Flames.Modules.Filters.Views.CallFilterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:v="clr-namespace:Plainion.Flames.Modules.Filters.Views"
+             x:ClassModifier="internal"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0" Header="Filter calls by method name">
+            <v:NameFilterView Margin="3" DataContext="{Binding NameFilterViewModel}"/>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Header="Filter calls by duration">
+            <v:DurationFilterView Margin="3" DataContext="{Binding DurationFilterViewModel}"/>
+        </GroupBox>
+    </Grid>
+</UserControl>

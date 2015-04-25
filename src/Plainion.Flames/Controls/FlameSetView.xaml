@@ -1,0 +1,142 @@
+﻿<UserControl x:Class="Plainion.Flames.Controls.FlameSetView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:v="clr-namespace:Plainion.Flames.Controls"
+             xmlns:b="clr-namespace:Plainion.Flames.Behaviors"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+             xmlns:pn="http://github.com/ronin4net/plainion"
+             x:Name="_this"
+             Focusable="True">
+
+    <UserControl.Resources>
+        <v:ContentVisibilityToVisibilityConverter x:Key="ContentVisibilityToVisibilityConverter"/>
+
+        <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="Height" Value="{Binding Height}"/>
+            <Setter Property="Visibility" Value="{Binding Visibility, Converter={StaticResource ContentVisibilityToVisibilityConverter}}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Border" Padding="0" SnapsToDevicePixels="true" Background="Transparent">
+                            <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+
+        <VisualBrush x:Key="GridBrush" x:Shared="false" po:Freeze="True">
+            <VisualBrush.Visual>
+                <Rectangle StrokeThickness="1"
+                           Stroke="Blue" 
+                           StrokeDashArray="1 1"
+                           RenderOptions.EdgeMode="Aliased"
+                           Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                           Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}" />
+            </VisualBrush.Visual>
+        </VisualBrush>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="175"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <v:TimeScaleView Grid.Column="1" Grid.Row="0" 
+                         TimelineViewport="{Binding Presentation.TimelineViewport, ElementName=_this}"
+                         Font="{Binding TimeScaleFont, ElementName=_this}"/>
+        
+        <Grid Grid.Row="1" Grid.Column="0" x:Name="HeaderResizer"/>        
+        <Grid Grid.Row="1" Grid.Column="1" x:Name="FlameResizer"/>
+
+        <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
+                  x:Name="myListView"
+                  ItemsSource="{Binding Presentation.Flames, ElementName=_this}" 
+                  BorderThickness="0"
+                  Background="Transparent"
+                  Foreground="Black"
+                  HorizontalAlignment="Stretch"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  ScrollViewer.CanContentScroll="False"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                  ScrollViewer.VerticalScrollBarVisibility="Visible">
+            <ListView.View>
+                <GridView>
+                    <!-- http://stackoverflow.com/questions/10309249/listview-gridviewcolumn-width -->
+                    <GridViewColumn Width="{Binding ElementName=HeaderResizer, Path=ActualWidth}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <!-- https://social.msdn.microsoft.com/Forums/vstudio/en-US/0fee563e-5748-40c8-a6c9-c502da7609e0/gridview-padding?forum=wpf -->
+                                <Border BorderThickness="0 0 0 1" Margin="-6 0 -6 0" Padding="0"
+                                        BorderBrush="{StaticResource GridBrush}"
+                                        Background="Transparent">
+
+                                    <Border.Resources>
+                                        <pn:BindingProxy x:Key="FlamePresentationProxy" Data="{Binding}"/>
+                                    </Border.Resources>
+
+                                    <Grid ContextMenu="{Binding Path=FlameHeaderContextMenu, ElementName=_this}" Background="Transparent">
+                                        <Grid.DataContext>
+                                            <v:FlameHeader Flame="{Binding Data, Source={StaticResource FlamePresentationProxy}}"/>
+                                        </Grid.DataContext>
+
+                                        <ContentPresenter ContentTemplate="{Binding FlameHeaderTemplate, ElementName=_this}"
+                                                          Content="{Binding}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="{Binding ElementName=FlameResizer, Path=ActualWidth}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="0 0 0 1" Margin="-6 0 -6 0" Padding="0" Background="White"
+                                        BorderBrush="{StaticResource GridBrush}">
+                                    <!-- Margin: vertical scrollbar covers calls :( -->
+                                    <v:FlameView Flame="{Binding .}" Background="White" Margin="0,0,17,0" 
+                                                 Font="{Binding CallNameFont, ElementName=_this}">
+                                        <i:Interaction.Behaviors>
+                                            <b:CallTooltipBehavior ToolTipContent="{Binding CallToolTip, ElementName=_this}"/>
+                                            <b:ZoomOnMouseWheelBehavior TimelineViewport="{Binding TimelineViewport}"/>
+                                            <b:SelectionBehavior TimelineViewport="{Binding TimelineViewport}" 
+                                                                 Content="{Binding ElementName=FlameResizer}"
+                                                                 Selections="{Binding Presentation.Selections, ElementName=_this}"
+                                                                 Font="{Binding SelectionFont, ElementName=_this}"/>
+                                        </i:Interaction.Behaviors>
+                                    </v:FlameView>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <GridSplitter Grid.Column="0" Grid.Row="1" VerticalAlignment="Stretch" Width="5" ResizeDirection="Columns"
+                      Background="Transparent"/>
+        
+        <v:TimeSlider Grid.Column="1" Grid.Row="2" TimelineViewport="{Binding Presentation.TimelineViewport, ElementName=_this}"/>
+    </Grid>
+</UserControl>

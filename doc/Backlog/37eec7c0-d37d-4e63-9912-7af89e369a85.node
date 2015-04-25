@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="37eec7c0-d37d-4e63-9912-7af89e369a85" Created="635633216625931712" LastModified="635633216993692747">
+  <Caption><![CDATA[Cleanup TracesTree/View]]></Caption>
+  <Content><![CDATA[according to TPP refactoring 
+(IsChecked, visiblity with converter chain ...)]]></Content>
+</Node>

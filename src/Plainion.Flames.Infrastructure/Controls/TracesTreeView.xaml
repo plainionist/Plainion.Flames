@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Plainion.Flames.Infrastructure.Controls.TracesTreeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:pn="http://github.com/ronin4net/plainion"
+             xmlns:bf="https://github.com/ronin4net/Plainion.Flames"
+             x:Name="_this"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <pn:SearchTextBox Grid.Row="0" SearchMode="Instant" 
+                          Text="{Binding TracesSource.Filter, ElementName=_this, Mode=TwoWay}" 
+                          SearchEventTimeDelay="0" 
+                          LabelText="Filter processes by name or PID"/>
+
+        <!-- http://www.codeproject.com/Articles/28306/Working-with-Checkboxes-in-the-WPF-TreeView -->
+        <TreeView Grid.Row="1" ItemsSource="{Binding TracesSource.VisibleProcesses, ElementName=_this}" 
+                  Margin="0,3,0,0" BorderThickness="1">
+            <TreeView.Resources>
+                <InputBindingCollection x:Shared="false"  x:Key="InputBindings">
+                    <KeyBinding Key="F2" Command="{Binding EditNodeCommand}" />
+                </InputBindingCollection>
+            </TreeView.Resources>
+
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                    <Setter Property="pn:InputBindingsExtension.InputBindings" Value="{StaticResource InputBindings}"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Threads}">
+                    <HierarchicalDataTemplate.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}" Focusable="False" VerticalAlignment="Center"/>
+                                <pn:EditableTextBlock Margin="4,0,0,0" VerticalAlignment="Center" Text="{Binding Name}" 
+                                                      IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}"/>
+                                <TextBlock Margin="1,0,0,0" VerticalAlignment="Center" Text="{Binding Path=ThreadId, StringFormat=(Tid\={0})}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </HierarchicalDataTemplate.ItemTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}" IsThreeState="True" Focusable="False"
+                                  VerticalAlignment="Center"/>
+                        <pn:EditableTextBlock Margin="4,0,0,0" VerticalAlignment="Center" Text="{Binding Name}" 
+                                              IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}"/>
+                        <TextBlock Margin="1,0,0,0" VerticalAlignment="Center" Text="{Binding Path=ProcessId, StringFormat=(Pid\={0})}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,3,0,0">
+            <CheckBox Content="Show/hide all" IsChecked="{Binding TracesSource.MarkAll, ElementName=_this}" IsThreeState="True" VerticalAlignment="Center"/>
+            <Button Content="Show all visible" Margin="5,3,0,3" Command="{Binding TracesSource.ShowAllCommand, ElementName=_this}"/>
+            <Button Content="Hide all visible" Margin="3,3,0,3" Command="{Binding TracesSource.HideAllCommand, ElementName=_this}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

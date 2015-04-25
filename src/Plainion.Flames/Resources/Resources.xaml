@@ -1,0 +1,82 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="clr-namespace:Plainion.Flames.Controls"
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:pn="http://github.com/ronin4net/plainion">
+
+    <TextBlock x:Key="DefaultCallToolTip">
+        <TextBlock.Resources>
+            <v:MethodToFullnameConverter x:Key="MethodToFullnameConverter"/>
+            <v:DurationToTimeStringConverter x:Key="DurationToTimeStringConverter"/>
+        </TextBlock.Resources>
+        
+        <Run FontWeight="Bold" Text="{Binding Name, Mode=OneWay}"/>
+        <LineBreak/>
+        <Run Text="{Binding Model.Method, Mode=OneWay, Converter={StaticResource MethodToFullnameConverter}}"/>
+        <LineBreak/>
+        <Run>
+            <Run.Text>
+                <MultiBinding StringFormat="{}[{0} -> {1}] Duration: {2}" Mode="OneWay">
+                    <Binding Path="StartTimeString"/>
+                    <Binding Path="EndTimeString"/>
+                    <Binding Path="Duration" Converter="{StaticResource DurationToTimeStringConverter}" />
+                </MultiBinding>
+            </Run.Text>
+        </Run>
+        <LineBreak/>
+        <Run>
+            <Run.Text>
+                <MultiBinding StringFormat="{}PID={0}, TID={1}" Mode="OneWay">
+                    <Binding Path="Flame.ProcessId" />
+                    <Binding Path="Flame.ThreadId" />
+                </MultiBinding>
+            </Run.Text>
+        </Run>
+    </TextBlock>
+
+    <DataTemplate x:Key="DefaultFlameHeaderTemplate">
+        <StackPanel Orientation="Vertical">
+            <i:Interaction.Behaviors>
+                <pn:RaiseCommandOnMouseGestureBehavior MouseButton="Left" ClickCount="2" Command="{Binding EditCommand}"/>
+            </i:Interaction.Behaviors>
+
+            <TextBlock Padding="5,3,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}PID={0}, TID={1}">
+                        <Binding Path="ProcessId" />
+                        <Binding Path="ThreadId" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <pn:EditableTextBlock Text="{Binding Name}" Padding="5,0,0,0" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}"/>
+            <GroupBox Header="Bookmarks">
+                <GroupBox.Visibility>
+                    <Binding Path="Flame.Bookmarks.Items">
+                        <Binding.Converter>
+                            <pn:ConverterChain>
+                                <pn:IsEmptyConverter/>
+                                <pn:NotConverter/>
+                                <pn:BoolToVisibilityConverter/>
+                            </pn:ConverterChain>
+                        </Binding.Converter>
+                    </Binding>
+                </GroupBox.Visibility>
+                <ListBox ItemsSource="{Binding Flame.Bookmarks.Items}" SelectionMode="Extended">
+                    <ListBox.Resources>
+                        <v:BookmarkToBrushConverter x:Key="BookmarkToBrushConverter" ColorLut="{Binding Flame.ColorLut}"/>
+                    </ListBox.Resources>
+                    <i:Interaction.Behaviors>
+                        <pn:MultiSelectBehavior SelectedItems="{Binding Flame.Bookmarks.SelectedItems}"/>
+                    </i:Interaction.Behaviors>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" Foreground="{Binding ., Converter={StaticResource BookmarkToBrushConverter}}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="b1df2a0d-1608-4a55-9243-5cebe6d416f7" Created="635628297498314186" LastModified="635628298536244186">
+  <Caption><![CDATA[ITraceReadingContext]]></Caption>
+  <Content><![CDATA[- we provide the reader a way to add context information when read the 
+  trace which comes back when trace is opened a second time
+  - process selection
+  - symbol path
+
+- this is stored to "UserData" as well in a "special context area"
+  which might be treated differently (e.g. optionally) later on ...
+  different compared to e.g. friendly names which are more like "results"]]></Content>
+</Node>

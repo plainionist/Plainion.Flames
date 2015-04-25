@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="ef27e766-da70-4495-bc8b-8ea23f42d499" Created="635557224996901339" LastModified="635561557075195397" Origin="eb94b1ff-eccb-4c5d-8fed-cf4779eb5529">
+  <Caption><![CDATA[Builder memory usage]]></Caption>
+  <Content><![CDATA[- use "segments" to avoid LOH fragmentation during build up of esp. 
+  Callstacks]]></Content>
+</Node>

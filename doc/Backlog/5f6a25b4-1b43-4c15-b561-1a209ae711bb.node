@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="5f6a25b4-1b43-4c15-b561-1a209ae711bb" Created="635622837483599672" LastModified="635623098142982853">
+  <Caption><![CDATA[Activity trees]]></Caption>
+  <Content><![CDATA[- should we have cascading activities? same as with calls
+  - memory? LOH?
+  - performance because of easier exclusion of calls?
+
+
+
+this would allow us to traverse the calls more efficiently
+(e.g. duration threshold: if parent is below then children do not need to
+processed at all)
+
+]]></Content>
+</Node>

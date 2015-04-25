@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="933c0827-77e9-4479-a1ed-c8aeb4cdcdcc" Created="635628256317608478" LastModified="635628256686749591">
+  <Caption><![CDATA["analysis" entity]]></Caption>
+  <Content><![CDATA[- "tracelog" property
+- "changed" event (shellviewmodel listens to it)
+  (PropertyChanged?)
+]]></Content>
+</Node>

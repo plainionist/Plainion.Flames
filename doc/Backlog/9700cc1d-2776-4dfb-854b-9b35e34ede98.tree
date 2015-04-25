@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Tree>
+  <Node Id="9700cc1d-2776-4dfb-854b-9b35e34ede98">
+    <Caption><![CDATA[Planning]]></Caption>
+    <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
+      <Caption><![CDATA[Next steps]]></Caption>
+      <Node Id="933c0827-77e9-4479-a1ed-c8aeb4cdcdcc">
+        <Caption><![CDATA["analysis" entity]]></Caption>
+      </Node>
+      <Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5">
+        <Caption><![CDATA["BROKEN" pseudo frame]]></Caption>
+      </Node>
+      <Node Id="18072e0e-4455-476a-9bf0-75a6d0f059c0">
+        <Caption><![CDATA[User data]]></Caption>
+        <Node Id="2822b163-efa9-478b-976c-9ba421edf896">
+          <Caption><![CDATA[friendly names]]></Caption>
+        </Node>
+        <Node Id="e3452ea2-ca5d-4ccb-b362-48b2a269fb74">
+          <Caption><![CDATA[introduce "project"]]></Caption>
+        </Node>
+        <Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766">
+          <Caption><![CDATA["Manip" indicator]]></Caption>
+        </Node>
+        <Node Id="f1dc96d9-1873-4621-be8b-38adf49ce715">
+          <Caption><![CDATA[selected processes/threads]]></Caption>
+        </Node>
+        <Node Id="f3b1081f-3e28-4ba1-a33d-690ac8e839c7">
+          <Caption><![CDATA[ETW preselection]]></Caption>
+        </Node>
+        <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">
+          <Caption><![CDATA[filters]]></Caption>
+        </Node>
+      </Node>
+      <Node Id="2a97cae2-94da-44e1-bb4e-d42084e4cc63">
+        <Caption><![CDATA[Remove VisiblityMask from CallRepresentation]]></Caption>
+      </Node>
+      <Node Id="5f6a25b4-1b43-4c15-b561-1a209ae711bb">
+        <Caption><![CDATA[Activity trees]]></Caption>
+      </Node>
+      <Node Id="e9b68ad5-93cb-4ee5-ae41-97ee3f5e9dd8">
+        <Caption><![CDATA[broken stacks]]></Caption>
+      </Node>
+      <Node Id="b1df2a0d-1608-4a55-9243-5cebe6d416f7">
+        <Caption><![CDATA[ITraceReadingContext]]></Caption>
+      </Node>
+      <Node Id="cd81831e-0895-4c90-ab6d-37960c8d8b82">
+        <Caption><![CDATA[PerfView finds more symbols]]></Caption>
+      </Node>
+      <Node Id="37eec7c0-d37d-4e63-9912-7af89e369a85">
+        <Caption><![CDATA[Cleanup TracesTree/View]]></Caption>
+      </Node>
+      <Node Id="3ce7c819-7531-40be-b64f-8e2f91092e60">
+        <Caption><![CDATA[check for weak events]]></Caption>
+      </Node>
+      <Node Id="22bf45bc-29c1-4791-9eda-e2c430c63e0b">
+        <Caption><![CDATA[memory leaks?]]></Caption>
+      </Node>
+    </Node>
+  </Node>
+</Tree>

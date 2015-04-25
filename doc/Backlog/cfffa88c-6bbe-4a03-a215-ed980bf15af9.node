@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="cfffa88c-6bbe-4a03-a215-ed980bf15af9" Created="635560003838956521" LastModified="635655631246263699">
+  <Caption><![CDATA[Flame height]]></Caption>
+  <Content><![CDATA[- rendering optimizations will not affect MaxVisibleLevel and so not 
+  Height of the Flame because it would change if we zoom in or move left
+  and right as the rendering optimizations are done only on the scope of the renderer
+  (TimelineViewport)
+- allow manual height setting later on (d&d) + "FitToContents" in context menu of
+  traceheader (with checkbox)]]></Content>
+</Node>

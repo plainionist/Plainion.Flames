@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="e3452ea2-ca5d-4ccb-b362-48b2a269fb74" Created="635626069496342163" LastModified="635626070714081814">
+  <Caption><![CDATA[introduce "project"]]></Caption>
+  <Content><![CDATA[do we need some "instance" holding the user data at runtim 
+or do we just put the data into the related repositories?]]></Content>
+</Node>

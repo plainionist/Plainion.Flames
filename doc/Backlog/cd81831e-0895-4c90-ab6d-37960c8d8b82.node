@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="cd81831e-0895-4c90-ab6d-37960c8d8b82" Created="635628990762161314" LastModified="635628991100545149">
+  <Caption><![CDATA[PerfView finds more symbols]]></Caption>
+  <Content><![CDATA[e.g. 
+
+         + clr!Thread::DoExtraWorkForFinalizer
+          + clr!Thread::DoExtraWorkForFinalizer
+           + clr!Thread::DoExtraWorkForFinalizer
+            + clr!Thread::DoExtraWorkForFinalizer
+]]></Content>
+</Node>

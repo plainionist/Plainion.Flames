@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="Plainion.Flames.Viewer.Views.FlamesBrowser"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:v="clr-namespace:Plainion.Flames.Viewer.Views"
+             xmlns:bf="https://github.com/ronin4net/Plainion.Flames"
+             xmlns:vm="clr-namespace:Plainion.Flames.Viewer.ViewModels"
+             xmlns:pn="http://github.com/ronin4net/plainion"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:prism="http://www.codeplex.com/prism"
+             Focusable="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <i:Interaction.Triggers>
+        <prism:InteractionRequestTrigger SourceObject="{Binding SpawnSettingsRequest, Mode=OneWay}">
+            <pn:PopupViewAction WindowWidth="500" WindowHeight="500" UseNotificationContentAsDataContext="True">
+                <Grid Background="AliceBlue">
+                    <v:FlamesSettingsView Margin="3"/>
+                </Grid>
+            </pn:PopupViewAction>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Button}" x:Key="BrowserButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border x:Name="bdr" CornerRadius="22" Margin="0" BorderThickness="1" BorderBrush="Black" Background="Transparent">
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Content" TextBlock.FontSize="20" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bdr" Property="Background" Value="LightBlue"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="bdr" Property="Background" Value="WhiteSmoke"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Width" Value="25"/>
+                <Setter Property="Height" Value="25"/>
+            </Style>
+
+            <pn:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <pn:BoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" Not="True"/>
+
+            <pn:BindingProxy x:Key="BrowserViewModelProxy" Data="{Binding}"/>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Plainion.Flames;component/Resources/Resources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="H" Command="{Binding ZoomHomeCommand}"/>
+        <KeyBinding Key="OemPlus" Modifiers="Control" Command="{Binding ZoomInCommand}"/>
+        <KeyBinding Key="OemMinus" Modifiers="Control" Command="{Binding ZoomOutCommand}"/>
+        <KeyBinding Key="D" Modifiers="Control" Command="{Binding ClearSelectionsCommand}"/>
+    </UserControl.InputBindings>
+
+    <i:Interaction.Behaviors>
+        <pn:PropagateInputBindingsToWindowBehavior/>
+    </i:Interaction.Behaviors>
+
+    <Grid>
+        <Grid Visibility="{Binding FlamesVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <bf:FlameSetView Presentation="{Binding Presentation}"
+                             CallToolTip="{StaticResource DefaultCallToolTip}"
+                             FlameHeaderTemplate="{StaticResource DefaultFlameHeaderTemplate}">
+
+                <bf:FlameSetView.FlameHeaderContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Expand/Collapse" Command="{Binding Data.ExpandCollapseCommand, Source={StaticResource BrowserViewModelProxy}}" CommandParameter="{Binding}"/>
+                        <MenuItem Header="Hide" Command="{Binding Data.HideCommand, Source={StaticResource BrowserViewModelProxy}}" CommandParameter="{Binding}"/>
+                        <MenuItem Header="Rename" Command="{Binding Data.RenameCommand, Source={StaticResource BrowserViewModelProxy}}" CommandParameter="{Binding}"/>
+                    </ContextMenu>
+                </bf:FlameSetView.FlameHeaderContextMenu>
+            </bf:FlameSetView>
+
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                <Button Margin="2" Command="{Binding ToggleViewCommand}" Style="{StaticResource BrowserButton}">
+                    <Path Margin="2,0,0,0" Stroke="Black" Fill="Black" Data="M 0,0 L 4,3.5 L 0,7 Z"/>
+                </Button>
+                <Button Margin="2" Command="{Binding SpawnSettingsWindowCommand}" Style="{StaticResource BrowserButton}">
+                    <Image Source="/Resources/undock.png" Margin="3"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid Visibility="{Binding FlamesVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
+            <ContentPresenter Content="{Binding Settings}" Margin="3,30,3,3">
+                <ContentPresenter.ContentTemplate>
+                    <DataTemplate>
+                        <v:FlamesSettingsView/>
+                    </DataTemplate>
+                </ContentPresenter.ContentTemplate>
+            </ContentPresenter>
+
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                <Button Margin="2" Command="{Binding ToggleViewCommand}" Style="{StaticResource BrowserButton}">
+                    <Path Margin="0,0,2,0" Stroke="Black" Fill="Black" Data="M 4,0 L 0,3.5 L 4,7 Z"/>
+                </Button>
+                <Button Margin="2" Command="{Binding SpawnSettingsWindowCommand}" Style="{StaticResource BrowserButton}">
+                    <Image Source="/Resources/undock.png" Margin="3"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

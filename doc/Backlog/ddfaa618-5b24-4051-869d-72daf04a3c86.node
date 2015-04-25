@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="ddfaa618-5b24-4051-869d-72daf04a3c86" Created="635573509886373551" LastModified="635573510260574954">
+  <Caption><![CDATA[FlamePresentation]]></Caption>
+  <Content><![CDATA[- maybe we should keep the call tree (instead of flat CallRepresentation list) bcuase
+  we could potentially process much less elements when zoomed in etc]]></Content>
+</Node>

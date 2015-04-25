@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="62a639ef-d2f5-4158-bdfc-d3844b50affe" Created="635602099087940608" LastModified="635655631121256549">
+  <Caption><![CDATA[Cleanup "BrokenStack" handling]]></Caption>
+  <Content><![CDATA[ITraceLoaderService
+- if we want to keep the option to relaod a trace then the viewmodel
+  should not implement it
+- if we find a better way to remove the broken stack samples remove it at all
+
+Etw module:
+- reader imports view model in order to access state
+
+
+Anyway find a better way then realoading ...
+- maybe the user wants to do it per flame?
+- then it should be part of the context menu? imported via prism?
+- and then recreate frame based on samples?
+- should we than keep samples? (RAM?)]]></Content>
+</Node>

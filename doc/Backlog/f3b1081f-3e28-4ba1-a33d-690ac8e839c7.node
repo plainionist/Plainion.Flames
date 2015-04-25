@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="f3b1081f-3e28-4ba1-a33d-690ac8e839c7" Created="635624672362166647" LastModified="635626069084238592">
+  <Caption><![CDATA[ETW preselection]]></Caption>
+  <Content><![CDATA[the "pre-selection" of the ETW processes from last open]]></Content>
+</Node>

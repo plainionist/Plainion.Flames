@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Plainion.Flames.Viewer.Views.BookmarksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:bf="https://github.com/ronin4net/Plainion.Flames"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:pn="http://github.com/ronin4net/plainion"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <ListBox ItemsSource="{Binding Items}" SelectionMode="Extended">
+            <ListBox.Resources>
+                <bf:BookmarkToBrushConverter x:Key="BookmarkToBrushConverter" ColorLut="{Binding Presentation.ColorLut}"/>
+            </ListBox.Resources>
+            <i:Interaction.Behaviors>
+                <pn:MultiSelectBehavior SelectedItems="{Binding SelectedItems}"/>
+            </i:Interaction.Behaviors>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding .}" Foreground="{Binding ., Converter={StaticResource BookmarkToBrushConverter}}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>
