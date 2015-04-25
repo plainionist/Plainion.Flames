@@ -26,7 +26,7 @@
   <ItemGroup Label="TestFolders">
     <TestFolder Include="$(PackageRoot)/TestData"/>
   </ItemGroup>
-  
+
   <ItemGroup Label="Redist">
     <Redist Include="$(ExternRoot)\license.*"/>
   </ItemGroup>
@@ -34,20 +34,41 @@
   <Target Name="CheckEnvironment">
     <Error Condition="'$(Version)' == ''"  Text="Verison not set" />
   </Target>
-  
+
   <Target Name="Clean">
     <RemoveDir Directories="$(PackageRoot)"/>
   </Target>
 
   <Target Name="Build">
-    <MSBuild Projects="$(Solution)" 
-             Properties="Configuration=$(BuildMode);Platform=$(BuildPlatform);OutputPath=$(PackageRoot)" 
+    <MSBuild Projects="$(Solution)"
+             Properties="Configuration=$(BuildMode);Platform=$(BuildPlatform);OutputPath=$(PackageRoot)"
              Targets="Rebuild"
              BuildInParallel="true"/>
   </Target>
 
+  <UsingTask TaskName="DownloadFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <Address ParameterType="System.String" Required="true"/>
+      <FileName ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            if ( !File.Exists(FileName) )
+            {
+                new System.Net.WebClient().DownloadFile(Address, FileName);
+            }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
   <Target Name="Tests">
-    <Exec Command="$(PackageRoot)\Plaionion.Starter.exe -TestIt -a $(TestAssemblyPattern)"
+    <DownloadFile Address="https://github.com/ronin4net/Plainion/releases/download/Plainion.Starter-1.0.0.0/Plainion.Starter.exe" 
+                  FileName="$(PackageRoot)\Plainion.Starter.exe" />
+
+    <Exec Command="$(PackageRoot)\Plainion.Starter.exe -TestIt -a $(TestAssemblyPattern)"
           WorkingDirectory="$(PackageRoot)"
           CustomErrorRegularExpression="^\s*\d+\) Test Failure : .*$"/>
 
