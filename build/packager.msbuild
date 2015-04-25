@@ -53,7 +53,7 @@
 
   </Target>
 
-  <Target Name="All" DependsOnTargets="CheckEnvironment;Clean;Build;Tests">
+  <Target Name="All" DependsOnTargets="CheckEnvironment;Clean;Build">
     <Copy SourceFiles="@(Redist)" DestinationFolder="$(PackageRoot)"/>
 
     <Delete Files="@(TestFile)"/>
