@@ -45,36 +45,20 @@
              Targets="Rebuild"
              BuildInParallel="true"/>
   </Target>
-
-  <UsingTask TaskName="DownloadFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-    <ParameterGroup>
-      <Address ParameterType="System.String" Required="true"/>
-      <FileName ParameterType="System.String" Required="true" />
-    </ParameterGroup>
-    <Task>
-      <Reference Include="System" />
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[
-            if ( !File.Exists(FileName) )
-            {
-                new System.Net.WebClient().DownloadFile(Address, FileName);
-            }
-        ]]>
-      </Code>
-    </Task>
-  </UsingTask>
   
   <Target Name="Tests">
-    <DownloadFile Address="https://github.com/ronin4net/Plainion/releases/download/Plainion.Starter-1.0.0.0/Plainion.Starter.exe" 
-                  FileName="$(PackageRoot)\Plainion.Starter.exe" />
+    <PropertyGroup>
+        <Starter>\bin\Plainion.Starter\Plainion.Starter.exe</Starter>
+        <ScriptsDir>\bin\Plainion.Bees</ScriptsDir>
+    </PropertyGroup>
 
-    <Exec Command="$(PackageRoot)\Plainion.Starter.exe -TestIt -a $(TestAssemblyPattern)"
+    <Exec Command="$(Starter) --Dir $(ScriptsDir) -TestIt -a $(TestAssemblyPattern)"
           WorkingDirectory="$(PackageRoot)"
           CustomErrorRegularExpression="^\s*\d+\) Test Failure : .*$"/>
 
   </Target>
 
-  <Target Name="All" DependsOnTargets="CheckEnvironment;Clean;Build">
+  <Target Name="All" DependsOnTargets="CheckEnvironment;Clean;Build;Tests">
     <Copy SourceFiles="@(Redist)" DestinationFolder="$(PackageRoot)"/>
 
     <Delete Files="@(TestFile)"/>
