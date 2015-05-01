@@ -2,4 +2,4 @@
 
 Control flow visualization based on ETW or user defined traces
 
-![](/ronin4net/Plainion.Flames/wiki/Screenshots/Flames.Overview.png)
+![](https://github.com/ronin4net/Plainion.Flames/wiki/Screenshots/Flames.Overview.png)
