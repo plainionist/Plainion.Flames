@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="e9b68ad5-93cb-4ee5-ae41-97ee3f5e9dd8" Created="635626896307403470" LastModified="635662543183837834" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
-  <Caption><![CDATA[broken stacks]]></Caption>
-  <Content><![CDATA[- what exactly does perfview do
-- should we also add pseudo stack frames to visualize broken stacks to 
-  user?
-- we could then put the algo to remove the broken stacks into viewer]]></Content>
-</Node>
