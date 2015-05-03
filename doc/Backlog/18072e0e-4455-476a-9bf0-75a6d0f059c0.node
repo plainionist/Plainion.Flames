@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="18072e0e-4455-476a-9bf0-75a6d0f059c0" Created="635624509526566541" LastModified="635624673347985219">
-  <Caption><![CDATA[User data]]></Caption>
+<Node Id="18072e0e-4455-476a-9bf0-75a6d0f059c0" Created="635624509526566541" LastModified="635662549274406195">
+  <Caption><![CDATA[persistency]]></Caption>
   <Content><![CDATA[
 - fetch IUserDataSerializer via MEF
 - on shutdown all serializers are asked to serialize

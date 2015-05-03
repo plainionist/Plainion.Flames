@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using Plainion.Flames.Model;
-using Plainion;
 
 namespace Plainion.Flames.Viewer.Services
 {

@@ -4,11 +4,9 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Plainion.Flames.Infrastructure;
-using Plainion.Flames.Infrastructure.Services;
-using Plainion.Flames.Model;
 using Microsoft.Practices.Prism.PubSubEvents;
-using Plainion;
+using Plainion.Flames.Infrastructure;
+using Plainion.Flames.Model;
 using Plainion.Prism.Events;
 using Plainion.Progress;
 

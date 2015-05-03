@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766" Created="635626068433151352" LastModified="635626068761130111">
+<Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766" Created="635626068433151352" LastModified="635662549697940420">
   <Caption><![CDATA["Manip" indicator]]></Caption>
   <Content><![CDATA[when loading user data right on stratup we should show the user that 
 he does not see the full picture]]></Content>

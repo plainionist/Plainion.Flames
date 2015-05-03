@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5" Created="635628256729952062" LastModified="635628256953614855">
+<Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5" Created="635628256729952062" LastModified="635662544822871582" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
   <Caption><![CDATA["BROKEN" pseudo frame]]></Caption>
-  <Content><![CDATA[- on "etw" tab we rebuild tracelog and change analysis.tracelog property]]></Content>
+  <Content><![CDATA[- a provider can create pseudo frames (statically defined in .infrastructure
+- BROKEN will be taken to indicate broken stacks
+- on "etw" tab we rebuild tracelog and change analysis.tracelog property]]></Content>
 </Node>

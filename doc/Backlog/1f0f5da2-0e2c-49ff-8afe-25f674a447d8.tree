@@ -4,9 +4,15 @@
     <Caption><![CDATA[Backlog]]></Caption>
     <Node Id="62a639ef-d2f5-4158-bdfc-d3844b50affe">
       <Caption><![CDATA[Cleanup "BrokenStack" handling]]></Caption>
+      <Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5">
+        <Caption><![CDATA["BROKEN" pseudo frame]]></Caption>
+      </Node>
+      <Node Id="e9b68ad5-93cb-4ee5-ae41-97ee3f5e9dd8">
+        <Caption><![CDATA[broken stacks]]></Caption>
+      </Node>
     </Node>
-    <Node Id="bcd8b3a3-0b9d-4e4c-b001-b9ba273cc0e4">
-      <Caption><![CDATA[Flames.Converter.exe]]></Caption>
+    <Node Id="67b4b922-7bb0-4b70-87b9-5124961a1ab7">
+      <Caption><![CDATA[TrueFlames]]></Caption>
     </Node>
     <Node Id="f84a4f91-a8d6-4e55-9768-eb28e097d9fa">
       <Caption><![CDATA[interop with perfview/wpa]]></Caption>
@@ -79,6 +85,21 @@
       <Node Id="ddfaa618-5b24-4051-869d-72daf04a3c86">
         <Caption><![CDATA[FlamePresentation]]></Caption>
       </Node>
+      <Node Id="3ce7c819-7531-40be-b64f-8e2f91092e60">
+        <Caption><![CDATA[check for weak events]]></Caption>
+      </Node>
+      <Node Id="22bf45bc-29c1-4791-9eda-e2c430c63e0b">
+        <Caption><![CDATA[memory leaks?]]></Caption>
+      </Node>
+      <Node Id="5f6a25b4-1b43-4c15-b561-1a209ae711bb">
+        <Caption><![CDATA[Activity trees]]></Caption>
+      </Node>
+      <Node Id="fdaa0dc7-846e-4d8e-9042-e7a322f5444a">
+        <Caption><![CDATA[how to handle event handler cleanup in wpf?]]></Caption>
+      </Node>
+      <Node Id="90b93fd6-ed27-4f75-95ce-1d2c8a3d8191">
+        <Caption><![CDATA[go for async io]]></Caption>
+      </Node>
     </Node>
     <Node Id="3ae17488-9886-4e9d-a18f-b9d8699897fe">
       <Caption><![CDATA[StringTracing]]></Caption>
@@ -104,29 +125,11 @@
         <Caption><![CDATA[Associated data]]></Caption>
       </Node>
     </Node>
-    <Node Id="90b93fd6-ed27-4f75-95ce-1d2c8a3d8191">
-      <Caption><![CDATA[go for async io]]></Caption>
-    </Node>
-    <Node Id="fdaa0dc7-846e-4d8e-9042-e7a322f5444a">
-      <Caption><![CDATA[how to handle event handler cleanup in wpf?]]></Caption>
-    </Node>
-    <Node Id="3bcfac19-d3d2-4cf6-b697-d6dfe8a61433">
-      <Caption><![CDATA[TracesTreeView - cursor keys not working]]></Caption>
-    </Node>
     <Node Id="199ebe05-f2b7-430a-a553-d538cbfaf3d0">
       <Caption><![CDATA[Reorder flames via drag and drop]]></Caption>
     </Node>
     <Node Id="c6582e14-104c-4d2e-9280-373d27be0022">
       <Caption><![CDATA[Move all TODOs from code to backlog]]></Caption>
-    </Node>
-    <Node Id="98d3132d-c26e-41d1-855f-58f37382678e">
-      <Caption><![CDATA[TracesTree: cleanup UI]]></Caption>
-    </Node>
-    <Node Id="fa348f92-e23f-49e7-996a-5fb98ebb421d">
-      <Caption><![CDATA[connect masks to calls]]></Caption>
-    </Node>
-    <Node Id="2b1b2611-7dff-438d-8e30-c00a6a92c140">
-      <Caption><![CDATA[filter persistency ]]></Caption>
     </Node>
     <Node Id="9677c90e-0fab-4f3c-809f-197ee4b5149f">
       <Caption><![CDATA[Reintroduce aggregate flames]]></Caption>
@@ -145,6 +148,18 @@
     </Node>
     <Node Id="3d796225-74b1-41c6-a111-e6420856a6af">
       <Caption><![CDATA[Filter enhancements]]></Caption>
+    </Node>
+    <Node Id="cd81831e-0895-4c90-ab6d-37960c8d8b82">
+      <Caption><![CDATA[PerfView finds more symbols]]></Caption>
+    </Node>
+    <Node Id="37eec7c0-d37d-4e63-9912-7af89e369a85">
+      <Caption><![CDATA[Cleanup TracesTree/View]]></Caption>
+      <Node Id="98d3132d-c26e-41d1-855f-58f37382678e">
+        <Caption><![CDATA[TracesTree: cleanup UI]]></Caption>
+      </Node>
+      <Node Id="3bcfac19-d3d2-4cf6-b697-d6dfe8a61433">
+        <Caption><![CDATA[TracesTreeView - cursor keys not working]]></Caption>
+      </Node>
     </Node>
   </Node>
 </Tree>

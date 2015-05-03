@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="954520dd-58bb-463d-8a88-3e02747a70ab" Created="635662545064825421" LastModified="635662556157229870">
+  <Caption><![CDATA[Cleanup model]]></Caption>
+  <Content><![CDATA[- we keep the TraceLog as main entity containing all the data provided by 
+  the TraceReaders initially
+- we use independent "repositories" to store additional data (more flexible, 
+  easier to extend)
+- we provide one generic mechanism to store and load such repositories
+- all additional data (from the repositories) will be stored in one file 
+- repositories can be imported via MEF
+
+we need to separate between
+- associated data: requires the tracelog to be loaded first before it can be deserialized
+- context data: has to be loaded before tracelog is loaded because it important for the 
+  tracelog loading (etw: selected process, symbol path)]]></Content>
+</Node>

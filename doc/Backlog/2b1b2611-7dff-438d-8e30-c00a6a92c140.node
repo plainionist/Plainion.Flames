@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="2b1b2611-7dff-438d-8e30-c00a6a92c140" Created="635606714323651406" LastModified="635655631644657225">
-  <Caption><![CDATA[filter persistency ]]></Caption>
-  <Content><![CDATA[- filters are hold by a "Project" as kind of associated data
-- "project" holdes tracelog and associated data
-- filters then injected into appropriate modules]]></Content>
-</Node>

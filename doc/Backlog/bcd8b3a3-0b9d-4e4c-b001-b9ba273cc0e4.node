@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="bcd8b3a3-0b9d-4e4c-b001-b9ba273cc0e4" Created="635534695646828529" LastModified="635655631139697604">
-  <Caption><![CDATA[Flames.Converter.exe]]></Caption>
-  <Content><![CDATA[- can convert from one format (e.g. ETW) to other one (e.g. bflames)]]></Content>
-</Node>

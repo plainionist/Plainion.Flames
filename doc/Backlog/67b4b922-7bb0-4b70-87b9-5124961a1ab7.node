@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="67b4b922-7bb0-4b70-87b9-5124961a1ab7" Created="635662553563401512" LastModified="635662554030098205">
+  <Caption><![CDATA[TrueFlames]]></Caption>
+  <Content><![CDATA[flamegraph
+- CPU
+- Blocked
+
+can be created per thread
+requires bookmarks (we require bookmark name constants)]]></Content>
+</Node>

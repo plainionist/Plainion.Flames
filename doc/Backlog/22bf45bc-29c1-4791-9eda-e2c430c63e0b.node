@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="22bf45bc-29c1-4791-9eda-e2c430c63e0b" Created="635638404848042122" LastModified="635638405252635264">
+<Node Id="22bf45bc-29c1-4791-9eda-e2c430c63e0b" Created="635638404848042122" LastModified="635662545677700475" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
   <Caption><![CDATA[memory leaks?]]></Caption>
   <Content><![CDATA[there seems to be potential memory leaks with COllectionViewSource 
 check out
