@@ -4,20 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Plainion.Flames.Infrastructure;
+using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
+using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 using Plainion.Flames.Viewer.Services;
 using Plainion.Flames.Viewer.ViewModels;
 using Plainion.Logging;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
-using Microsoft.Practices.Prism.Mvvm;
-using Microsoft.Practices.Prism.PubSubEvents;
+using Plainion.Prism.Events;
 using Plainion.Prism.Interactivity.InteractionRequest;
 using Plainion.Progress;
 using Plainion.Windows.Interactivity.DragDrop;
-using Plainion.Prism.Events;
 
 namespace Plainion.Flames.Viewer
 {
