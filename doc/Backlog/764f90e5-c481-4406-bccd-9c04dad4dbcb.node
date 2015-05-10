@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="954520dd-58bb-463d-8a88-3e02747a70ab" Created="635662545064825421" LastModified="635667161013806029">
-  <Caption><![CDATA[Cleanup model]]></Caption>
+<Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb" Created="635667161177596029" LastModified="635667161546306029" Origin="ef725bc7-7ab8-4cfc-ad08-825473ede168">
+  <Caption><![CDATA[Model]]></Caption>
   <Content><![CDATA[- we keep the TraceLog as main entity containing all the data provided by 
   the TraceReaders initially
 - we use independent "repositories" to store additional data (more flexible, 
