@@ -3,15 +3,20 @@ using System.IO;
 using System.Linq;
 using Plainion.Flames.Model;
 
-namespace Plainion.Flames.Viewer.Services
+namespace Plainion.Flames.Viewer.Model
 {
-    class FriendlyNamesRepository
+    /// <summary>
+    /// Names of processes and threads can be changed directly in the model. Here we keep the initial 
+    /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
+    /// able to detect proecess/thread names (better) the user can benefit from it automatically.
+    /// </summary>
+    class InitialNames
     {
         private static byte Version = 1;
 
         private Dictionary<long, string> myInitialNames;
 
-        public FriendlyNamesRepository( TraceLog log, string name, string location )
+        public InitialNames( TraceLog log, string name, string location )
         {
             Contract.RequiresNotNull( log, "log" );
             Contract.RequiresNotNullNotEmpty( name, "name" );

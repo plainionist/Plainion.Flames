@@ -72,7 +72,7 @@ namespace Plainion.Flames.Viewer.Services
 
             OnTracesLoadCompleted( project.TraceFiles );
 
-            var repository = new FriendlyNamesRepository( project.TraceLog,
+            var repository = new InitialNames( project.TraceLog,
                 Path.GetFileNameWithoutExtension( project.TraceFiles.First() ), Path.GetDirectoryName( project.TraceFiles.First() ) );
             repository.Load();
 
@@ -116,7 +116,7 @@ namespace Plainion.Flames.Viewer.Services
         {
             var repositories = solution.Projects
                 .SelectMany( p => p.Items )
-                .OfType<FriendlyNamesRepository>();
+                .OfType<InitialNames>();
 
             foreach( var repository in repositories )
             {
@@ -131,7 +131,7 @@ namespace Plainion.Flames.Viewer.Services
                 return;
             }
 
-            var repository = project.Items.OfType<FriendlyNamesRepository>().Single();
+            var repository = project.Items.OfType<InitialNames>().Single();
             repository.Save();
 
             project.TraceLog.Dispose();
