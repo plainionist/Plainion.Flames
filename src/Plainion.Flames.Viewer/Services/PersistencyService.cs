@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Plainion.Flames.Infrastructure;
 using Plainion.Flames.Model;
+using Plainion.Flames.Viewer.Model;
 using Plainion.Prism.Events;
 using Plainion.Progress;
 
@@ -17,14 +18,11 @@ namespace Plainion.Flames.Viewer.Services
     {
         private string myOpenTraceFilter;
         private string mySaveTraceFilter;
-        private IList<FriendlyNamesRepository> myFriendlyNames;
 
         [ImportingConstructor]
-        public PersistencyService( IEventAggregator eventAggregator )
+        public PersistencyService( IEventAggregator eventAggregator, Solution solution )
         {
-            myFriendlyNames = new List<FriendlyNamesRepository>();
-
-            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe( x => SaveFriendlyNames() );
+            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe( x => SaveFriendlyNames( solution ) );
         }
 
         [ImportMany]
@@ -64,22 +62,21 @@ namespace Plainion.Flames.Viewer.Services
         }
 
         // TODO: what would be the contract if nothing could be loaded?
-        public async Task<TraceLog> LoadAsync( IEnumerable<string> traceFiles, IProgress<IProgressInfo> progress )
+        public async Task LoadAsync( Project project, IProgress<IProgressInfo> progress )
         {
             var builder = new TraceModelBuilder();
 
-            await Load( builder, traceFiles, progress );
+            await Load( builder, project.TraceFiles, progress );
 
-            var log = builder.Complete();
+            project.TraceLog = builder.Complete();
 
-            OnTracesLoadCompleted( traceFiles );
+            OnTracesLoadCompleted( project.TraceFiles );
 
-            var repository = new FriendlyNamesRepository( log, Path.GetFileNameWithoutExtension( traceFiles.First() ), Path.GetDirectoryName( traceFiles.First() ) );
+            var repository = new FriendlyNamesRepository( project.TraceLog,
+                Path.GetFileNameWithoutExtension( project.TraceFiles.First() ), Path.GetDirectoryName( project.TraceFiles.First() ) );
             repository.Load();
 
-            myFriendlyNames.Add( repository );
-
-            return log;
+            project.Items.Add( repository );
         }
 
         private async Task Load( TraceModelBuilder builder, IEnumerable<string> traceFiles, IProgress<IProgressInfo> progress )
@@ -115,21 +112,29 @@ namespace Plainion.Flames.Viewer.Services
             return writer.WriteAsync( traceLog, filename, progress );
         }
 
-        private void SaveFriendlyNames()
+        private void SaveFriendlyNames( Solution solution )
         {
-            foreach( var repository in myFriendlyNames )
+            var repositories = solution.Projects
+                .SelectMany( p => p.Items )
+                .OfType<FriendlyNamesRepository>();
+
+            foreach( var repository in repositories )
             {
                 repository.Save();
             }
         }
 
-        internal void Unload( TraceLog log )
+        internal void Unload( Project project )
         {
-            var repository = myFriendlyNames.Single( r => r.TraceLog == log );
-            repository.Save();
-            myFriendlyNames.Remove( repository );
+            if( project.TraceLog == null )
+            {
+                return;
+            }
 
-            log.Dispose();
+            var repository = project.Items.OfType<FriendlyNamesRepository>().Single();
+            repository.Save();
+
+            project.TraceLog.Dispose();
         }
 
         [Import]

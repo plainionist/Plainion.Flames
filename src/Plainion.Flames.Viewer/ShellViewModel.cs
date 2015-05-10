@@ -10,6 +10,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
+using Plainion.Flames.Viewer.Model;
 using Plainion.Flames.Viewer.Services;
 using Plainion.Flames.Viewer.ViewModels;
 using Plainion.Logging;
@@ -27,20 +28,22 @@ namespace Plainion.Flames.Viewer
 
         private PersistencyService myPersistencyService;
         private FlamesBrowserViewModel myFlamesBrowserViewModel;
-        private FlameSetPresentation myPresentation;
         private bool myIsBusy;
         private IProgressInfo myCurrentProgress;
+        private Solution mySolution;
 
         [ImportingConstructor]
-        internal ShellViewModel( IEventAggregator eventAggregator, PersistencyService persistencyService, TraceLoaderService traceLoader )
+        internal ShellViewModel( IEventAggregator eventAggregator, PersistencyService persistencyService, TraceLoaderService traceLoader,
+            Solution solution )
         {
             myPersistencyService = persistencyService;
+            mySolution = solution;
 
             traceLoader.UILoadAction = LoadTraces;
 
             OpenCommand = new DelegateCommand( OnOpen );
-            SaveAsCommand = new DelegateCommand( OnSaveAs, () => myPresentation != null );
-            SaveSnapshotCommand = new DelegateCommand( OnSaveSnapshot, () => myPresentation != null );
+            SaveAsCommand = new DelegateCommand( OnSaveAs, () => Project != null );
+            SaveSnapshotCommand = new DelegateCommand( OnSaveSnapshot, () => Project != null && Project.Presentation != null );
             CloseCommand = new DelegateCommand( () => Application.Current.Shutdown() );
 
             OpenFileRequest = new InteractionRequest<OpenFileDialogNotification>();
@@ -50,6 +53,12 @@ namespace Plainion.Flames.Viewer
             ShowLogCommand = new DelegateCommand( OnShowLog );
 
             eventAggregator.GetEvent<ApplicationReadyEvent>().Subscribe( x => LoadTraceFromCommandLine() );
+        }
+
+        // currently only one project supported
+        private Project Project
+        {
+            get { return mySolution.Projects.Count == 0 ? null : mySolution.Projects.Single(); }
         }
 
         public FlamesBrowserViewModel FlamesBrowserViewModel
@@ -109,7 +118,7 @@ namespace Plainion.Flames.Viewer
                 {
                     IsBusy = true;
                     var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
-                    await myPersistencyService.SaveAsync( myPresentation.Model, n.FileName, progress );
+                    await myPersistencyService.SaveAsync( Project.TraceLog, n.FileName, progress );
                     IsBusy = false;
                 }
             } );
@@ -130,7 +139,7 @@ namespace Plainion.Flames.Viewer
                 {
                     IsBusy = true;
                     var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
-                    await myPersistencyService.SaveAsync( CreateSnapshot( myPresentation ), n.FileName, progress );
+                    await myPersistencyService.SaveAsync( CreateSnapshot( Project.Presentation ), n.FileName, progress );
                     IsBusy = false;
                 }
             } );
@@ -179,28 +188,31 @@ namespace Plainion.Flames.Viewer
 
         private async void LoadTraces( params string[] traceFiles )
         {
-            if( myPresentation != null )
+            if( Project != null )
             {
-                myPersistencyService.Unload( myPresentation.Model );
+                myPersistencyService.Unload( Project );
             }
 
             myLogger.Info( "Loading {0}", string.Join( ",", traceFiles ) );
 
             IsBusy = true;
 
+            var project = new Project( traceFiles );
             var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
 
-            var log = await myPersistencyService.LoadAsync( traceFiles, progress );
+            await myPersistencyService.LoadAsync( project, progress );
+
+            mySolution.Projects.Add( project );
 
             var factory = new PresentationFactory();
-            myPresentation = factory.CreateFlameSetPresentation( log );
+            Project.Presentation = factory.CreateFlameSetPresentation( project.TraceLog );
 
             if( myFlamesBrowserViewModel == null )
             {
                 FlamesBrowserViewModel = new FlamesBrowserViewModel();
             }
 
-            FlamesBrowserViewModel.Presentation = myPresentation;
+            FlamesBrowserViewModel.Presentation = Project.Presentation;
 
             SaveAsCommand.RaiseCanExecuteChanged();
             SaveSnapshotCommand.RaiseCanExecuteChanged();

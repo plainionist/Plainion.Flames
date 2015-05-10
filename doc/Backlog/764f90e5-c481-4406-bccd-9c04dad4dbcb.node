@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb" Created="635667161177596029" LastModified="635667161546306029" Origin="ef725bc7-7ab8-4cfc-ad08-825473ede168">
+<Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb" Created="635667161177596029" LastModified="635668641847253819" Origin="ef725bc7-7ab8-4cfc-ad08-825473ede168">
   <Caption><![CDATA[Model]]></Caption>
-  <Content><![CDATA[- we keep the TraceLog as main entity containing all the data provided by 
-  the TraceReaders initially
-- we use independent "repositories" to store additional data (more flexible, 
-  easier to extend)
+  <Content><![CDATA[- single root entity:
+- the solution can have multiple projects
+- a project is the root entity for all data associated with one trace session/log
+
+- TraceLog contains all the data provided by the TraceReaders initially
+- assciated data is added to the project in a generic way (extensions pattern)
 - we provide one generic mechanism to store and load such repositories
 - all additional data (from the repositories) will be stored in one file 
-- repositories can be imported via MEF
-- we rethink this approach e.g. once we want to support "compare analysis" (2 projects)
+
+- services are shared across projects and my not have any project specific state
 
 we need to separate between
 - associated data: requires the tracelog to be loaded first before it can be deserialized
