@@ -81,6 +81,9 @@
                   ScrollViewer.CanContentScroll="False"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                   ScrollViewer.VerticalScrollBarVisibility="Visible">
+            <ListView.CacheMode>
+                <BitmapCache EnableClearType="False"/>
+            </ListView.CacheMode>
             <ListView.View>
                 <GridView>
                     <!-- http://stackoverflow.com/questions/10309249/listview-gridviewcolumn-width -->

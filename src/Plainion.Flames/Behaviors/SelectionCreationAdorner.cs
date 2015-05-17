@@ -4,8 +4,8 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Plainion.Flames.Presentation;
 using Plainion.Flames.Controls;
+using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Behaviors
 {
