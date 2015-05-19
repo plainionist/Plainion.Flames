@@ -16,13 +16,16 @@ namespace Plainion.Flames.Viewer.Services
     [Export]
     class PersistencyService
     {
+        private Solution mySolution;
         private string myOpenTraceFilter;
         private string mySaveTraceFilter;
 
         [ImportingConstructor]
         public PersistencyService( IEventAggregator eventAggregator, Solution solution )
         {
-            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe( x => SaveFriendlyNames( solution ) );
+            mySolution = solution;
+
+            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe( x => UnloadSolution() );
         }
 
         [ImportMany]
@@ -30,6 +33,9 @@ namespace Plainion.Flames.Viewer.Services
 
         [ImportMany]
         public IEnumerable<ITraceWriter> TraceWriters { get; private set; }
+
+        [ImportMany]
+        public IEnumerable<IProjectItemProvider> ProjectItemProviders { get; private set; }
 
         public string OpenTraceFilter
         {
@@ -66,28 +72,22 @@ namespace Plainion.Flames.Viewer.Services
         {
             var builder = new TraceModelBuilder();
 
-            await Load( builder, project.TraceFiles, progress );
-
-            project.TraceLog = builder.Complete();
-
-            OnTracesLoadCompleted( project.TraceFiles );
-
-            var repository = new InitialNames( project.TraceLog,
-                Path.GetFileNameWithoutExtension( project.TraceFiles.First() ), Path.GetDirectoryName( project.TraceFiles.First() ) );
-            repository.Load();
-
-            project.Items.Add( repository );
-        }
-
-        private async Task Load( TraceModelBuilder builder, IEnumerable<string> traceFiles, IProgress<IProgressInfo> progress )
-        {
-            foreach( var traceFile in traceFiles )
+            foreach( var traceFile in project.TraceFiles )
             {
                 var ext = Path.GetExtension( traceFile );
                 var reader = TryGetTraceReaderByExtension( ext );
                 Contract.Requires( reader != null, "No Reader found for file extension: " + ext );
 
                 await reader.ReadAsync( traceFile, builder, progress );
+            }
+
+            project.TraceLog = builder.Complete();
+
+            OnTracesLoadCompleted( project.TraceFiles );
+
+            foreach( var provider in ProjectItemProviders )
+            {
+                provider.OnTraceLogLoaded( project );
             }
         }
 
@@ -103,38 +103,42 @@ namespace Plainion.Flames.Viewer.Services
             return TryGetTraceReaderByExtension( Path.GetExtension( f ) ) != null;
         }
 
-        internal Task SaveAsync( ITraceLog traceLog, string filename, IProgress<IProgressInfo> progress )
+        /// <summary>
+        /// Saves certain aspects (provided by ITraceLog) of the project.
+        /// </summary>
+        public Task ExportAsync( ITraceLog traceLog, string filename, IProgress<IProgressInfo> progress )
         {
+            Contract.RequiresNotNull( traceLog, "traceLog" );
+
             var writer = TraceWriters
                 .Single( r => r.FileFilters
                     .Any( f => f.Extension.Equals( Path.GetExtension( filename ), StringComparison.OrdinalIgnoreCase ) ) );
 
-            return writer.WriteAsync( traceLog, filename, progress );
+            return Task.Run( () =>
+                {
+                    var task = writer.WriteAsync( traceLog, filename, progress );
+
+                    task.Wait();
+                } );
         }
 
-        private void SaveFriendlyNames( Solution solution )
+        private void UnloadSolution()
         {
-            var repositories = solution.Projects
-                .SelectMany( p => p.Items )
-                .OfType<InitialNames>();
-
-            foreach( var repository in repositories )
+            foreach( var project in mySolution.Projects )
             {
-                repository.Save();
+                Unload( project );
             }
         }
 
-        internal void Unload( Project project )
+        public void Unload( Project project )
         {
-            if( project.TraceLog == null )
+            foreach( var provider in ProjectItemProviders )
             {
-                return;
+                provider.OnProjectUnloading( project );
             }
-
-            var repository = project.Items.OfType<InitialNames>().Single();
-            repository.Save();
 
             project.TraceLog.Dispose();
+            project.TraceLog = null;
         }
 
         [Import]

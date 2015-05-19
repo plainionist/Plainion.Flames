@@ -99,10 +99,11 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="CoreModule.cs" />
+    <Compile Include="Model\IProjectItemProvider.cs" />
     <Compile Include="Model\Project.cs" />
     <Compile Include="Model\Solution.cs" />
     <Compile Include="RegionNames.cs" />
-    <Compile Include="Model\InitialNames.cs" />
+    <Compile Include="Services\FriendlyNamesProvider.cs" />
     <Compile Include="Services\LoggingSink.cs" />
     <Compile Include="Services\PersistencyService.cs" />
     <Compile Include="Services\ProfilingService.cs" />

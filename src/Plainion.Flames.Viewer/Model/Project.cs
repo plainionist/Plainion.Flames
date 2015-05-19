@@ -6,8 +6,8 @@ using Plainion.Flames.Presentation;
 namespace Plainion.Flames.Viewer.Model
 {
     /// <summary>
-    /// Root entity for one loaded trace log from a single trace session including associated data, results or context
-    /// information.
+    /// Root entity for one loaded trace log from a single trace session including 
+    /// associated data, results or context information.
     /// </summary>
     class Project
     {

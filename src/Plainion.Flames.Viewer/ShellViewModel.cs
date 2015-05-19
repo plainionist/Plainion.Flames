@@ -118,7 +118,7 @@ namespace Plainion.Flames.Viewer
                 {
                     IsBusy = true;
                     var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
-                    await myPersistencyService.SaveAsync( Project.TraceLog, n.FileName, progress );
+                    await myPersistencyService.ExportAsync( Project.TraceLog, n.FileName, progress );
                     IsBusy = false;
                 }
             } );
@@ -139,7 +139,7 @@ namespace Plainion.Flames.Viewer
                 {
                     IsBusy = true;
                     var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
-                    await myPersistencyService.SaveAsync( CreateSnapshot( Project.Presentation ), n.FileName, progress );
+                    await myPersistencyService.ExportAsync( CreateSnapshot( Project.Presentation ), n.FileName, progress );
                     IsBusy = false;
                 }
             } );
