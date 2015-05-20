@@ -188,9 +188,11 @@ namespace Plainion.Flames.Viewer
 
         private async void LoadTraces( params string[] traceFiles )
         {
-            if( Project != null )
+            var oldProject = Project;
+            if( oldProject != null )
             {
-                myPersistencyService.Unload( Project );
+                myPersistencyService.Unload( oldProject );
+                mySolution.Projects.Remove( oldProject );
             }
 
             myLogger.Info( "Loading {0}", string.Join( ",", traceFiles ) );
@@ -205,7 +207,7 @@ namespace Plainion.Flames.Viewer
             mySolution.Projects.Add( project );
 
             var factory = new PresentationFactory();
-            Project.Presentation = factory.CreateFlameSetPresentation( project.TraceLog );
+            project.Presentation = factory.CreateFlameSetPresentation( project.TraceLog );
 
             if( myFlamesBrowserViewModel == null )
             {

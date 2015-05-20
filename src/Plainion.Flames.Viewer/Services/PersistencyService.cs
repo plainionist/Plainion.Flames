@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Prism.PubSubEvents;
@@ -85,9 +86,29 @@ namespace Plainion.Flames.Viewer.Services
 
             OnTracesLoadCompleted( project.TraceFiles );
 
-            foreach( var provider in ProjectItemProviders )
+            var file = GetProjectFile( project );
+
+            if( File.Exists( file ) )
             {
-                provider.OnTraceLogLoaded( project );
+                using( var stream = new FileStream( file, FileMode.Open ) )
+                {
+                    using( var archive = new ZipArchive( stream, ZipArchiveMode.Read ) )
+                    {
+                        var context = new ProjectSerializationContext( archive );
+
+                        foreach( var provider in ProjectItemProviders )
+                        {
+                            provider.OnTraceLogLoaded( project, context );
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach( var provider in ProjectItemProviders )
+                {
+                    provider.OnTraceLogLoaded( project, null );
+                }
             }
         }
 
@@ -132,13 +153,34 @@ namespace Plainion.Flames.Viewer.Services
 
         public void Unload( Project project )
         {
-            foreach( var provider in ProjectItemProviders )
+            var file = GetProjectFile( project );
+
+            if( File.Exists( file ) )
             {
-                provider.OnProjectUnloading( project );
+                File.Delete( file );
+            }
+
+            using( var stream = new FileStream( file, FileMode.OpenOrCreate ) )
+            {
+                using( var archive = new ZipArchive( stream, ZipArchiveMode.Create ) )
+                {
+                    var context = new ProjectSerializationContext( archive );
+
+                    foreach( var provider in ProjectItemProviders )
+                    {
+                        provider.OnProjectUnloading( project, context );
+                    }
+                }
             }
 
             project.TraceLog.Dispose();
             project.TraceLog = null;
+        }
+
+        private static string GetProjectFile( Project project )
+        {
+            var mainTraceFile = project.TraceFiles.First();
+            return Path.Combine( Path.GetDirectoryName( mainTraceFile ), Path.GetFileNameWithoutExtension( mainTraceFile ) + ".pfp" );
         }
 
         [Import]

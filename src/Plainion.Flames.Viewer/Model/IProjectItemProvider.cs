@@ -12,7 +12,7 @@ namespace Plainion.Flames.Viewer.Model
     interface IProjectItemProvider
     {
         //void OnProjectCreated( Project project );
-        void OnTraceLogLoaded( Project project );
-        void OnProjectUnloading( Project project );
+        void OnTraceLogLoaded( Project project, IProjectSerializationContext context );
+        void OnProjectUnloading( Project project, IProjectSerializationContext context );
     }
 }

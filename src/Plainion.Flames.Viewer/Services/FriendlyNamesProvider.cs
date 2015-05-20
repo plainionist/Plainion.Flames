@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using Plainion.Flames.Model;
 using Plainion.Flames.Viewer.Model;
 
@@ -11,42 +11,25 @@ namespace Plainion.Flames.Viewer.Services
     /// </summary>
     class FriendlyNamesProvider : IProjectItemProvider
     {
-        private static byte Version = 1;
+        private const string ProviderId = "{866583EB-9C7C-4938-BDC8-FCCC77E42921}.FriendlyNames";
 
         /// <summary>
         /// Names of processes and threads can be changed directly in the model. Here we keep the initial 
         /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
         /// able to detect proecess/thread names (better) the user can benefit from it automatically.
         /// </summary>
-        class InitialNames
+        [DataContract( Name = "InitialNames", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/FriendlyNames" )]
+        class InitialNames : IEnumerable<KeyValuePair<long, string>>
         {
+            [DataMember( Name = "Version" )]
+            public const byte Version = 1;
+
+            [DataMember( Name = "Names" )]
             private Dictionary<long, string> myInitialNames;
 
             public InitialNames()
             {
                 myInitialNames = new Dictionary<long, string>();
-            }
-
-            public void CollectInitialNames( TraceLog log )
-            {
-                foreach( var process in log.Processes )
-                {
-                    long key = ToKey( process.ProcessId );
-
-                    if( !string.IsNullOrEmpty( process.Name ) )
-                    {
-                        myInitialNames[ key ] = process.Name;
-                    }
-
-                    foreach( var thread in log.GetThreads( process ) )
-                    {
-                        if( !string.IsNullOrEmpty( thread.Name ) )
-                        {
-                            key = ToKey( process.ProcessId, thread.ThreadId );
-                            myInitialNames[ key ] = thread.Name;
-                        }
-                    }
-                }
             }
 
             public string this[ long key ]
@@ -62,135 +45,115 @@ namespace Plainion.Flames.Viewer.Services
                 }
             }
 
-            public static long ToKey( int pid, int tid = -1 )
+            public IEnumerator<KeyValuePair<long, string>> GetEnumerator()
             {
-                long b = tid;
-                b = b << 32;
-                b = b | ( uint )pid;
-                return b;
+                return myInitialNames.GetEnumerator();
             }
 
-            public static void FromKey( long a, out int pid, out int tid )
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             {
-                pid = ( int )( a & uint.MaxValue );
-                tid = ( int )( a >> 32 );
+                return myInitialNames.GetEnumerator();
             }
         }
 
-        public void OnTraceLogLoaded( Project project )
+        public void OnTraceLogLoaded( Project project, IProjectSerializationContext context )
         {
-            var repository = new InitialNames();
-            repository.CollectInitialNames( project.TraceLog );
+            InitialNames repository = null;
 
-            LoadIfExists( project, repository );
+            if( context != null )
+            {
+                using( var stream = context.GetEntry( ProviderId ) )
+                {
+                    var serializer = new DataContractSerializer( typeof( InitialNames ) );
+                    repository = ( InitialNames )serializer.ReadObject( stream );
+                    ApplyInitialNames( project, repository );
+                }
+            }
+
+            if( repository == null )
+            {
+                repository = new InitialNames();
+
+                var legacyDeserializer = new FriendlyNamesDeserializerLegacy();
+                var entries = legacyDeserializer.Deserialize( project );
+                if( entries != null )
+                {
+                    foreach( var entry in entries )
+                    {
+                        repository[ entry.Key ] = entry.Value;
+                    }
+
+                    ApplyInitialNames( project, repository );
+                }
+                else
+                {
+                    CollectInitialNames( project.TraceLog, repository );
+                }
+            }
 
             project.Items.Add( repository );
         }
 
-        private void LoadIfExists( Project project, InitialNames repository )
+        private void ApplyInitialNames( Project project, InitialNames repository )
         {
-            var mainTraceFile = project.TraceFiles.First();
-            var file = Path.Combine( Path.GetDirectoryName( mainTraceFile ), Path.GetFileNameWithoutExtension( mainTraceFile ) + ".bffn" );
-
-            if( !File.Exists( file ) )
+            foreach( var entry in repository )
             {
-                return;
-            }
+                int pid;
+                int tid;
+                PidTid.Decode( entry.Key, out pid, out tid );
 
-            using( var reader = new BinaryReader( new FileStream( file, FileMode.Open, FileAccess.Read ) ) )
-            {
-                var version = reader.ReadByte();
-
-                Contract.Invariant( version == 1, "Invalid version" );
-
-                while( reader.BaseStream.Position != reader.BaseStream.Length )
+                var process = project.TraceLog.Processes.SingleOrDefault( p => p.ProcessId == pid );
+                if( process == null )
                 {
-                    long key = reader.ReadInt64();
-                    var name = reader.ReadString();
+                    // TODO: this should only happen if loading of trace has been aborted
+                    continue;
+                }
 
-                    int pid;
-                    int tid;
-                    InitialNames.FromKey( key, out pid, out tid );
-
-                    var process = project.TraceLog.Processes.SingleOrDefault( p => p.ProcessId == pid );
-                    if( process == null )
-                    {
-                        // TODO: this should only happen if loading of trace has been aborted
-                        continue;
-                    }
-
-                    if( tid == -1 )
-                    {
-                        process.Name = name;
-                    }
-                    else
-                    {
-                        var thread = project.TraceLog.GetThreads( process ).Single( t => t.ThreadId == tid );
-                        thread.Name = name;
-                    }
-
-                    repository[ key ] = name;
+                if( tid == -1 )
+                {
+                    process.Name = entry.Value;
+                }
+                else
+                {
+                    var thread = project.TraceLog.GetThreads( process ).Single( t => t.ThreadId == tid );
+                    thread.Name = entry.Value;
                 }
             }
         }
 
-        public void OnProjectUnloading( Project project )
+        private void CollectInitialNames( TraceLog log, InitialNames repository )
+        {
+            foreach( var process in log.Processes )
+            {
+                long key = PidTid.Encode( process.ProcessId );
+
+                if( !string.IsNullOrEmpty( process.Name ) )
+                {
+                    repository[ key ] = process.Name;
+                }
+
+                foreach( var thread in log.GetThreads( process ) )
+                {
+                    if( !string.IsNullOrEmpty( thread.Name ) )
+                    {
+                        key = PidTid.Encode( process.ProcessId, thread.ThreadId );
+                        repository[ key ] = thread.Name;
+                    }
+                }
+            }
+        }
+
+        public void OnProjectUnloading( Project project, IProjectSerializationContext context )
         {
             if( project.TraceLog == null )
             {
                 return;
             }
-            
-            Save( project );
-        }
 
-        private void Save( Project project )
-        {
-            long pos = 0;
-
-            var mainTraceFile = project.TraceFiles.First();
-            var file = Path.Combine( Path.GetDirectoryName( mainTraceFile ), Path.GetFileNameWithoutExtension( mainTraceFile ) + ".bffn" );
-
-            var repository = project.Items.OfType<InitialNames>().Single();
-
-            using( var writer = new BinaryWriter( new FileStream( file, FileMode.OpenOrCreate, FileAccess.Write ) ) )
+            using( var stream = context.CreateEntry( ProviderId ) )
             {
-                writer.Write( Version );
-
-                long key;
-                string origName = null;
-
-                foreach( var process in project.TraceLog.Processes )
-                {
-                    key = InitialNames.ToKey( process.ProcessId );
-
-                    origName = repository[ key ];
-                    if( origName != process.Name )
-                    {
-                        writer.Write( key );
-                        writer.Write( process.Name );
-                    }
-
-                    foreach( var thread in project.TraceLog.GetThreads( process ) )
-                    {
-                        key = InitialNames.ToKey( process.ProcessId, thread.ThreadId );
-
-                        origName = repository[ key ];
-                        if( origName != thread.Name )
-                        {
-                            writer.Write( key );
-                            writer.Write( thread.Name );
-                        }
-                    }
-                }
-
-                writer.Flush();
-                pos = writer.BaseStream.Position;
-            }
-
-            if( pos == 0 )
-            {
-                File.Delete( file );
+                var serializer = new DataContractSerializer( typeof( InitialNames ) );
+                serializer.WriteObject( stream, project.Items.OfType<InitialNames>().Single() );
             }
         }
     }
