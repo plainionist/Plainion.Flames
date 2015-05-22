@@ -13,23 +13,18 @@ namespace Plainion.Flames.Viewer.Services
     {
         private const string ProviderId = "{866583EB-9C7C-4938-BDC8-FCCC77E42921}.FriendlyNames";
 
-        /// <summary>
-        /// Names of processes and threads can be changed directly in the model. Here we keep the initial 
-        /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
-        /// able to detect proecess/thread names (better) the user can benefit from it automatically.
-        /// </summary>
-        [DataContract( Name = "InitialNames", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/FriendlyNames" )]
-        class InitialNames : IEnumerable<KeyValuePair<long, string>>
+        [DataContract( Name = "FriendlyNames", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/FriendlyNames" )]
+        class FriendlyNames : IEnumerable<KeyValuePair<long, string>>
         {
             [DataMember( Name = "Version" )]
             public const byte Version = 1;
 
             [DataMember( Name = "Names" )]
-            private Dictionary<long, string> myInitialNames;
+            private Dictionary<long, string> myEntries;
 
-            public InitialNames()
+            public FriendlyNames()
             {
-                myInitialNames = new Dictionary<long, string>();
+                myEntries = new Dictionary<long, string>();
             }
 
             public string this[ long key ]
@@ -37,66 +32,54 @@ namespace Plainion.Flames.Viewer.Services
                 get
                 {
                     string name;
-                    return myInitialNames.TryGetValue( key, out name ) ? name : null;
+                    return myEntries.TryGetValue( key, out name ) ? name : null;
                 }
                 set
                 {
-                    myInitialNames[ key ] = value;
+                    myEntries[ key ] = value;
                 }
             }
 
             public IEnumerator<KeyValuePair<long, string>> GetEnumerator()
             {
-                return myInitialNames.GetEnumerator();
+                return myEntries.GetEnumerator();
             }
 
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             {
-                return myInitialNames.GetEnumerator();
+                return myEntries.GetEnumerator();
             }
         }
 
         public void OnTraceLogLoaded( Project project, IProjectSerializationContext context )
         {
-            InitialNames repository = null;
+            var initialNames = new FriendlyNames();
+            CollectInitialNames( project.TraceLog, initialNames );
+            project.Items.Add( initialNames );
 
             if( context != null )
             {
                 using( var stream = context.GetEntry( ProviderId ) )
                 {
-                    var serializer = new DataContractSerializer( typeof( InitialNames ) );
-                    repository = ( InitialNames )serializer.ReadObject( stream );
-                    ApplyInitialNames( project, repository );
+                    var serializer = new DataContractSerializer( typeof( FriendlyNames ) );
+                    var friendlyNames = ( FriendlyNames )serializer.ReadObject( stream );
+                    ApplyFriendlyNames( project, friendlyNames );
                 }
             }
-
-            if( repository == null )
+            else
             {
-                repository = new InitialNames();
-
                 var legacyDeserializer = new FriendlyNamesDeserializerLegacy();
                 var entries = legacyDeserializer.Deserialize( project );
                 if( entries != null )
                 {
-                    foreach( var entry in entries )
-                    {
-                        repository[ entry.Key ] = entry.Value;
-                    }
-
-                    ApplyInitialNames( project, repository );
-                }
-                else
-                {
-                    CollectInitialNames( project.TraceLog, repository );
+                    ApplyFriendlyNames( project, entries );
                 }
             }
-
-            project.Items.Add( repository );
         }
 
-        private void ApplyInitialNames( Project project, InitialNames repository )
+        private void ApplyFriendlyNames( Project project, IEnumerable<KeyValuePair<long, string>> friendlyNames )
         {
-            foreach( var entry in repository )
+            foreach( var entry in friendlyNames )
             {
                 int pid;
                 int tid;
@@ -121,24 +104,23 @@ namespace Plainion.Flames.Viewer.Services
             }
         }
 
-        private void CollectInitialNames( TraceLog log, InitialNames repository )
+        /// <summary>
+        /// Names of processes and threads can be changed directly in the model. Here we keep the initial 
+        /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
+        /// able to detect proecess/thread names (better) the user can benefit from it automatically.
+        /// </summary>
+        private void CollectInitialNames( TraceLog log, FriendlyNames repository )
         {
             foreach( var process in log.Processes )
             {
                 long key = PidTid.Encode( process.ProcessId );
 
-                if( !string.IsNullOrEmpty( process.Name ) )
-                {
-                    repository[ key ] = process.Name;
-                }
+                repository[ key ] = process.Name;
 
                 foreach( var thread in log.GetThreads( process ) )
                 {
-                    if( !string.IsNullOrEmpty( thread.Name ) )
-                    {
-                        key = PidTid.Encode( process.ProcessId, thread.ThreadId );
-                        repository[ key ] = thread.Name;
-                    }
+                    key = PidTid.Encode( process.ProcessId, thread.ThreadId );
+                    repository[ key ] = thread.Name;
                 }
             }
         }
@@ -150,10 +132,35 @@ namespace Plainion.Flames.Viewer.Services
                 return;
             }
 
+            var initialNames = project.Items.OfType<FriendlyNames>().Single();
+            var friendlyNames = new FriendlyNames();
+
+            foreach( var process in project.TraceLog.Processes )
+            {
+                var key = PidTid.Encode( process.ProcessId );
+
+                var origName = initialNames[ key ];
+                if( origName != process.Name )
+                {
+                    friendlyNames[ key ] = process.Name;
+                }
+
+                foreach( var thread in project.TraceLog.GetThreads( process ) )
+                {
+                    key = PidTid.Encode( process.ProcessId, thread.ThreadId );
+
+                    origName = initialNames[ key ];
+                    if( origName != thread.Name )
+                    {
+                        friendlyNames[ key ] = thread.Name;
+                    }
+                }
+            }
+
             using( var stream = context.CreateEntry( ProviderId ) )
             {
-                var serializer = new DataContractSerializer( typeof( InitialNames ) );
-                serializer.WriteObject( stream, project.Items.OfType<InitialNames>().Single() );
+                var serializer = new DataContractSerializer( typeof( FriendlyNames ) );
+                serializer.WriteObject( stream, friendlyNames );
             }
         }
     }
