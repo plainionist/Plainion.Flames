@@ -64,6 +64,9 @@
     <Compile Include="Controls\TracesTreeView.xaml.cs">
       <DependentUpon>TracesTreeView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IProject.cs" />
+    <Compile Include="IProjectItemProvider.cs" />
+    <Compile Include="IProjectSerializationContext.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Services\ITraceLoaderService.cs" />
   </ItemGroup>

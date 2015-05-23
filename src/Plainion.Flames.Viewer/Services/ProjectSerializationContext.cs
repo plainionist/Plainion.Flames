@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Plainion.Flames.Viewer.Model;
+using Plainion.Flames.Infrastructure;
 
 namespace Plainion.Flames.Viewer.Services
 {

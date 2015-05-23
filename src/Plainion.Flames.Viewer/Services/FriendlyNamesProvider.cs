@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
+using Plainion.Flames.Infrastructure;
 using Plainion.Flames.Model;
-using Plainion.Flames.Viewer.Model;
 
 namespace Plainion.Flames.Viewer.Services
 {
     /// <summary>
     /// Adds persistancy of friendly names to the project
     /// </summary>
+    [Export]
     class FriendlyNamesProvider : IProjectItemProvider
     {
         private const string ProviderId = "{866583EB-9C7C-4938-BDC8-FCCC77E42921}.FriendlyNames";
@@ -51,7 +53,7 @@ namespace Plainion.Flames.Viewer.Services
             }
         }
 
-        public void OnTraceLogLoaded( Project project, IProjectSerializationContext context )
+        public void OnTraceLogLoaded( IProject project, IProjectSerializationContext context )
         {
             var initialNames = new FriendlyNames();
             CollectInitialNames( project.TraceLog, initialNames );
@@ -63,7 +65,7 @@ namespace Plainion.Flames.Viewer.Services
                 {
                     var serializer = new DataContractSerializer( typeof( FriendlyNames ) );
                     var friendlyNames = ( FriendlyNames )serializer.ReadObject( stream );
-                    ApplyFriendlyNames( project, friendlyNames );
+                    ApplyFriendlyNames( project.TraceLog, friendlyNames );
                 }
             }
             else
@@ -72,12 +74,12 @@ namespace Plainion.Flames.Viewer.Services
                 var entries = legacyDeserializer.Deserialize( project );
                 if( entries != null )
                 {
-                    ApplyFriendlyNames( project, entries );
+                    ApplyFriendlyNames( project.TraceLog, entries );
                 }
             }
         }
 
-        private void ApplyFriendlyNames( Project project, IEnumerable<KeyValuePair<long, string>> friendlyNames )
+        private void ApplyFriendlyNames( ITraceLog traceLog, IEnumerable<KeyValuePair<long, string>> friendlyNames )
         {
             foreach( var entry in friendlyNames )
             {
@@ -85,7 +87,7 @@ namespace Plainion.Flames.Viewer.Services
                 int tid;
                 PidTid.Decode( entry.Key, out pid, out tid );
 
-                var process = project.TraceLog.Processes.SingleOrDefault( p => p.ProcessId == pid );
+                var process = traceLog.Processes.SingleOrDefault( p => p.ProcessId == pid );
                 if( process == null )
                 {
                     // TODO: this should only happen if loading of trace has been aborted
@@ -98,7 +100,7 @@ namespace Plainion.Flames.Viewer.Services
                 }
                 else
                 {
-                    var thread = project.TraceLog.GetThreads( process ).Single( t => t.ThreadId == tid );
+                    var thread = traceLog.GetThreads( process ).Single( t => t.ThreadId == tid );
                     thread.Name = entry.Value;
                 }
             }
@@ -109,7 +111,7 @@ namespace Plainion.Flames.Viewer.Services
         /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
         /// able to detect proecess/thread names (better) the user can benefit from it automatically.
         /// </summary>
-        private void CollectInitialNames( TraceLog log, FriendlyNames repository )
+        private void CollectInitialNames( ITraceLog log, FriendlyNames repository )
         {
             foreach( var process in log.Processes )
             {
@@ -125,7 +127,7 @@ namespace Plainion.Flames.Viewer.Services
             }
         }
 
-        public void OnProjectUnloading( Project project, IProjectSerializationContext context )
+        public void OnProjectUnloading( IProject project, IProjectSerializationContext context )
         {
             if( project.TraceLog == null )
             {

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace Plainion.Flames.Viewer.Model
+namespace Plainion.Flames.Infrastructure
 {
-    interface IProjectSerializationContext 
+    public interface IProjectSerializationContext 
     {
         Stream CreateEntry( string providerId );
         Stream GetEntry( string providerId );

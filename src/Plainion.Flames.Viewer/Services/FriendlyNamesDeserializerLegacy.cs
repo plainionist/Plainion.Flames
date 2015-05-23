@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Plainion.Flames.Viewer.Model;
+using Plainion.Flames.Infrastructure;
 
 namespace Plainion.Flames.Viewer.Services
 {
@@ -10,7 +10,7 @@ namespace Plainion.Flames.Viewer.Services
     /// </summary>
     class FriendlyNamesDeserializerLegacy 
     {
-        public IDictionary<long, string> Deserialize( Project project )
+        public IDictionary<long, string> Deserialize( IProject project )
         {
             var mainTraceFile = project.TraceFiles.First();
             var file = Path.Combine( Path.GetDirectoryName( mainTraceFile ), Path.GetFileNameWithoutExtension( mainTraceFile ) + ".bffn" );
