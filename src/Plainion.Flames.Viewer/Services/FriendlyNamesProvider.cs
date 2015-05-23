@@ -165,5 +165,9 @@ namespace Plainion.Flames.Viewer.Services
                 serializer.WriteObject( stream, friendlyNames );
             }
         }
+
+        public void OnTraceLogLoading( IProject project, IProjectSerializationContext context ) { }
+
+        public void OnProjectUnloaded( IProject project, IProjectSerializationContext context ) { }
     }
 }

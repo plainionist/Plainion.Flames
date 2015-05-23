@@ -71,7 +71,37 @@ namespace Plainion.Flames.Viewer.Services
         // TODO: what would be the contract if nothing could be loaded?
         public async Task LoadAsync( Project project, IProgress<IProgressInfo> progress )
         {
+            var file = GetProjectFile( project );
+
+            if( File.Exists( file ) )
+            {
+                using( var stream = new FileStream( file, FileMode.Open ) )
+                {
+                    using( var archive = new ZipArchive( stream, ZipArchiveMode.Read ) )
+                    {
+                        await LoadTraceLogAsync( project, new ProjectSerializationContext( archive ), progress );
+                    }
+                }
+            }
+            else
+            {
+                await LoadTraceLogAsync( project, null, progress );
+            }
+        }
+
+        private async Task LoadTraceLogAsync( Project project, IProjectSerializationContext context, IProgress<IProgressInfo> progress )
+        {
+            foreach( var provider in ProjectItemProviders )
+            {
+                provider.OnTraceLogLoading( project, context );
+            }
+
             var builder = new TraceModelBuilder();
+
+            foreach( var item in project.Items )
+            {
+                builder.ReaderContextHints.Add( item );
+            }
 
             foreach( var traceFile in project.TraceFiles )
             {
@@ -84,32 +114,17 @@ namespace Plainion.Flames.Viewer.Services
 
             project.TraceLog = builder.Complete();
 
+            foreach( var hint in builder.ReaderContextHints )
+            {
+                project.Items.Add( hint );
+            }
+
+            foreach( var provider in ProjectItemProviders )
+            {
+                provider.OnTraceLogLoaded( project, null );
+            }
+
             OnTracesLoadCompleted( project.TraceFiles );
-
-            var file = GetProjectFile( project );
-
-            if( File.Exists( file ) )
-            {
-                using( var stream = new FileStream( file, FileMode.Open ) )
-                {
-                    using( var archive = new ZipArchive( stream, ZipArchiveMode.Read ) )
-                    {
-                        var context = new ProjectSerializationContext( archive );
-
-                        foreach( var provider in ProjectItemProviders )
-                        {
-                            provider.OnTraceLogLoaded( project, context );
-                        }
-                    }
-                }
-            }
-            else
-            {
-                foreach( var provider in ProjectItemProviders )
-                {
-                    provider.OnTraceLogLoaded( project, null );
-                }
-            }
         }
 
         private ITraceReader TryGetTraceReaderByExtension( string ext )
@@ -170,11 +185,16 @@ namespace Plainion.Flames.Viewer.Services
                     {
                         provider.OnProjectUnloading( project, context );
                     }
+
+                    project.TraceLog.Dispose();
+                    project.TraceLog = null;
+                    
+                    foreach( var provider in ProjectItemProviders )
+                    {
+                        provider.OnProjectUnloaded( project, context );
+                    }
                 }
             }
-
-            project.TraceLog.Dispose();
-            project.TraceLog = null;
         }
 
         private static string GetProjectFile( Project project )

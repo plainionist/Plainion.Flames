@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Plainion.Collections;
 using Plainion.Flames.Model;
-using Plainion;
 
 namespace Plainion.Flames
 {
@@ -19,6 +18,8 @@ namespace Plainion.Flames
             myTraceLog = new TraceLog( new SymbolRepository() );
             myTraceLog.CreationTime = DateTime.MinValue;
             myTraceLog.TraceDuration = 0;
+
+            ReaderContextHints = new List<object>();
         }
 
         public SymbolRepository Symbols { get { return myTraceLog.Symbols; } }
@@ -109,5 +110,11 @@ namespace Plainion.Flames
                 myTraceLog = null;
             }
         }
+
+        /// <summary>
+        /// Allows the ITraceReader add additional context information which will then be given
+        /// back to the reader for the next read of the same trace (e.g. after re-open)
+        /// </summary>
+        public IList<object> ReaderContextHints { get; private set; }
     }
 }
