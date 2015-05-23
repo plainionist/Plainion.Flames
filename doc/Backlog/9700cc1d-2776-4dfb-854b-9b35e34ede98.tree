@@ -7,16 +7,10 @@
       <Node Id="954520dd-58bb-463d-8a88-3e02747a70ab">
         <Caption><![CDATA[Cleanup model]]></Caption>
         <Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb">
-          <Caption><![CDATA[Model]]></Caption>
-        </Node>
-        <Node Id="18072e0e-4455-476a-9bf0-75a6d0f059c0">
-          <Caption><![CDATA[persistency]]></Caption>
+          <Caption><![CDATA[Design decision]]></Caption>
         </Node>
         <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
           <Caption><![CDATA[repositories]]></Caption>
-          <Node Id="2822b163-efa9-478b-976c-9ba421edf896">
-            <Caption><![CDATA[friendly names]]></Caption>
-          </Node>
           <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">
             <Caption><![CDATA[filters]]></Caption>
           </Node>
