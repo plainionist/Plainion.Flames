@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb" Created="635667161177596029" LastModified="635679364384377344" Origin="ef725bc7-7ab8-4cfc-ad08-825473ede168">
-  <Caption><![CDATA[Design decision]]></Caption>
+<Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb" Created="635667161177596029" LastModified="635688556163889147" Origin="ef725bc7-7ab8-4cfc-ad08-825473ede168">
+  <Caption><![CDATA[document design decisions]]></Caption>
   <Content><![CDATA[- single root entity:
 - the solution can have multiple projects
 - a project is the root entity for all data associated with one trace session/log

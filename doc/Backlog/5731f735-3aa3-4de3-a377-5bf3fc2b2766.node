@@ -1,6 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766" Created="635626068433151352" LastModified="635662549697940420">
+<Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766" Created="635626068433151352" LastModified="635688574463338909">
   <Caption><![CDATA["Manip" indicator]]></Caption>
   <Content><![CDATA[when loading user data right on stratup we should show the user that 
-he does not see the full picture]]></Content>
+he does not see the full picture
+
+HOW do we detect (in a generic way) that not all content is visible?
+
+==> as a simple approach just display "manip" indicator once there was 
+a project loaded from disk
+==> manip indicator - lets give the "log" button a different color and
+put the details in the log. button color changes once log was opened]]></Content>
 </Node>

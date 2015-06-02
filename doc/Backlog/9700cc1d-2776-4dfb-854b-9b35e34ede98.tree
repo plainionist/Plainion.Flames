@@ -6,23 +6,26 @@
       <Caption><![CDATA[Next steps]]></Caption>
       <Node Id="954520dd-58bb-463d-8a88-3e02747a70ab">
         <Caption><![CDATA[Cleanup model]]></Caption>
-        <Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb">
-          <Caption><![CDATA[Design decision]]></Caption>
+        <Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766">
+          <Caption><![CDATA["Manip" indicator]]></Caption>
         </Node>
         <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
           <Caption><![CDATA[repositories]]></Caption>
-          <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">
-            <Caption><![CDATA[filters]]></Caption>
-          </Node>
           <Node Id="f3b1081f-3e28-4ba1-a33d-690ac8e839c7">
             <Caption><![CDATA[ETW preselection]]></Caption>
+          </Node>
+          <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">
+            <Caption><![CDATA[filters]]></Caption>
           </Node>
           <Node Id="f1dc96d9-1873-4621-be8b-38adf49ce715">
             <Caption><![CDATA[selected processes/threads]]></Caption>
           </Node>
         </Node>
-        <Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766">
-          <Caption><![CDATA["Manip" indicator]]></Caption>
+        <Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb">
+          <Caption><![CDATA[document design decisions]]></Caption>
+        </Node>
+        <Node Id="7793c7af-8454-4841-abd0-3303f3c48ec4">
+          <Caption><![CDATA["open" project file]]></Caption>
         </Node>
       </Node>
       <Node Id="0738501d-a3d7-46a3-951a-b33f1af26bcc">

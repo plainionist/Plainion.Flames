@@ -1,5 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="f3b1081f-3e28-4ba1-a33d-690ac8e839c7" Created="635624672362166647" LastModified="635662549498178994">
+<Node Id="f3b1081f-3e28-4ba1-a33d-690ac8e839c7" Created="635624672362166647" LastModified="635688561514104115">
   <Caption><![CDATA[ETW preselection]]></Caption>
-  <Content><![CDATA[the "pre-selection" of the ETW processes from last open]]></Content>
+  <Content><![CDATA[the "pre-selection" of the ETW processes from last open
+
+IF we store the Process/Thread selection anyway we dont need this additionally 
+here - we just do it in the Viewer and give it as hint to the 
+TraceReader ... then it would later on also work with BFlames.
+
+BUT therefore the "ProjectItem" needs to be in ".Infrasturcture" so that
+all readers can fetch it from ReaderContextHints]]></Content>
 </Node>
