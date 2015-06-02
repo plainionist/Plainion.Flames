@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Plainion.Flames.Infrastructure;
-using Plainion;
 using Plainion.Progress;
 
 namespace Plainion.Flames.Modules.StringTracing
@@ -16,7 +15,7 @@ namespace Plainion.Flames.Modules.StringTracing
     {
         public StringTraceReader()
         {
-            FileFilters = new[] { new FileFilter( ".log", "FTrace file (*.log)" ) };
+            FileFilters = new[] { new FileFilter( ".log", "String trace file (*.log)" ) };
         }
 
         public IEnumerable<FileFilter> FileFilters { get; private set; }
