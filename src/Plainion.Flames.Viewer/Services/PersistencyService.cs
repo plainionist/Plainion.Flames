@@ -79,13 +79,15 @@ namespace Plainion.Flames.Viewer.Services
                 {
                     using( var archive = new ZipArchive( stream, ZipArchiveMode.Read ) )
                     {
+                        project.WasDeserialized = true;
                         await LoadTraceLogAsync( project, new ProjectSerializationContext( archive ), progress );
                     }
                 }
             }
             else
             {
-                await LoadTraceLogAsync( project, null, progress );
+                project.WasDeserialized = false;
+                await LoadTraceLogAsync(project, null, progress);
             }
         }
 
@@ -121,7 +123,7 @@ namespace Plainion.Flames.Viewer.Services
 
             foreach( var provider in ProjectItemProviders )
             {
-                provider.OnTraceLogLoaded( project, null );
+                provider.OnTraceLogLoaded(project, context);
             }
 
             OnTracesLoadCompleted( project.TraceFiles );

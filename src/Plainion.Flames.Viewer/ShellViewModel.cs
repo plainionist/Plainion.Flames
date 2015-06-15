@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
@@ -24,7 +25,7 @@ namespace Plainion.Flames.Viewer
     [Export]
     class ShellViewModel : BindableBase, IDropable
     {
-        private static readonly ILogger myLogger = LoggerFactory.GetLogger( typeof( ShellViewModel ) );
+        private static readonly ILogger myLogger = LoggerFactory.GetLogger(typeof(ShellViewModel));
 
         private PersistencyService myPersistencyService;
         private FlamesBrowserViewModel myFlamesBrowserViewModel;
@@ -33,26 +34,26 @@ namespace Plainion.Flames.Viewer
         private Solution mySolution;
 
         [ImportingConstructor]
-        internal ShellViewModel( IEventAggregator eventAggregator, PersistencyService persistencyService, TraceLoaderService traceLoader,
-            Solution solution )
+        internal ShellViewModel(IEventAggregator eventAggregator, PersistencyService persistencyService, TraceLoaderService traceLoader,
+            Solution solution)
         {
             myPersistencyService = persistencyService;
             mySolution = solution;
 
             traceLoader.UILoadAction = LoadTraces;
 
-            OpenCommand = new DelegateCommand( OnOpen );
-            SaveAsCommand = new DelegateCommand( OnSaveAs, () => Project != null );
-            SaveSnapshotCommand = new DelegateCommand( OnSaveSnapshot, () => Project != null && Project.Presentation != null );
-            CloseCommand = new DelegateCommand( () => Application.Current.Shutdown() );
+            OpenCommand = new DelegateCommand(OnOpen);
+            SaveAsCommand = new DelegateCommand(OnSaveAs, () => Project != null);
+            SaveSnapshotCommand = new DelegateCommand(OnSaveSnapshot, () => Project != null && Project.Presentation != null);
+            CloseCommand = new DelegateCommand(() => Application.Current.Shutdown());
 
             OpenFileRequest = new InteractionRequest<OpenFileDialogNotification>();
             SaveFileRequest = new InteractionRequest<SaveFileDialogNotification>();
 
             ShowLogRequest = new InteractionRequest<INotification>();
-            ShowLogCommand = new DelegateCommand( OnShowLog );
+            ShowLogCommand = new DelegateCommand(OnShowLog);
 
-            eventAggregator.GetEvent<ApplicationReadyEvent>().Subscribe( x => LoadTraceFromCommandLine() );
+            eventAggregator.GetEvent<ApplicationReadyEvent>().Subscribe(x => LoadTraceFromCommandLine());
         }
 
         // currently only one project supported
@@ -64,19 +65,19 @@ namespace Plainion.Flames.Viewer
         public FlamesBrowserViewModel FlamesBrowserViewModel
         {
             get { return myFlamesBrowserViewModel; }
-            set { SetProperty( ref myFlamesBrowserViewModel, value ); }
+            set { SetProperty(ref myFlamesBrowserViewModel, value); }
         }
 
         public bool IsBusy
         {
             get { return myIsBusy; }
-            set { SetProperty( ref myIsBusy, value ); }
+            set { SetProperty(ref myIsBusy, value); }
         }
 
         public IProgressInfo CurrentProgress
         {
             get { return myCurrentProgress; }
-            set { SetProperty( ref myCurrentProgress, value ); }
+            set { SetProperty(ref myCurrentProgress, value); }
         }
 
         public DelegateCommand OpenCommand { get; private set; }
@@ -91,14 +92,14 @@ namespace Plainion.Flames.Viewer
             notification.FilterIndex = 0;
             notification.MultiSelect = true;
 
-            OpenFileRequest.Raise( notification,
+            OpenFileRequest.Raise(notification,
                 n =>
                 {
-                    if( n.Confirmed )
+                    if (n.Confirmed)
                     {
-                        LoadTraces( n.FileNames );
+                        LoadTraces(n.FileNames);
                     }
-                } );
+                });
         }
 
         public DelegateCommand SaveAsCommand { get; private set; }
@@ -112,16 +113,16 @@ namespace Plainion.Flames.Viewer
             notification.Filter = myPersistencyService.SaveTraceFilter;
             notification.FilterIndex = 0;
 
-            SaveFileRequest.Raise( notification, async n =>
+            SaveFileRequest.Raise(notification, async n =>
             {
-                if( n.Confirmed )
+                if (n.Confirmed)
                 {
                     IsBusy = true;
-                    var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
-                    await myPersistencyService.ExportAsync( Project.TraceLog, n.FileName, progress );
+                    var progress = new Progress<IProgressInfo>(pi => CurrentProgress = pi);
+                    await myPersistencyService.ExportAsync(Project.TraceLog, n.FileName, progress);
                     IsBusy = false;
                 }
-            } );
+            });
         }
 
         public DelegateCommand SaveSnapshotCommand { get; private set; }
@@ -133,35 +134,35 @@ namespace Plainion.Flames.Viewer
             notification.Filter = myPersistencyService.SaveTraceFilter;
             notification.FilterIndex = 0;
 
-            SaveFileRequest.Raise( notification, async n =>
+            SaveFileRequest.Raise(notification, async n =>
             {
-                if( n.Confirmed )
+                if (n.Confirmed)
                 {
                     IsBusy = true;
-                    var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
-                    await myPersistencyService.ExportAsync( CreateSnapshot( Project.Presentation ), n.FileName, progress );
+                    var progress = new Progress<IProgressInfo>(pi => CurrentProgress = pi);
+                    await myPersistencyService.ExportAsync(CreateSnapshot(Project.Presentation), n.FileName, progress);
                     IsBusy = false;
                 }
-            } );
+            });
         }
 
-        private ITraceLog CreateSnapshot( FlameSetPresentation presentation )
+        private ITraceLog CreateSnapshot(FlameSetPresentation presentation)
         {
-            var builder = new TraceModelViewBuilder( presentation.Model );
+            var builder = new TraceModelViewBuilder(presentation.Model);
 
-            builder.SetCreationTime( presentation.Model.CreationTime );
-            builder.SetTraceDuration( presentation.Model.TraceDuration );
+            builder.SetCreationTime(presentation.Model.CreationTime);
+            builder.SetTraceDuration(presentation.Model.TraceDuration);
 
             var flames = presentation.Flames
-                .Where( t => t.Visibility == ContentVisibility.Visible );
+                .Where(t => t.Visibility == ContentVisibility.Visible);
 
-            foreach( var flame in flames )
+            foreach (var flame in flames)
             {
-                builder.Add( flame.Model );
+                builder.Add(flame.Model);
 
-                foreach( var events in presentation.Model.AssociatedEvents.GetAllFor<IAssociatedEvents>( flame.Model ) )
+                foreach (var events in presentation.Model.AssociatedEvents.GetAllFor<IAssociatedEvents>(flame.Model))
                 {
-                    builder.Add( events );
+                    builder.Add(events);
                 }
             }
 
@@ -173,43 +174,43 @@ namespace Plainion.Flames.Viewer
         private void LoadTraceFromCommandLine()
         {
             var args = Environment.GetCommandLineArgs();
-            if( args.Length < 2 )
+            if (args.Length < 2)
             {
                 return;
             }
 
-            string traceFile = args[ 1 ];
+            string traceFile = args[1];
 
-            if( File.Exists( traceFile ) )
+            if (File.Exists(traceFile))
             {
-                Application.Current.Dispatcher.BeginInvoke( new Action<string>( f => LoadTraces( f ) ), traceFile );
+                Application.Current.Dispatcher.BeginInvoke(new Action<string>(f => LoadTraces(f)), traceFile);
             }
         }
 
-        private async void LoadTraces( params string[] traceFiles )
+        private async void LoadTraces(params string[] traceFiles)
         {
             var oldProject = Project;
-            if( oldProject != null )
+            if (oldProject != null)
             {
-                myPersistencyService.Unload( oldProject );
-                mySolution.Projects.Remove( oldProject );
+                myPersistencyService.Unload(oldProject);
+                mySolution.Projects.Remove(oldProject);
             }
 
-            myLogger.Info( "Loading {0}", string.Join( ",", traceFiles ) );
+            myLogger.Info("Loading {0}", string.Join(",", traceFiles));
 
             IsBusy = true;
 
-            var project = new Project( traceFiles );
-            var progress = new Progress<IProgressInfo>( pi => CurrentProgress = pi );
+            var project = new Project(traceFiles);
+            var progress = new Progress<IProgressInfo>(pi => CurrentProgress = pi);
 
-            await myPersistencyService.LoadAsync( project, progress );
+            await myPersistencyService.LoadAsync(project, progress);
 
-            mySolution.Projects.Add( project );
+            mySolution.Projects.Add(project);
 
             var factory = new PresentationFactory();
-            project.Presentation = factory.CreateFlameSetPresentation( project.TraceLog );
+            project.Presentation = factory.CreateFlameSetPresentation(project.TraceLog);
 
-            if( myFlamesBrowserViewModel == null )
+            if (myFlamesBrowserViewModel == null)
             {
                 FlamesBrowserViewModel = new FlamesBrowserViewModel();
             }
@@ -218,8 +219,23 @@ namespace Plainion.Flames.Viewer
 
             SaveAsCommand.RaiseCanExecuteChanged();
             SaveSnapshotCommand.RaiseCanExecuteChanged();
+        
+            IsBusy = false;
 
-            Application.Current.Dispatcher.Invoke( new Action( () => IsBusy = false ) );
+            if (project.WasDeserialized)
+            {
+                // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
+                    {
+                        // we loaded user settings from disk which might filter out certain threads or calls.
+                        // lets display settings window to the user so that it is more obvious that everything
+                        // is visible in the flames.
+                        FlamesBrowserViewModel.SpawnSettingsWindowCommand.Execute(null);
+
+                        // TODO: we want to navigate to process-threads-view but currently we cannot access viewmodel :(
+                        FlamesBrowserViewModel.Settings.SelectedTabIndex = 1;
+                    }));
+            }
         }
 
         string IDropable.DataFormat
@@ -227,14 +243,14 @@ namespace Plainion.Flames.Viewer
             get { return DataFormats.FileDrop; }
         }
 
-        bool IDropable.IsDropAllowed( object data, DropLocation location )
+        bool IDropable.IsDropAllowed(object data, DropLocation location)
         {
-            return ( ( string[] )data ).All( f => myPersistencyService.CanLoad( f ) );
+            return ( ( string[] )data ).All(f => myPersistencyService.CanLoad(f));
         }
 
-        void IDropable.Drop( object data, DropLocation location )
+        void IDropable.Drop(object data, DropLocation location)
         {
-            LoadTraces( ( string[] )data );
+            LoadTraces(( string[] )data);
         }
 
         public InteractionRequest<INotification> ShowLogRequest { get; private set; }
@@ -246,7 +262,7 @@ namespace Plainion.Flames.Viewer
             var notification = new Notification();
             notification.Title = "Log";
 
-            ShowLogRequest.Raise( notification, n => { } );
+            ShowLogRequest.Raise(notification, n => { });
         }
     }
 }

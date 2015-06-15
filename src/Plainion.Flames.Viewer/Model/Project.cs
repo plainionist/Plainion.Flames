@@ -30,5 +30,7 @@ namespace Plainion.Flames.Viewer.Model
         {
             get { return TraceLog; }
         }
+
+        public bool WasDeserialized { get; set; }
     }
 }

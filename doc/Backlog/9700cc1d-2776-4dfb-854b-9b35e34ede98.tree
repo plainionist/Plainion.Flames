@@ -6,9 +6,6 @@
       <Caption><![CDATA[Next steps]]></Caption>
       <Node Id="954520dd-58bb-463d-8a88-3e02747a70ab">
         <Caption><![CDATA[Cleanup model]]></Caption>
-        <Node Id="5731f735-3aa3-4de3-a377-5bf3fc2b2766">
-          <Caption><![CDATA["Manip" indicator]]></Caption>
-        </Node>
         <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
           <Caption><![CDATA[repositories]]></Caption>
           <Node Id="f3b1081f-3e28-4ba1-a33d-690ac8e839c7">
