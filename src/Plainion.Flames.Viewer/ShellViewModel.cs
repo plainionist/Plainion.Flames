@@ -207,8 +207,7 @@ namespace Plainion.Flames.Viewer
 
             mySolution.Projects.Add(project);
 
-            var factory = new PresentationFactory();
-            project.Presentation = factory.CreateFlameSetPresentation(project.TraceLog);
+            await myPersistencyService.CreatePresentationAsync(project, progress);
 
             if (myFlamesBrowserViewModel == null)
             {

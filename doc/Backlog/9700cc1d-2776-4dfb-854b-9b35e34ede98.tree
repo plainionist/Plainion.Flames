@@ -18,6 +18,9 @@
             <Caption><![CDATA[selected processes/threads]]></Caption>
           </Node>
         </Node>
+        <Node Id="7198a872-5c92-4a01-9908-d60f32395599">
+          <Caption><![CDATA[cleanup IProjectItemSerializer usage]]></Caption>
+        </Node>
         <Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb">
           <Caption><![CDATA[document design decisions]]></Caption>
         </Node>

@@ -109,6 +109,7 @@
     <Compile Include="Model\Solution.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Services\FriendlyNamesDeserializerLegacy.cs" />
+    <Compile Include="Services\SelectedThreadsProvider.cs" />
     <Compile Include="Services\FriendlyNamesProvider.cs" />
     <Compile Include="Services\LoggingSink.cs" />
     <Compile Include="Services\PersistencyService.cs" />

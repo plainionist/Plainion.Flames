@@ -4,7 +4,8 @@ namespace Plainion.Flames.Infrastructure
 {
     public interface IProjectSerializationContext 
     {
-        Stream CreateEntry( string providerId );
-        Stream GetEntry( string providerId );
+        bool HasEntry(string providerId);
+        Stream CreateEntry(string providerId);
+        Stream GetEntry(string providerId);
     }
 }

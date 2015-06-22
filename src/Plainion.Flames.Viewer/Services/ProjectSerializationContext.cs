@@ -9,19 +9,24 @@ namespace Plainion.Flames.Viewer.Services
     {
         private ZipArchive myArchive;
 
-        public ProjectSerializationContext( ZipArchive archive )
+        public ProjectSerializationContext(ZipArchive archive)
         {
             myArchive = archive;
         }
 
-        public Stream CreateEntry( string providerId )
+        public Stream CreateEntry(string providerId)
         {
-            return myArchive.CreateEntry( providerId, CompressionLevel.Fastest ).Open();
+            return myArchive.CreateEntry(providerId, CompressionLevel.Fastest).Open();
         }
 
-        public Stream GetEntry( string providerId )
+        public Stream GetEntry(string providerId)
         {
-            return myArchive.Entries.Single( e => e.Name == providerId ).Open();
+            return myArchive.Entries.Single(e => e.Name == providerId).Open();
+        }
+
+        public bool HasEntry(string providerId)
+        {
+            return myArchive.Entries.Any(e => e.Name == providerId);
         }
     }
 }
