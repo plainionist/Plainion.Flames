@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="f1dc96d9-1873-4621-be8b-38adf49ce715" Created="635624672134843917" LastModified="635662549532500957">
-  <Caption><![CDATA[selected processes/threads]]></Caption>
-  <Content><![CDATA[the processes and threads which were selected by the user]]></Content>
-</Node>

@@ -16,14 +16,14 @@ using Plainion.Progress;
 namespace Plainion.Flames.Viewer.Services
 {
     [Export]
-    class PersistencyService
+    class LoaderSerivce
     {
         private Solution mySolution;
         private string myOpenTraceFilter;
         private string mySaveTraceFilter;
 
         [ImportingConstructor]
-        public PersistencyService(IEventAggregator eventAggregator, Solution solution)
+        public LoaderSerivce(IEventAggregator eventAggregator, Solution solution)
         {
             mySolution = solution;
 
@@ -105,6 +105,7 @@ namespace Plainion.Flames.Viewer.Services
             {
                 builder.ReaderContextHints.Add(item);
             }
+            project.Items.Clear();
 
             foreach (var traceFile in project.TraceFiles)
             {

@@ -8,14 +8,8 @@
         <Caption><![CDATA[Cleanup model]]></Caption>
         <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
           <Caption><![CDATA[repositories]]></Caption>
-          <Node Id="f3b1081f-3e28-4ba1-a33d-690ac8e839c7">
-            <Caption><![CDATA[ETW preselection]]></Caption>
-          </Node>
           <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">
             <Caption><![CDATA[filters]]></Caption>
-          </Node>
-          <Node Id="f1dc96d9-1873-4621-be8b-38adf49ce715">
-            <Caption><![CDATA[selected processes/threads]]></Caption>
           </Node>
         </Node>
         <Node Id="7198a872-5c92-4a01-9908-d60f32395599">

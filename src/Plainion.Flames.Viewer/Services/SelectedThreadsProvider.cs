@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
 using Plainion.Flames.Infrastructure;
-using Plainion.Flames.Model;
 
 namespace Plainion.Flames.Viewer.Services
 {
     /// <summary>
     /// Adds persistancy of selected processes and threads to the project
     /// </summary>
-    [Export]
     class SelectedThreadsProvider : ProjectItemProviderBase
     {
         private const string ProviderId = "{6E3426EF-676D-48B1-AA5D-E9661A5C6CCD}.SelectedThreads";

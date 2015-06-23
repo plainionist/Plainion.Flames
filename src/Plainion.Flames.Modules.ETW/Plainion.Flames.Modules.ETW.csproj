@@ -74,6 +74,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -94,6 +95,7 @@
     <Compile Include="Builders\ReadyThreadBookmarksBuilder.cs" />
     <Compile Include="Builders\CSwitchBookmarksBuilder.cs" />
     <Compile Include="Builders\CallBuilder.cs" />
+    <Compile Include="LoadSettings.cs" />
     <Compile Include="FlamesSettingsView.xaml.cs">
       <DependentUpon>FlamesSettingsView.xaml</DependentUpon>
     </Compile>
@@ -106,6 +108,7 @@
     <Compile Include="OpenTraceViewModel.cs" />
     <Compile Include="QueueTextWriter.cs" />
     <Compile Include="Builders\BuilderUtils.cs" />
+    <Compile Include="LoadSettingsProvider.cs" />
     <Compile Include="TraceFile.cs" />
     <Compile Include="Builders\ThreadCallBuilder.cs" />
     <Compile Include="TraceFileHandle.cs" />

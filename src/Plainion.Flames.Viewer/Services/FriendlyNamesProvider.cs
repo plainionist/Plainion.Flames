@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
 using Plainion.Flames.Infrastructure;

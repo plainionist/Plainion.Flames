@@ -27,17 +27,17 @@ namespace Plainion.Flames.Viewer
     {
         private static readonly ILogger myLogger = LoggerFactory.GetLogger(typeof(ShellViewModel));
 
-        private PersistencyService myPersistencyService;
+        private LoaderSerivce myLoaderService;
         private FlamesBrowserViewModel myFlamesBrowserViewModel;
         private bool myIsBusy;
         private IProgressInfo myCurrentProgress;
         private Solution mySolution;
 
         [ImportingConstructor]
-        internal ShellViewModel(IEventAggregator eventAggregator, PersistencyService persistencyService, TraceLoaderService traceLoader,
+        internal ShellViewModel(IEventAggregator eventAggregator, LoaderSerivce loaderService, TraceLoaderService traceLoader,
             Solution solution)
         {
-            myPersistencyService = persistencyService;
+            myLoaderService = loaderService;
             mySolution = solution;
 
             traceLoader.UILoadAction = LoadTraces;
@@ -88,7 +88,7 @@ namespace Plainion.Flames.Viewer
         {
             var notification = new OpenFileDialogNotification();
             notification.RestoreDirectory = true;
-            notification.Filter = myPersistencyService.OpenTraceFilter;
+            notification.Filter = myLoaderService.OpenTraceFilter;
             notification.FilterIndex = 0;
             notification.MultiSelect = true;
 
@@ -110,7 +110,7 @@ namespace Plainion.Flames.Viewer
         {
             var notification = new SaveFileDialogNotification();
             notification.RestoreDirectory = true;
-            notification.Filter = myPersistencyService.SaveTraceFilter;
+            notification.Filter = myLoaderService.SaveTraceFilter;
             notification.FilterIndex = 0;
 
             SaveFileRequest.Raise(notification, async n =>
@@ -119,7 +119,7 @@ namespace Plainion.Flames.Viewer
                 {
                     IsBusy = true;
                     var progress = new Progress<IProgressInfo>(pi => CurrentProgress = pi);
-                    await myPersistencyService.ExportAsync(Project.TraceLog, n.FileName, progress);
+                    await myLoaderService.ExportAsync(Project.TraceLog, n.FileName, progress);
                     IsBusy = false;
                 }
             });
@@ -131,7 +131,7 @@ namespace Plainion.Flames.Viewer
         {
             var notification = new SaveFileDialogNotification();
             notification.RestoreDirectory = true;
-            notification.Filter = myPersistencyService.SaveTraceFilter;
+            notification.Filter = myLoaderService.SaveTraceFilter;
             notification.FilterIndex = 0;
 
             SaveFileRequest.Raise(notification, async n =>
@@ -140,7 +140,7 @@ namespace Plainion.Flames.Viewer
                 {
                     IsBusy = true;
                     var progress = new Progress<IProgressInfo>(pi => CurrentProgress = pi);
-                    await myPersistencyService.ExportAsync(CreateSnapshot(Project.Presentation), n.FileName, progress);
+                    await myLoaderService.ExportAsync(CreateSnapshot(Project.Presentation), n.FileName, progress);
                     IsBusy = false;
                 }
             });
@@ -192,7 +192,7 @@ namespace Plainion.Flames.Viewer
             var oldProject = Project;
             if (oldProject != null)
             {
-                myPersistencyService.Unload(oldProject);
+                myLoaderService.Unload(oldProject);
                 mySolution.Projects.Remove(oldProject);
             }
 
@@ -203,11 +203,11 @@ namespace Plainion.Flames.Viewer
             var project = new Project(traceFiles);
             var progress = new Progress<IProgressInfo>(pi => CurrentProgress = pi);
 
-            await myPersistencyService.LoadAsync(project, progress);
+            await myLoaderService.LoadAsync(project, progress);
 
             mySolution.Projects.Add(project);
 
-            await myPersistencyService.CreatePresentationAsync(project, progress);
+            await myLoaderService.CreatePresentationAsync(project, progress);
 
             if (myFlamesBrowserViewModel == null)
             {
@@ -244,7 +244,7 @@ namespace Plainion.Flames.Viewer
 
         bool IDropable.IsDropAllowed(object data, DropLocation location)
         {
-            return ( ( string[] )data ).All(f => myPersistencyService.CanLoad(f));
+            return ( ( string[] )data ).All(f => myLoaderService.CanLoad(f));
         }
 
         void IDropable.Drop(object data, DropLocation location)
