@@ -8,7 +8,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
     class CallFilterViewModel : BindableBase
     {
         private FlameSetPresentation myPresentation;
-        private CallFilterModule myModules;
+        private CallFilterModule myModule;
 
         public CallFilterViewModel()
         {
@@ -31,15 +31,15 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             {
                 if( SetProperty( ref myPresentation, value ) )
                 {
-                    if( myModules != null )
+                    if( myModule != null )
                     {
-                        myModules.Dispose();
+                        myModule.Dispose();
                     }
 
-                    myModules = new CallFilterModule( myPresentation );
+                    myModule = new CallFilterModule( myPresentation );
 
-                    NameFilterViewModel.Module = myModules;
-                    DurationFilterViewModel.Module = myModules;
+                    NameFilterViewModel.Module = myModule;
+                    DurationFilterViewModel.Module = myModule;
                 }
             }
         }

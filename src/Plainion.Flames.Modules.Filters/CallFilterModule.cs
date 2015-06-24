@@ -2,16 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.Linq;
 using Plainion.Flames.Modules.Filters.Model;
 using Plainion.Flames.Presentation;
-using Microsoft.Practices.Prism.Mvvm;
 
 namespace Plainion.Flames.Modules.Filters
 {
-    [Export]
-    class CallFilterModule : BindableBase, IDisposable
+    class CallFilterModule : IDisposable
     {
         private const uint FilterMaskBit = 1;
         private const uint DurationMaskBit = 2;
