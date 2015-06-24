@@ -34,8 +34,7 @@ namespace Plainion.Flames.Viewer
         private Solution mySolution;
 
         [ImportingConstructor]
-        internal ShellViewModel(IEventAggregator eventAggregator, LoaderSerivce loaderService, TraceLoaderService traceLoader,
-            Solution solution)
+        internal ShellViewModel(IEventAggregator eventAggregator, LoaderSerivce loaderService, TraceLoaderService traceLoader, Solution solution)
         {
             myLoaderService = loaderService;
             mySolution = solution;
@@ -218,7 +217,7 @@ namespace Plainion.Flames.Viewer
 
             SaveAsCommand.RaiseCanExecuteChanged();
             SaveSnapshotCommand.RaiseCanExecuteChanged();
-        
+
             IsBusy = false;
 
             if (project.WasDeserialized)
@@ -244,12 +243,12 @@ namespace Plainion.Flames.Viewer
 
         bool IDropable.IsDropAllowed(object data, DropLocation location)
         {
-            return ( ( string[] )data ).All(f => myLoaderService.CanLoad(f));
+            return ((string[])data).All(f => myLoaderService.CanLoad(f));
         }
 
         void IDropable.Drop(object data, DropLocation location)
         {
-            LoadTraces(( string[] )data);
+            LoadTraces((string[])data);
         }
 
         public InteractionRequest<INotification> ShowLogRequest { get; private set; }

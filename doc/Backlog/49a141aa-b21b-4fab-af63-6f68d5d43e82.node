@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82" Created="635624672444454875" LastModified="635662549479217910">
+<Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82" Created="635624672444454875" LastModified="635707345033348912">
   <Caption><![CDATA[filters]]></Caption>
   <Content><![CDATA[- name filters
 - and duration filters
+
+we need to solve CallFilterModule being part of model and InjectPresentation first
+
+http://www.codeproject.com/Articles/640573/ViewModel-st-Child-Container-PRISM-Navigation
 ]]></Content>
 </Node>

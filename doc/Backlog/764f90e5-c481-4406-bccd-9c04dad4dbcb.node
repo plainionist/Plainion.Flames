@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb" Created="635667161177596029" LastModified="635688556163889147" Origin="ef725bc7-7ab8-4cfc-ad08-825473ede168">
+<Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb" Created="635667161177596029" LastModified="635707337286404295" Origin="ef725bc7-7ab8-4cfc-ad08-825473ede168">
   <Caption><![CDATA[document design decisions]]></Caption>
   <Content><![CDATA[- single root entity:
 - the solution can have multiple projects
@@ -9,6 +9,8 @@
 - assciated data is added to the project in a generic way (extensions pattern)
 - we provide one generic mechanism to store and load such repositories
 - all additional data (from the repositories) will be stored in one file 
+- only one presentation per project - no usecase seen to support several 
+  presentations
 
 - services are shared across projects and my not have any project specific state
 
