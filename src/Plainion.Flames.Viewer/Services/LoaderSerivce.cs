@@ -7,8 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Plainion.Flames.Infrastructure;
+using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Model;
-using Plainion.Flames.Presentation;
 using Plainion.Flames.Viewer.Model;
 using Plainion.Prism.Events;
 using Plainion.Progress;
@@ -16,19 +16,52 @@ using Plainion.Progress;
 namespace Plainion.Flames.Viewer.Services
 {
     [Export]
-    class LoaderSerivce
+    class LoaderSerivce : IProjectService
     {
-        private Solution mySolution;
+        private Project myProject;
         private string myOpenTraceFilter;
         private string mySaveTraceFilter;
 
         [ImportingConstructor]
-        public LoaderSerivce(IEventAggregator eventAggregator, Solution solution)
+        public LoaderSerivce(IEventAggregator eventAggregator)
         {
-            mySolution = solution;
-
-            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe(x => UnloadSolution());
+            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe(x => Unload(Project));
         }
+
+        IProject IProjectService.Project { get { return myProject; } }
+
+        public Project Project
+        {
+            get { return myProject; }
+            private set
+            {
+                if (myProject == value)
+                {
+                    return;
+                }
+
+                if (myProject != null)
+                {
+                    if (ProjectChanging != null)
+                    {
+                        ProjectChanging(this, EventArgs.Empty);
+                    }
+
+                    Unload(myProject);
+                }
+
+                myProject = value;
+
+                if (ProjectChanged != null)
+                {
+                    ProjectChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public event EventHandler ProjectChanging;
+
+        public event EventHandler ProjectChanged;
 
         [ImportMany]
         public IEnumerable<ITraceReader> TraceReaders { get; private set; }
@@ -70,8 +103,10 @@ namespace Plainion.Flames.Viewer.Services
         }
 
         // TODO: what would be the contract if nothing could be loaded?
-        public async Task LoadAsync(Project project, IProgress<IProgressInfo> progress)
+        public async Task LoadAsync(IEnumerable<string> traceFiles, IProgress<IProgressInfo> progress)
         {
+            var project = new Project(traceFiles);
+
             var file = GetProjectFile(project);
 
             if (File.Exists(file))
@@ -94,6 +129,9 @@ namespace Plainion.Flames.Viewer.Services
 
         private async Task LoadTraceLogAsync(Project project, IProjectSerializationContext context, IProgress<IProgressInfo> progress)
         {
+            // set it here to unload old project first
+            Project = project;
+
             foreach (var provider in ProjectItemProviders)
             {
                 provider.OnTraceLogLoading(project, context);
@@ -162,15 +200,7 @@ namespace Plainion.Flames.Viewer.Services
                 });
         }
 
-        private void UnloadSolution()
-        {
-            foreach (var project in mySolution.Projects)
-            {
-                Unload(project);
-            }
-        }
-
-        public void Unload(Project project)
+        private void Unload(Project project)
         {
             var file = GetProjectFile(project);
 
@@ -187,7 +217,7 @@ namespace Plainion.Flames.Viewer.Services
 
                     foreach (var provider in ProjectItemProviders)
                     {
-                        provider.OnProjectUnloading(project, context);
+                        provider.OnProjectUnloading(Project, context);
                     }
 
                     project.TraceLog.Dispose();
@@ -215,18 +245,20 @@ namespace Plainion.Flames.Viewer.Services
             TraceLoader.LoadCompleted(traceFiles);
         }
 
-        public Task CreatePresentationAsync(Project project, IProgress<IProgressInfo> progress)
+        public Task CreatePresentationAsync(IProgress<IProgressInfo> progress)
         {
+            Contract.Invariant(Project != null, "No project exists");
+
             return Task.Run(() =>
                 {
                     progress.Report(new UndefinedProgress("Creating presentation"));
 
                     var factory = new PresentationFactory();
-                    project.Presentation = factory.CreateFlameSetPresentation(project.TraceLog);
+                    Project.Presentation = factory.CreateFlameSetPresentation(Project.TraceLog);
 
                     foreach (var provider in ProjectItemProviders)
                     {
-                        provider.OnPresentationCreated(project);
+                        provider.OnPresentationCreated(Project);
                     }
                 });
         }

@@ -12,8 +12,10 @@ namespace Plainion.Flames.Viewer.Model
     /// </summary>
     class Project : IProject
     {
-        public Project( IEnumerable<string> traceFiles )
+        public Project(IEnumerable<string> traceFiles)
         {
+            Contract.RequiresNotNullNotEmpty(traceFiles, "traceFiles");
+
             TraceFiles = traceFiles.ToList();
             Items = new List<object>();
         }

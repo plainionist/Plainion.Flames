@@ -106,7 +106,6 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="CoreModule.cs" />
     <Compile Include="Model\Project.cs" />
-    <Compile Include="Model\Solution.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Services\FriendlyNamesDeserializerLegacy.cs" />
     <Compile Include="Services\SelectedThreadsProvider.cs" />

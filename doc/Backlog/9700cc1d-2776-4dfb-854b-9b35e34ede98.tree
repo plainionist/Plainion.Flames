@@ -6,6 +6,12 @@
       <Caption><![CDATA[Next steps]]></Caption>
       <Node Id="954520dd-58bb-463d-8a88-3e02747a70ab">
         <Caption><![CDATA[Cleanup model]]></Caption>
+        <Node Id="7a821d1c-11c0-414b-af16-6f36ae5de1aa">
+          <Caption><![CDATA[do we have a memory leak]]></Caption>
+        </Node>
+        <Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e">
+          <Caption><![CDATA[go for single project]]></Caption>
+        </Node>
         <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
           <Caption><![CDATA[repositories]]></Caption>
           <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">

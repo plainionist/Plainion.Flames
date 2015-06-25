@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Plainion.Flames.Model;
 
 namespace Plainion.Flames.Modules.BFlames
@@ -12,7 +7,8 @@ namespace Plainion.Flames.Modules.BFlames
     {
         public bool CanSerialize( string eventsTyp )
         {
-            return eventsTyp == "Plainion.Flames.Model.Bookmarks";
+            return eventsTyp == "Plainion.Flames.Model.Bookmarks" ||
+                eventsTyp == "Blade.Flames.Model.Bookmarks";
         }
 
         public void Write( BinaryWriter writer, IAssociatedEvents events )

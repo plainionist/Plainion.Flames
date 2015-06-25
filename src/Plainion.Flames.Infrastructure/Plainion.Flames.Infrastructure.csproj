@@ -70,6 +70,7 @@
     <Compile Include="IProjectSerializationContext.cs" />
     <Compile Include="ProjectItemProviderBase.cs" />
     <Compile Include="RegionNames.cs" />
+    <Compile Include="Services\IProjectService.cs" />
     <Compile Include="Services\ITraceLoaderService.cs" />
   </ItemGroup>
   <ItemGroup>
