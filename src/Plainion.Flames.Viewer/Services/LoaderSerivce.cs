@@ -109,29 +109,29 @@ namespace Plainion.Flames.Viewer.Services
 
             var file = GetProjectFile(project);
 
+            project.WasDeserialized = File.Exists(file);
+
+            // set it here to unload old project first
+            Project = project;
+
             if (File.Exists(file))
             {
                 using (var stream = new FileStream(file, FileMode.Open))
                 {
                     using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
                     {
-                        project.WasDeserialized = true;
                         await LoadTraceLogAsync(project, new ProjectSerializationContext(archive), progress);
                     }
                 }
             }
             else
             {
-                project.WasDeserialized = false;
                 await LoadTraceLogAsync(project, null, progress);
             }
         }
 
         private async Task LoadTraceLogAsync(Project project, IProjectSerializationContext context, IProgress<IProgressInfo> progress)
         {
-            // set it here to unload old project first
-            Project = project;
-
             foreach (var provider in ProjectItemProviders)
             {
                 provider.OnTraceLogLoading(project, context);

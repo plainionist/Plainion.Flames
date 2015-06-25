@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e" Created="635708196390226134" LastModified="635708196594306540">
-  <Caption><![CDATA[go for single project]]></Caption>
-  <Content><![CDATA[- remove solution
-- IProjectService
-- documents?]]></Content>
+<Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e" Created="635708196390226134" LastModified="635708268977484134">
+  <Caption><![CDATA[data lifecylce cleanup]]></Caption>
+  <Content><![CDATA[- every VM can import IProjectSerivce to get notified about project changes
+- presentation is available from IProject
+- remove hack InjectPresentation
+- associated data will be moved into documents (on Project)]]></Content>
 </Node>

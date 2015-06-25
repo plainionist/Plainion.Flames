@@ -188,7 +188,7 @@ namespace Plainion.Flames.Viewer
 
             await myLoaderService.LoadAsync(traceFiles, progress);
 
-            await myLoaderService.CreatePresentationAsync( progress);
+            await myLoaderService.CreatePresentationAsync(progress);
 
             if (myFlamesBrowserViewModel == null)
             {

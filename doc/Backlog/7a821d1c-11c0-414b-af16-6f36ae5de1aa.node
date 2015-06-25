@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="7a821d1c-11c0-414b-af16-6f36ae5de1aa" Created="635708196648241933" LastModified="635708196841081215">
+<Node Id="7a821d1c-11c0-414b-af16-6f36ae5de1aa" Created="635708196648241933" LastModified="635708268028619257">
   <Caption><![CDATA[do we have a memory leak]]></Caption>
-  <Content><![CDATA[mem just increases when loading seccond project]]></Content>
+  <Content><![CDATA[mem just increases when loading seccond project
+
+==> recheck after model lifecylce is cleaned up]]></Content>
 </Node>

@@ -30,28 +30,28 @@ namespace Plainion.Flames.Viewer.ViewModels
             get { return myPresentation; }
             set
             {
-                if( SetProperty( ref myPresentation, value ) )
+                if (SetProperty(ref myPresentation, value))
                 {
                     TracesTreeSource.Processes = myPresentation.Flames
-                        .GroupBy( x => x.Model.Process )
-                        .OrderBy( x => x.Key.Name )
-                        .Select( x => new SelectableProcessAdapter( x.Key, x.AsEnumerable() ) )
+                        .GroupBy(x => x.Model.Process)
+                        .OrderBy(x => x.Key.Name)
+                        .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()))
                         .ToList();
 
                     ProcessCount = myPresentation.Flames
-                        .Select( t => t.ProcessId )
+                        .Select(t => t.ProcessId)
                         .Distinct()
                         .Count();
 
                     ThreadCount = myPresentation.Flames.Count;
 
                     CallCount = myPresentation.Flames
-                        .SelectMany( t => t.Activities )
+                        .SelectMany(t => t.Activities)
                         .Count();
 
-                    if( mySelectedTabContent != null )
+                    if (mySelectedTabContent != null)
                     {
-                        InjectPresentation( mySelectedTabContent );
+                        InjectPresentation(mySelectedTabContent);
                     }
                 }
             }
@@ -61,32 +61,32 @@ namespace Plainion.Flames.Viewer.ViewModels
         {
             get
             {
-                return myPresentation == null ? TimeSpan.MinValue : TimeSpan.FromMilliseconds( myPresentation.Model.TraceDuration / 1000 );
+                return myPresentation == null ? TimeSpan.MinValue : TimeSpan.FromMilliseconds(myPresentation.Model.TraceDuration / 1000);
             }
         }
 
         public int ProcessCount
         {
             get { return myProcessCount; }
-            set { SetProperty( ref myProcessCount, value ); }
+            set { SetProperty(ref myProcessCount, value); }
         }
 
         public int ThreadCount
         {
             get { return myThreadCount; }
-            set { SetProperty( ref myThreadCount, value ); }
+            set { SetProperty(ref myThreadCount, value); }
         }
 
         public int CallCount
         {
             get { return myCallCount; }
-            set { SetProperty( ref myCallCount, value ); }
+            set { SetProperty(ref myCallCount, value); }
         }
 
         public int SelectedTabIndex
         {
             get { return mySelectedTabIndex; }
-            set { SetProperty( ref mySelectedTabIndex, value ); }
+            set { SetProperty(ref mySelectedTabIndex, value); }
         }
 
         // TODO: workaround to inject presentations
@@ -96,26 +96,26 @@ namespace Plainion.Flames.Viewer.ViewModels
             set
             {
                 var frameworkElement = value as FrameworkElement;
-                if( frameworkElement == null || frameworkElement.DataContext == null )
+                if (frameworkElement == null || frameworkElement.DataContext == null)
                 {
                     return;
                 }
 
                 mySelectedTabContent = frameworkElement.DataContext;
 
-                InjectPresentation( mySelectedTabContent );
+                InjectPresentation(mySelectedTabContent);
             }
         }
 
-        private void InjectPresentation( object dataContext )
+        private void InjectPresentation(object dataContext)
         {
-            var presentationProperty = mySelectedTabContent.GetType().GetProperty( "Presentation" );
-            if( presentationProperty == null )
+            var presentationProperty = mySelectedTabContent.GetType().GetProperty("Presentation");
+            if (presentationProperty == null)
             {
                 return;
             }
 
-            presentationProperty.SetValue( mySelectedTabContent, myPresentation );
+            presentationProperty.SetValue(mySelectedTabContent, myPresentation);
         }
     }
 }
