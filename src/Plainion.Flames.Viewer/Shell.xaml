@@ -12,8 +12,7 @@
         Title="Plainion Flames Viewer" 
         WindowStartupLocation="CenterScreen"
         Background="AliceBlue"
-        Height="800" 
-        Width="1200">
+        Height="800" Width="1200">
     <i:Interaction.Triggers>
         <prism:InteractionRequestTrigger SourceObject="{Binding OpenFileRequest, Mode=OneWay}">
             <pn:PopupFileDialogAction FileDialogType="{x:Type win32:OpenFileDialog}"/>
@@ -34,12 +33,6 @@
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
         <KeyBinding Key="F4" Modifiers="Alt" Command="{Binding CloseCommand}"/>
     </Window.InputBindings>
-
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type vm:FlamesBrowserViewModel}">
-            <v:FlamesBrowser DataContext="{Binding}"/>
-        </DataTemplate>
-    </Window.Resources>
 
     <pn:AdornedControl IsAdornerVisible="{Binding IsBusy}">
         <pn:AdornedControl.AdornerContent>
@@ -62,7 +55,7 @@
                         HorizontalAlignment="Right" Margin="3">Log</Button>
             </Grid>
             <Grid>
-                <ContentPresenter Content="{Binding FlamesBrowserViewModel}"/>
+                <ContentControl prism:RegionManager.RegionName="{x:Static r:RegionNames.BrowserView}"/>
             </Grid>
         </DockPanel>
     </pn:AdornedControl>

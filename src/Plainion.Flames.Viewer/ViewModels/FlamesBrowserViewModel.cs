@@ -6,6 +6,11 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Regions;
+using Plainion.Flames.Infrastructure.Services;
+using System;
+using System.Windows;
+using System.Windows.Threading;
+using System.ComponentModel;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
@@ -15,10 +20,13 @@ namespace Plainion.Flames.Viewer.ViewModels
     {
         private FlameSetPresentation myPresentation;
         private bool myFlamesVisible;
+        private IProjectService myProjectService;
 
         [ImportingConstructor]
-        internal FlamesBrowserViewModel()
+        internal FlamesBrowserViewModel( IProjectService projectService )
         {
+            myProjectService = projectService;
+            myProjectService.ProjectChanged += OnProjectChanged;
             myFlamesVisible = true;
 
             Settings = new FlamesSettingsViewModel();
@@ -34,6 +42,34 @@ namespace Plainion.Flames.Viewer.ViewModels
             ToggleViewCommand = new DelegateCommand( () => FlamesVisible = !FlamesVisible );
             SpawnSettingsWindowCommand = new DelegateCommand( OnSpawnSettingsWindow );
             SpawnSettingsRequest = new InteractionRequest<Notification>();
+        }
+
+        private void OnProjectChanged( object sender, EventArgs e )
+        {
+            Presentation = myProjectService.Project.Presentation;
+
+            PropertyChangedEventManager.AddHandler( myProjectService.Project, OnPresentationChanged,
+                PropertySupport.ExtractPropertyName( () => myProjectService.Project.Presentation ) );
+
+            if( myProjectService.Project.WasDeserialized )
+            {
+                // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
+                Application.Current.Dispatcher.BeginInvoke( DispatcherPriority.ApplicationIdle, new Action( () =>
+                {
+                    // we loaded user settings from disk which might filter out certain threads or calls.
+                    // lets display settings window to the user so that it is more obvious that everything
+                    // is visible in the flames.
+                    SpawnSettingsWindowCommand.Execute( null );
+
+                    // TODO: we want to navigate to process-threads-view but currently we cannot access viewmodel :(
+                    Settings.SelectedTabIndex = 1;
+                } ) );
+            }
+        }
+
+        private void OnPresentationChanged( object sender, PropertyChangedEventArgs e )
+        {
+            Presentation = myProjectService.Project.Presentation;
         }
 
         public FlamesSettingsViewModel Settings { get; private set; }

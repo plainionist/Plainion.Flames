@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Infrastructure
 {
-    public interface IProject
+    public interface IProject : INotifyPropertyChanged
     {
         IReadOnlyCollection<string> TraceFiles { get; }
 
@@ -13,5 +14,7 @@ namespace Plainion.Flames.Infrastructure
         FlameSetPresentation Presentation { get; }
 
         IList<object> Items { get; }
+
+        bool WasDeserialized { get; }
     }
 }

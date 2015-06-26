@@ -70,6 +70,18 @@
     </i:Interaction.Behaviors>
 
     <Grid>
+        <Grid.Visibility>
+            <Binding Path="Presentation" Mode="OneWay">
+                <Binding.Converter>
+                    <pn:ConverterChain>
+                        <pn:IsEmptyConverter/>
+                        <pn:NotConverter/>
+                        <pn:BoolToVisibilityConverter/>
+                    </pn:ConverterChain>
+                </Binding.Converter>
+            </Binding>
+        </Grid.Visibility>
+
         <Grid Visibility="{Binding FlamesVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <bf:FlameSetView Presentation="{Binding Presentation}"
                              CallToolTip="{StaticResource DefaultCallToolTip}"

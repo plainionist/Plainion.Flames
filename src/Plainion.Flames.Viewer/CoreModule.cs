@@ -15,6 +15,7 @@ namespace Plainion.Flames.Viewer
         public void Initialize()
         {
             RegionManager.RegisterViewWithRegion( RegionNames.LogView, typeof( LogView ) );
+            RegionManager.RegisterViewWithRegion( RegionNames.BrowserView, typeof( FlamesBrowser ) );
             RegionManager.RegisterViewWithRegion( Plainion.Flames.Infrastructure.RegionNames.FlamesSettings, typeof( BookmarksView ) );
         }
     }

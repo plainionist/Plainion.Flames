@@ -28,7 +28,6 @@ namespace Plainion.Flames.Viewer
         private static readonly ILogger myLogger = LoggerFactory.GetLogger(typeof(ShellViewModel));
 
         private LoaderSerivce myLoaderService;
-        private FlamesBrowserViewModel myFlamesBrowserViewModel;
         private bool myIsBusy;
         private IProgressInfo myCurrentProgress;
 
@@ -51,12 +50,6 @@ namespace Plainion.Flames.Viewer
             ShowLogCommand = new DelegateCommand(OnShowLog);
 
             eventAggregator.GetEvent<ApplicationReadyEvent>().Subscribe(x => LoadTraceFromCommandLine());
-        }
-
-        public FlamesBrowserViewModel FlamesBrowserViewModel
-        {
-            get { return myFlamesBrowserViewModel; }
-            set { SetProperty(ref myFlamesBrowserViewModel, value); }
         }
 
         public bool IsBusy
@@ -190,32 +183,10 @@ namespace Plainion.Flames.Viewer
 
             await myLoaderService.CreatePresentationAsync(progress);
 
-            if (myFlamesBrowserViewModel == null)
-            {
-                FlamesBrowserViewModel = new FlamesBrowserViewModel();
-            }
-
-            FlamesBrowserViewModel.Presentation = myLoaderService.Project.Presentation;
-
             SaveAsCommand.RaiseCanExecuteChanged();
             SaveSnapshotCommand.RaiseCanExecuteChanged();
 
             IsBusy = false;
-
-            if (myLoaderService.Project.WasDeserialized)
-            {
-                // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
-                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
-                    {
-                        // we loaded user settings from disk which might filter out certain threads or calls.
-                        // lets display settings window to the user so that it is more obvious that everything
-                        // is visible in the flames.
-                        FlamesBrowserViewModel.SpawnSettingsWindowCommand.Execute(null);
-
-                        // TODO: we want to navigate to process-threads-view but currently we cannot access viewmodel :(
-                        FlamesBrowserViewModel.Settings.SelectedTabIndex = 1;
-                    }));
-            }
         }
 
         string IDropable.DataFormat

@@ -116,12 +116,12 @@ namespace Plainion.Flames.Controls
 
         private void myListView_Loaded( object sender, RoutedEventArgs e )
         {
-            var scrollViewer = myListView.GetVisualChild<ScrollViewer>();
-            var scrollBar = scrollViewer.Template.FindName( "PART_VerticalScrollBar", scrollViewer ) as ScrollBar;
-            scrollBar.ValueChanged += delegate
-            {
-                SetOnScreen();
-            };
+            //var scrollViewer = myListView.GetVisualChild<ScrollViewer>();
+            //var scrollBar = scrollViewer.Template.FindName( "PART_VerticalScrollBar", scrollViewer ) as ScrollBar;
+            //scrollBar.ValueChanged += delegate
+            //{
+            //    SetOnScreen();
+            //};
         }
 
         private void SetOnScreen()
