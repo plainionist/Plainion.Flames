@@ -46,7 +46,10 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         private void OnProjectChanged( object sender, EventArgs e )
         {
-            Presentation = myProjectService.Project.Presentation;
+            if( myProjectService.Project.Presentation != null )
+            {
+                Presentation = myProjectService.Project.Presentation;
+            }
 
             PropertyChangedEventManager.AddHandler( myProjectService.Project, OnPresentationChanged,
                 PropertySupport.ExtractPropertyName( () => myProjectService.Project.Presentation ) );
