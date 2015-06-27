@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Diagnostics;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
-using Plainion.Flames.Infrastructure.Controls;
-using Plainion.Flames.Presentation;
 using Microsoft.Practices.Prism.Mvvm;
+using Plainion.Flames.Infrastructure.Controls;
+using Plainion.Flames.Infrastructure.Services;
+using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
+    [Export]
     class FlamesSettingsViewModel : BindableBase
     {
         private FlameSetPresentation myPresentation;
@@ -17,18 +18,39 @@ namespace Plainion.Flames.Viewer.ViewModels
         private int myThreadCount;
         private int myCallCount;
         private int mySelectedTabIndex;
+        private IProjectService myProjectService;
 
-        public FlamesSettingsViewModel()
+        [ImportingConstructor]
+        internal FlamesSettingsViewModel( IProjectService projectService )
         {
+            myProjectService = projectService;
+            myProjectService.ProjectChanged += OnProjectChanged;
+
             TracesTreeSource = new TracesTree();
         }
 
+        private void OnProjectChanged( object sender, EventArgs e )
+        {
+            if( myProjectService.Project.Presentation != null )
+            {
+                Presentation = myProjectService.Project.Presentation;
+            }
+
+            PropertyChangedEventManager.AddHandler( myProjectService.Project, OnPresentationChanged,
+                PropertySupport.ExtractPropertyName( () => myProjectService.Project.Presentation ) );
+        }
+
+        private void OnPresentationChanged( object sender, PropertyChangedEventArgs e )
+        {
+            Presentation = myProjectService.Project.Presentation;
+        }
+        
         public TracesTree TracesTreeSource { get; private set; }
 
         public FlameSetPresentation Presentation
         {
             get { return myPresentation; }
-            set
+            private set
             {
                 if (SetProperty(ref myPresentation, value))
                 {
@@ -48,6 +70,8 @@ namespace Plainion.Flames.Viewer.ViewModels
                     CallCount = myPresentation.Flames
                         .SelectMany(t => t.Activities)
                         .Count();
+
+                    OnPropertyChanged( () => TraceDuration );
 
                     if (mySelectedTabContent != null)
                     {

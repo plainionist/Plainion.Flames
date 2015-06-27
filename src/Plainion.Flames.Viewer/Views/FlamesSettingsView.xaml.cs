@@ -1,14 +1,18 @@
-﻿using System;
+﻿using System.ComponentModel.Composition;
 using System.Windows.Controls;
-using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
+using Plainion.Flames.Viewer.ViewModels;
 
 namespace Plainion.Flames.Viewer.Views
 {
+    [Export, PartCreationPolicy( CreationPolicy.NonShared )]
     public partial class FlamesSettingsView : UserControl
     {
-        public FlamesSettingsView()
+        [ImportingConstructor]
+        internal FlamesSettingsView( FlamesSettingsViewModel viewModel )
         {
             InitializeComponent();
+
+            DataContext = viewModel;
         }
     }
 }

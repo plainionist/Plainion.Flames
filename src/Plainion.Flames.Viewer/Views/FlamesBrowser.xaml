@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:r="clr-namespace:Plainion.Flames.Viewer"
              xmlns:v="clr-namespace:Plainion.Flames.Viewer.Views"
              xmlns:bf="https://github.com/ronin4net/Plainion.Flames"
              xmlns:vm="clr-namespace:Plainion.Flames.Viewer.ViewModels"
@@ -15,11 +16,8 @@
 
     <i:Interaction.Triggers>
         <prism:InteractionRequestTrigger SourceObject="{Binding SpawnSettingsRequest, Mode=OneWay}">
-            <pn:PopupViewAction WindowWidth="500" WindowHeight="500" UseNotificationContentAsDataContext="True">
-                <Grid Background="AliceBlue">
-                    <v:FlamesSettingsView Margin="3"/>
-                </Grid>
-            </pn:PopupViewAction>
+            <pn:PopupViewAction WindowWidth="500" WindowHeight="500" UseNotificationContentAsDataContext="True"
+                                prism:RegionManager.RegionName="{x:Static r:RegionNames.SettingsView}"/>
         </prism:InteractionRequestTrigger>
     </i:Interaction.Triggers>
 
@@ -107,13 +105,7 @@
         </Grid>
 
         <Grid Visibility="{Binding FlamesVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
-            <ContentPresenter Content="{Binding Settings}" Margin="3,30,3,3">
-                <ContentPresenter.ContentTemplate>
-                    <DataTemplate>
-                        <v:FlamesSettingsView/>
-                    </DataTemplate>
-                </ContentPresenter.ContentTemplate>
-            </ContentPresenter>
+            <ContentControl prism:RegionManager.RegionName="{x:Static r:RegionNames.SettingsView}" Margin="3,30,3,3"/>
 
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
                 <Button Margin="2" Command="{Binding ToggleViewCommand}" Style="{StaticResource BrowserButton}">

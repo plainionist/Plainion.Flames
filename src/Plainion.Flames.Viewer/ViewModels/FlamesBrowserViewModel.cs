@@ -1,16 +1,15 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Input;
-using Plainion.Flames.Controls;
-using Plainion.Flames.Presentation;
+using System.Windows.Threading;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
-using Microsoft.Practices.Prism.Regions;
+using Plainion.Flames.Controls;
 using Plainion.Flames.Infrastructure.Services;
-using System;
-using System.Windows;
-using System.Windows.Threading;
-using System.ComponentModel;
+using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
@@ -28,8 +27,6 @@ namespace Plainion.Flames.Viewer.ViewModels
             myProjectService = projectService;
             myProjectService.ProjectChanged += OnProjectChanged;
             myFlamesVisible = true;
-
-            Settings = new FlamesSettingsViewModel();
 
             ExpandCollapseCommand = new DelegateCommand<FlameHeader>( h => h.Flame.IsExpanded = !h.Flame.IsExpanded );
             HideCommand = new DelegateCommand<FlameHeader>( h => h.Flame.Visibility = ContentVisibility.Invisible );
@@ -65,7 +62,7 @@ namespace Plainion.Flames.Viewer.ViewModels
                     SpawnSettingsWindowCommand.Execute( null );
 
                     // TODO: we want to navigate to process-threads-view but currently we cannot access viewmodel :(
-                    Settings.SelectedTabIndex = 1;
+                    //Settings.SelectedTabIndex = 1;
                 } ) );
             }
         }
@@ -75,18 +72,10 @@ namespace Plainion.Flames.Viewer.ViewModels
             Presentation = myProjectService.Project.Presentation;
         }
 
-        public FlamesSettingsViewModel Settings { get; private set; }
-
         public FlameSetPresentation Presentation
         {
             get { return myPresentation; }
-            set
-            {
-                if( SetProperty( ref myPresentation, value ) )
-                {
-                    Settings.Presentation = myPresentation;
-                }
-            }
+            private set { SetProperty( ref myPresentation, value ); }
         }
 
         public bool FlamesVisible
@@ -144,15 +133,8 @@ namespace Plainion.Flames.Viewer.ViewModels
         {
             var notification = new Notification();
             notification.Title = "Settings";
-            notification.Content = Settings;
-
-            var selectedTabIndex = Settings.SelectedTabIndex;
 
             SpawnSettingsRequest.Raise( notification );
-
-            // TODO: unfort. new view will first sync back the initial selected tab index into view model
-            // -> we lose the selection :(
-            Settings.SelectedTabIndex = selectedTabIndex;
 
             // switch back to flames
             FlamesVisible = true;
