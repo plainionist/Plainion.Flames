@@ -11,6 +11,8 @@ namespace Plainion.Flames.Controls
 {
     public partial class FlameSetView : UserControl
     {
+        private bool myIsOnScreenDetectionAttached;
+
         public FlameSetView()
         {
             InitializeComponent();
@@ -82,12 +84,15 @@ namespace Plainion.Flames.Controls
         {
             // TODO: actually we want to trigger all behaviors (selection behavior) to remove adorners but unclear how
             var adornerLayer = AdornerLayer.GetAdornerLayer( FlameResizer );
-            var adorners = adornerLayer.GetAdorners( FlameResizer );
-            if( adorners != null )
+            if( adornerLayer != null )
             {
-                foreach( var adorner in adorners )
+                var adorners = adornerLayer.GetAdorners( FlameResizer );
+                if( adorners != null )
                 {
-                    adornerLayer.Remove( adorner );
+                    foreach( var adorner in adorners )
+                    {
+                        adornerLayer.Remove( adorner );
+                    }
                 }
             }
 
@@ -98,6 +103,8 @@ namespace Plainion.Flames.Controls
                     item.IsRenderingEnabled = false;
                 }
             }
+        
+            AttachOnScreenDetection();
         }
 
         public ContextMenu FlameHeaderContextMenu
@@ -116,12 +123,29 @@ namespace Plainion.Flames.Controls
 
         private void myListView_Loaded( object sender, RoutedEventArgs e )
         {
-            //var scrollViewer = myListView.GetVisualChild<ScrollViewer>();
-            //var scrollBar = scrollViewer.Template.FindName( "PART_VerticalScrollBar", scrollViewer ) as ScrollBar;
-            //scrollBar.ValueChanged += delegate
-            //{
-            //    SetOnScreen();
-            //};
+            AttachOnScreenDetection();
+        }
+
+        private void AttachOnScreenDetection()
+        {
+            if( myIsOnScreenDetectionAttached )
+            {
+                return;
+            }
+
+            var scrollViewer = myListView.GetVisualChild<ScrollViewer>();
+            if( scrollViewer == null )
+            {
+                return;
+            }
+
+            var scrollBar = scrollViewer.Template.FindName( "PART_VerticalScrollBar", scrollViewer ) as ScrollBar;
+            scrollBar.ValueChanged += delegate
+            {
+                SetOnScreen();
+            };
+
+            myIsOnScreenDetectionAttached = true;
         }
 
         private void SetOnScreen()

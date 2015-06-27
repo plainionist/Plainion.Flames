@@ -31,7 +31,7 @@ namespace Plainion.Flames.Controls
         }
 
         public static readonly DependencyProperty BackgroundProperty = Panel.BackgroundProperty.AddOwner( typeof( TimeScaleView ) );
-        
+
         public Typeface Font
         {
             get { return ( Typeface )GetValue( FontProperty ); }
@@ -117,7 +117,7 @@ namespace Plainion.Flames.Controls
 
             var child = new DrawingVisual();
 
-            if( TimelineViewport != null )
+            if( TimelineViewport != null && ActualWidth > 0 )
             {
                 Render( child );
             }
