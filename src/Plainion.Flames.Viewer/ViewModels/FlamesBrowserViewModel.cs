@@ -1,12 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
-using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Controls;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Infrastructure.ViewModels;

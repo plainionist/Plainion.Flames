@@ -3,59 +3,60 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.Composition;
 using System.Linq;
+using Plainion.Flames.Infrastructure.Services;
+using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
-using Microsoft.Practices.Prism.Mvvm;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
     [Export]
-    class BookmarksViewModel : BindableBase
+    class BookmarksViewModel : ViewModelBase
     {
-        private FlameSetPresentation myPresentation;
-
-        public BookmarksViewModel()
+        [ImportingConstructor]
+        public BookmarksViewModel(IProjectService projectService)
+            : base(projectService)
         {
             SelectedItems = new ObservableCollection<string>();
         }
 
-        private void OnSelectedItemsChanged( object sender, NotifyCollectionChangedEventArgs e )
+        private void OnSelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if( myPresentation == null )
+            if (Presentation == null)
             {
                 return;
             }
 
-            if( e.OldItems != null )
+            if (e.OldItems != null)
             {
                 var names = e.OldItems
                     .OfType<string>()
                     .ToList();
 
-                foreach( var flame in myPresentation.Flames )
+                foreach (var flame in Presentation.Flames)
                 {
                     var itemsToRemove = flame.Bookmarks.SelectedItems
-                        .Where( i => names.Contains( i.Name ) )
+                        .Where(i => names.Contains(i.Name))
                         .ToList();
 
-                    foreach( var item in itemsToRemove )
+                    foreach (var item in itemsToRemove)
                     {
-                        flame.Bookmarks.SelectedItems.Remove( item );
+                        flame.Bookmarks.SelectedItems.Remove(item);
                     }
                 }
             }
 
-            if( e.NewItems != null )
+            if (e.NewItems != null)
             {
                 var names = e.NewItems
                     .OfType<string>()
                     .ToList();
 
-                foreach( var flame in myPresentation.Flames )
+                foreach (var flame in Presentation.Flames)
                 {
-                    foreach( var item in flame.Bookmarks.Items.Where( i => names.Contains( i.Name ) ) )
+                    foreach (var item in flame.Bookmarks.Items.Where(i => names.Contains(i.Name)))
                     {
-                        flame.Bookmarks.SelectedItems.Add( item );
+                        flame.Bookmarks.SelectedItems.Add(item);
                     }
                 }
             }
@@ -65,27 +66,20 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         public bool ShowTab { get { return true; } }
 
-        public FlameSetPresentation Presentation
+        protected override void OnPresentationChanged(FlameSetPresentation oldValue)
         {
-            get { return myPresentation; }
-            set
-            {
-                if( SetProperty( ref myPresentation, value ) )
-                {
-                    SelectedItems.CollectionChanged -= OnSelectedItemsChanged;
-                    SelectedItems.Clear();
-                    SelectedItems.CollectionChanged += OnSelectedItemsChanged;
+            SelectedItems.CollectionChanged -= OnSelectedItemsChanged;
+            SelectedItems.Clear();
+            SelectedItems.CollectionChanged += OnSelectedItemsChanged;
 
-                    Items = myPresentation.Model.AssociatedEvents
-                        .All<IBookmarks>()
-                        .Select( b => b.Name )
-                        .Distinct()
-                        .OrderBy( n => n )
-                        .ToList();
+            Items = Presentation.Model.AssociatedEvents
+                .All<IBookmarks>()
+                .Select(b => b.Name)
+                .Distinct()
+                .OrderBy(n => n)
+                .ToList();
 
-                    OnPropertyChanged( "Items" );
-                }
-            }
+            OnPropertyChanged("Items");
         }
 
         public IEnumerable<string> Items { get; private set; }

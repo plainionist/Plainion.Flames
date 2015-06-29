@@ -19,7 +19,6 @@
     <Grid>
         <TabControl Grid.Column="1" 
                     SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}" 
-                    SelectedItem="{Binding SelectedTabItem, Mode=OneWayToSource}" 
                     prism:RegionManager.RegionName="{x:Static bfi:RegionNames.FlamesSettings}">
 
             <TabControl.ItemContainerStyle>

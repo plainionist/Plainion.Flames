@@ -1,9 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows;
-using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Controls;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Infrastructure.ViewModels;
@@ -49,11 +46,6 @@ namespace Plainion.Flames.Viewer.ViewModels
                 .Count();
 
             OnPropertyChanged(() => TraceDuration);
-
-            if (mySelectedTabContent != null)
-            {
-                InjectPresentation(mySelectedTabContent);
-            }
         }
 
         public TimeSpan TraceDuration
@@ -86,35 +78,6 @@ namespace Plainion.Flames.Viewer.ViewModels
         {
             get { return mySelectedTabIndex; }
             set { SetProperty(ref mySelectedTabIndex, value); }
-        }
-
-        // TODO: workaround to inject presentations
-        private object mySelectedTabContent;
-        public object SelectedTabItem
-        {
-            set
-            {
-                var frameworkElement = value as FrameworkElement;
-                if (frameworkElement == null || frameworkElement.DataContext == null)
-                {
-                    return;
-                }
-
-                mySelectedTabContent = frameworkElement.DataContext;
-
-                InjectPresentation(mySelectedTabContent);
-            }
-        }
-
-        private void InjectPresentation(object dataContext)
-        {
-            var presentationProperty = mySelectedTabContent.GetType().GetProperty("Presentation");
-            if (presentationProperty == null)
-            {
-                return;
-            }
-
-            presentationProperty.SetValue(mySelectedTabContent, Presentation);
         }
     }
 }

@@ -1,16 +1,18 @@
 ﻿using System.ComponentModel.Composition;
+using Plainion.Flames.Infrastructure.Services;
+using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Presentation;
-using Microsoft.Practices.Prism.Mvvm;
 
 namespace Plainion.Flames.Modules.Filters.ViewModels
 {
     [Export]
-    class CallFilterViewModel : BindableBase
+    class CallFilterViewModel : ViewModelBase
     {
-        private FlameSetPresentation myPresentation;
         private CallFilterModule myModule;
 
-        public CallFilterViewModel()
+        [ImportingConstructor]
+        public CallFilterViewModel(IProjectService projectService)
+            : base(projectService)
         {
             NameFilterViewModel = new NameFilterViewModel();
             DurationFilterViewModel = new DurationFilterViewModel();
@@ -24,24 +26,17 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
         public DurationFilterViewModel DurationFilterViewModel { get; private set; }
 
-        public FlameSetPresentation Presentation
+        protected override void OnPresentationChanged(FlameSetPresentation oldValue)
         {
-            get { return myPresentation; }
-            set
+            if (myModule != null)
             {
-                if( SetProperty( ref myPresentation, value ) )
-                {
-                    if( myModule != null )
-                    {
-                        myModule.Dispose();
-                    }
-
-                    myModule = new CallFilterModule( myPresentation );
-
-                    NameFilterViewModel.Module = myModule;
-                    DurationFilterViewModel.Module = myModule;
-                }
+                myModule.Dispose();
             }
+
+            myModule = new CallFilterModule(Presentation);
+
+            NameFilterViewModel.Module = myModule;
+            DurationFilterViewModel.Module = myModule;
         }
     }
 }

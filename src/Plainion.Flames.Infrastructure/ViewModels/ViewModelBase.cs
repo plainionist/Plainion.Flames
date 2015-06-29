@@ -13,17 +13,19 @@ namespace Plainion.Flames.Infrastructure.ViewModels
         protected ViewModelBase(IProjectService projectService)
         {
             ProjectService = projectService;
-            ProjectService.ProjectChanged += OnProjectChanged;
+            ProjectService.ProjectChanged += ProjectService_ProjectChanged;
+         
+            if (projectService.Project != null)
+            {
+                ProjectService_ProjectChanged(null, EventArgs.Empty);
+            }
         }
 
         protected IProjectService ProjectService { get; private set; }
 
-        private void OnProjectChanged(object sender, EventArgs e)
+        private void ProjectService_ProjectChanged(object sender, EventArgs e)
         {
-            if (ProjectService.Project.Presentation != null)
-            {
-                Presentation = ProjectService.Project.Presentation;
-            }
+            Presentation = ProjectService.Project.Presentation;
 
             PropertyChangedEventManager.AddHandler(ProjectService.Project, Project_PresentationChanged,
                 PropertySupport.ExtractPropertyName(() => ProjectService.Project.Presentation));
