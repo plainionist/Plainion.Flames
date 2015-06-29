@@ -6,78 +6,53 @@ using System.Windows;
 using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Controls;
 using Plainion.Flames.Infrastructure.Services;
+using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
     [Export]
-    class FlamesSettingsViewModel : BindableBase
+    class FlamesSettingsViewModel : ViewModelBase
     {
-        private FlameSetPresentation myPresentation;
         private int myProcessCount;
         private int myThreadCount;
         private int myCallCount;
         private int mySelectedTabIndex;
-        private IProjectService myProjectService;
 
         [ImportingConstructor]
-        internal FlamesSettingsViewModel( IProjectService projectService )
+        internal FlamesSettingsViewModel(IProjectService projectService)
+            : base(projectService)
         {
-            myProjectService = projectService;
-            myProjectService.ProjectChanged += OnProjectChanged;
-
             TracesTreeSource = new TracesTree();
         }
 
-        private void OnProjectChanged( object sender, EventArgs e )
-        {
-            if( myProjectService.Project.Presentation != null )
-            {
-                Presentation = myProjectService.Project.Presentation;
-            }
 
-            PropertyChangedEventManager.AddHandler( myProjectService.Project, OnPresentationChanged,
-                PropertySupport.ExtractPropertyName( () => myProjectService.Project.Presentation ) );
-        }
-
-        private void OnPresentationChanged( object sender, PropertyChangedEventArgs e )
-        {
-            Presentation = myProjectService.Project.Presentation;
-        }
-        
         public TracesTree TracesTreeSource { get; private set; }
 
-        public FlameSetPresentation Presentation
+        protected override void OnPresentationChanged(FlameSetPresentation oldValue)
         {
-            get { return myPresentation; }
-            private set
+            TracesTreeSource.Processes = Presentation.Flames
+                .GroupBy(x => x.Model.Process)
+                .OrderBy(x => x.Key.Name)
+                .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()))
+                .ToList();
+
+            ProcessCount = Presentation.Flames
+                .Select(t => t.ProcessId)
+                .Distinct()
+                .Count();
+
+            ThreadCount = Presentation.Flames.Count;
+
+            CallCount = Presentation.Flames
+                .SelectMany(t => t.Activities)
+                .Count();
+
+            OnPropertyChanged(() => TraceDuration);
+
+            if (mySelectedTabContent != null)
             {
-                if (SetProperty(ref myPresentation, value))
-                {
-                    TracesTreeSource.Processes = myPresentation.Flames
-                        .GroupBy(x => x.Model.Process)
-                        .OrderBy(x => x.Key.Name)
-                        .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()))
-                        .ToList();
-
-                    ProcessCount = myPresentation.Flames
-                        .Select(t => t.ProcessId)
-                        .Distinct()
-                        .Count();
-
-                    ThreadCount = myPresentation.Flames.Count;
-
-                    CallCount = myPresentation.Flames
-                        .SelectMany(t => t.Activities)
-                        .Count();
-
-                    OnPropertyChanged( () => TraceDuration );
-
-                    if (mySelectedTabContent != null)
-                    {
-                        InjectPresentation(mySelectedTabContent);
-                    }
-                }
+                InjectPresentation(mySelectedTabContent);
             }
         }
 
@@ -85,7 +60,7 @@ namespace Plainion.Flames.Viewer.ViewModels
         {
             get
             {
-                return myPresentation == null ? TimeSpan.MinValue : TimeSpan.FromMilliseconds(myPresentation.Model.TraceDuration / 1000);
+                return Presentation == null ? TimeSpan.MinValue : TimeSpan.FromMilliseconds(Presentation.Model.TraceDuration / 1000);
             }
         }
 
@@ -139,7 +114,7 @@ namespace Plainion.Flames.Viewer.ViewModels
                 return;
             }
 
-            presentationProperty.SetValue(mySelectedTabContent, myPresentation);
+            presentationProperty.SetValue(mySelectedTabContent, Presentation);
         }
     }
 }

@@ -9,23 +9,21 @@ using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Controls;
 using Plainion.Flames.Infrastructure.Services;
+using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
     // https://rachel53461.wordpress.com/2011/12/
     [Export]
-    class FlamesBrowserViewModel : BindableBase
+    class FlamesBrowserViewModel : ViewModelBase
     {
-        private FlameSetPresentation myPresentation;
         private bool myFlamesVisible;
-        private IProjectService myProjectService;
 
         [ImportingConstructor]
         internal FlamesBrowserViewModel( IProjectService projectService )
+            :base(projectService)
         {
-            myProjectService = projectService;
-            myProjectService.ProjectChanged += OnProjectChanged;
             myFlamesVisible = true;
 
             ExpandCollapseCommand = new DelegateCommand<FlameHeader>( h => h.Flame.IsExpanded = !h.Flame.IsExpanded );
@@ -41,17 +39,9 @@ namespace Plainion.Flames.Viewer.ViewModels
             SpawnSettingsRequest = new InteractionRequest<Notification>();
         }
 
-        private void OnProjectChanged( object sender, EventArgs e )
+        protected override void OnProjectChanged()
         {
-            if( myProjectService.Project.Presentation != null )
-            {
-                Presentation = myProjectService.Project.Presentation;
-            }
-
-            PropertyChangedEventManager.AddHandler( myProjectService.Project, OnPresentationChanged,
-                PropertySupport.ExtractPropertyName( () => myProjectService.Project.Presentation ) );
-
-            if( myProjectService.Project.WasDeserialized )
+            if( ProjectService.Project.WasDeserialized )
             {
                 // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
                 Application.Current.Dispatcher.BeginInvoke( DispatcherPriority.ApplicationIdle, new Action( () =>
@@ -65,17 +55,6 @@ namespace Plainion.Flames.Viewer.ViewModels
                     //Settings.SelectedTabIndex = 1;
                 } ) );
             }
-        }
-
-        private void OnPresentationChanged( object sender, PropertyChangedEventArgs e )
-        {
-            Presentation = myProjectService.Project.Presentation;
-        }
-
-        public FlameSetPresentation Presentation
-        {
-            get { return myPresentation; }
-            private set { SetProperty( ref myPresentation, value ); }
         }
 
         public bool FlamesVisible
