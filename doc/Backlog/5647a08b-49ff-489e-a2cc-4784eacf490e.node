@@ -1,8 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e" Created="635708196390226134" LastModified="635708268977484134">
+<Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e" Created="635708196390226134" LastModified="635711792864027318">
   <Caption><![CDATA[data lifecylce cleanup]]></Caption>
   <Content><![CDATA[- every VM can import IProjectSerivce to get notified about project changes
 - presentation is available from IProject
 - remove hack InjectPresentation
-- associated data will be moved into documents (on Project)]]></Content>
+- associated data will be moved into documents (on Project)
+
+- do we need IProjectItemProvider anylonger? could be handled by ViewModel
+  and then LoaderService does it in a generic way?
+  (e.g. ISerializableDocument used by documents which should be made 
+  persistent, or we use baseclass with dataconracts support, ...)]]></Content>
 </Node>
