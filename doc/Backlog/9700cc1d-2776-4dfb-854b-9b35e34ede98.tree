@@ -9,6 +9,9 @@
         <Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e">
           <Caption><![CDATA[data lifecylce cleanup]]></Caption>
         </Node>
+        <Node Id="5fc5921e-1227-42ab-a729-a12f0a714fec">
+          <Caption><![CDATA[cleanup settings view]]></Caption>
+        </Node>
         <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
           <Caption><![CDATA[repositories]]></Caption>
           <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">
