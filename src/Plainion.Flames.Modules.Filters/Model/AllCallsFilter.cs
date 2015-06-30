@@ -1,4 +1,5 @@
-﻿using Plainion.Flames.Presentation;
+﻿using System.Runtime.Serialization;
+using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters.Model
 {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Linq;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Presentation;
@@ -28,12 +29,28 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
         protected override void OnPresentationChanged(FlameSetPresentation oldValue)
         {
+            // lets preserve the module itself to preserve the user settings across presentations
             if (myModule != null)
             {
-                myModule.Dispose();
+                myModule.Presentation = Presentation;
+                return;
             }
 
-            myModule = new CallFilterModule(Presentation);
+            // take the filters from serialized project only initially
+            var document = ProjectService.Project.Items.OfType<FiltersDocument>().SingleOrDefault();
+            if (document == null)
+            {
+                myModule = CallFilterModule.CreateEmpty();
+                myModule.Presentation = Presentation;
+            }
+            else
+            {
+                myModule = CallFilterModule.CreateFromDocument(document);
+                myModule.Presentation = Presentation;
+            }
+
+            // TODO: as a workaround let us add the entire CallFilterModule to the Project.Items
+            ProjectService.Project.Items.Add(myModule);
 
             NameFilterViewModel.Module = myModule;
             DurationFilterViewModel.Module = myModule;

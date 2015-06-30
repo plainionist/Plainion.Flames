@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
-using Plainion;
 
 namespace Plainion.Flames.Modules.Filters.Model
 {
     // TODO: ignores case for simplicitly - later own we should let the user chose
+    [DataContract(Name = "StringContainsFilter", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/Filters")]
     class StringContainsFilter : NameFilterBase
     {
         public StringContainsFilter( FilterTarget target, string filter )
@@ -16,6 +17,7 @@ namespace Plainion.Flames.Modules.Filters.Model
             Filter = filter;
         }
 
+        [DataMember(Name = "Filter")]
         public string Filter { get; private set; }
 
         public override bool? IsVisible( Activity call )

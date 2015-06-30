@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Plainion.Flames.Infrastructure;
+using Plainion.Flames.Modules.Filters.Model;
 
 namespace Plainion.Flames.Modules.Filters
 {
@@ -12,18 +14,8 @@ namespace Plainion.Flames.Modules.Filters
     {
         private const string ProviderId = "{FFBBE09A-C73A-43EC-AF77-8E146B078E01}.Filters";
 
-        [DataContract(Name = "Filters", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/Filters")]
-        class Filters
-        {
-            [DataMember(Name = "Version")]
-            public const byte Version = 1;
-
-            public Filters()
-            {
-            }
-
-        }
-
+        // TODO: actually we just need the eariest possible trigger that project was loaded
+        // -> we use TraceLog loaded as workaround here
         public override void OnTraceLogLoaded(IProject project, IProjectSerializationContext context)
         {
             if (context == null || !context.HasEntry(ProviderId))
@@ -31,42 +23,38 @@ namespace Plainion.Flames.Modules.Filters
                 return;
             }
 
-            using (var stream = context.GetEntry(ProviderId))
-            {
-                var serializer = new DataContractSerializer(typeof(Filters));
-                project.Items.Add((Filters)serializer.ReadObject(stream));
-            }
+            //using (var stream = context.GetEntry(ProviderId))
+            //{
+            //    var serializer = new DataContractSerializer(typeof(FiltersDocument));
+            //    project.Items.Add((FiltersDocument)serializer.ReadObject(stream));
+            //}
         }
 
         public override void OnProjectUnloading(IProject project, IProjectSerializationContext context)
         {
-            if (project.Presentation == null)
+            var callFilterModule = project.Items.OfType<CallFilterModule>().SingleOrDefault();
+            if (callFilterModule == null)
             {
                 return;
             }
+
+            var document = new FiltersDocument();
+            document.DurationFilter = callFilterModule.DurationFilter;
+            document.NameFilters.AddRange(callFilterModule.NameFilters.Where(f => !(f is AllCallsFilter)));
 
             //using (var stream = context.CreateEntry(ProviderId))
             //{
-            //    var serializer = new DataContractSerializer(typeof(Filters));
-            //    serializer.WriteObject(stream, selectedThreads);
+            //    var serializer = new DataContractSerializer(typeof(FiltersDocument), GetKnownDataContractTypes());
+            //    serializer.WriteObject(stream, document);
             //}
         }
 
-        public override void OnPresentationCreated(IProject project)
+        private IEnumerable<Type> GetKnownDataContractTypes()
         {
-            var filters = project.Items.OfType<Filters>().SingleOrDefault();
-            if (filters == null)
-            {
-                return;
-            }
-
-            //foreach (var flame in project.Presentation.Flames)
-            //{
-            //    if (!filters.IsVisible(flame.ProcessId, flame.ThreadId))
-            //    {
-            //        flame.Visibility = Presentation.ContentVisibility.Invisible;
-            //    }
-            //}
+            return GetType().Assembly.GetTypes()
+                .Where(type => !type.IsAbstract)
+                .Where(type => type.GetCustomAttributes(typeof(DataContractAttribute), false).Any())
+                .ToList();
         }
     }
 }

@@ -6,11 +6,11 @@
       <Caption><![CDATA[Next steps]]></Caption>
       <Node Id="954520dd-58bb-463d-8a88-3e02747a70ab">
         <Caption><![CDATA[Cleanup model]]></Caption>
-        <Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e">
-          <Caption><![CDATA[data lifecylce cleanup]]></Caption>
-        </Node>
         <Node Id="5fc5921e-1227-42ab-a729-a12f0a714fec">
           <Caption><![CDATA[cleanup settings view]]></Caption>
+        </Node>
+        <Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e">
+          <Caption><![CDATA[data lifecylce cleanup]]></Caption>
         </Node>
         <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
           <Caption><![CDATA[repositories]]></Caption>
@@ -29,6 +29,9 @@
         </Node>
         <Node Id="7793c7af-8454-4841-abd0-3303f3c48ec4">
           <Caption><![CDATA["open" project file]]></Caption>
+        </Node>
+        <Node Id="03c9b0e3-0c1c-4783-b0b4-12070662350d">
+          <Caption><![CDATA[how to continue with CallFilterModule]]></Caption>
         </Node>
       </Node>
       <Node Id="0738501d-a3d7-46a3-951a-b33f1af26bcc">

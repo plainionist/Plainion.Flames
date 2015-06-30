@@ -1,6 +1,6 @@
-﻿using Plainion.Flames.Presentation;
+﻿using System.Runtime.Serialization;
 using Microsoft.Practices.Prism.Mvvm;
-using Plainion;
+using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters.Model
 {
@@ -17,16 +17,20 @@ namespace Plainion.Flames.Modules.Filters.Model
             Label = label;
         }
 
+        [DataMember(Name = "Label")]
         public string Label { get; private set; }
 
+        [DataMember(Name = "Target")]
         public FilterTarget Target { get; private set; }
 
+        [DataMember(Name = "IsShowFilter")]
         public bool IsShowFilter
         {
             get { return myIsShowFilter; }
             set { SetProperty( ref myIsShowFilter, value ); }
         }
 
+        [DataMember(Name = "IsApplied")]
         public bool IsApplied
         {
             get { return myIsApplied; }

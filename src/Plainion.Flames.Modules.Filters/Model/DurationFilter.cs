@@ -1,8 +1,10 @@
-﻿using Plainion.Flames.Presentation;
+﻿using System.Runtime.Serialization;
 using Microsoft.Practices.Prism.Mvvm;
+using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters.Model
 {
+    [DataContract(Name = "DurationFilter", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/Filters")]
     class DurationFilter : BindableBase, ICallFilter
     {
         private long myThreshold;
@@ -13,12 +15,14 @@ namespace Plainion.Flames.Modules.Filters.Model
             Maximum = 1000;
         }
 
+        [DataMember(Name = "Maximum")]
         public double Maximum
         {
             get { return myMaximum; }
             set { SetProperty( ref myMaximum, value ); }
         }
 
+        [DataMember(Name = "Threshold")]
         public double Threshold
         {
             get { return myThreshold / 1000; }
