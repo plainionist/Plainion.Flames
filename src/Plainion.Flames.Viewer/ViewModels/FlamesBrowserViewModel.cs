@@ -18,47 +18,45 @@ namespace Plainion.Flames.Viewer.ViewModels
     {
         private bool myFlamesVisible;
 
-        [ImportingConstructor]
-        internal FlamesBrowserViewModel( IProjectService projectService )
-            :base(projectService)
+        internal FlamesBrowserViewModel()
         {
             myFlamesVisible = true;
 
-            ExpandCollapseCommand = new DelegateCommand<FlameHeader>( h => h.Flame.IsExpanded = !h.Flame.IsExpanded );
-            HideCommand = new DelegateCommand<FlameHeader>( h => h.Flame.Visibility = ContentVisibility.Invisible );
-            RenameCommand = new DelegateCommand<FlameHeader>( h => h.IsInEditMode = true );
-            ZoomHomeCommand = new DelegateCommand( OnZoomHome );
-            ZoomInCommand = new DelegateCommand( OnZoomIn );
-            ZoomOutCommand = new DelegateCommand( OnZoomOut );
-            ClearSelectionsCommand = new DelegateCommand( ClearSelections );
+            ExpandCollapseCommand = new DelegateCommand<FlameHeader>(h => h.Flame.IsExpanded = !h.Flame.IsExpanded);
+            HideCommand = new DelegateCommand<FlameHeader>(h => h.Flame.Visibility = ContentVisibility.Invisible);
+            RenameCommand = new DelegateCommand<FlameHeader>(h => h.IsInEditMode = true);
+            ZoomHomeCommand = new DelegateCommand(OnZoomHome);
+            ZoomInCommand = new DelegateCommand(OnZoomIn);
+            ZoomOutCommand = new DelegateCommand(OnZoomOut);
+            ClearSelectionsCommand = new DelegateCommand(ClearSelections);
 
-            ToggleViewCommand = new DelegateCommand( () => FlamesVisible = !FlamesVisible );
-            SpawnSettingsWindowCommand = new DelegateCommand( OnSpawnSettingsWindow );
+            ToggleViewCommand = new DelegateCommand(() => FlamesVisible = !FlamesVisible);
+            SpawnSettingsWindowCommand = new DelegateCommand(OnSpawnSettingsWindow);
             SpawnSettingsRequest = new InteractionRequest<Notification>();
         }
 
         protected override void OnProjectChanged()
         {
-            if( ProjectService.Project.WasDeserialized )
+            if (ProjectService.Project.WasDeserialized)
             {
                 // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
-                Application.Current.Dispatcher.BeginInvoke( DispatcherPriority.ApplicationIdle, new Action( () =>
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
                 {
                     // we loaded user settings from disk which might filter out certain threads or calls.
                     // lets display settings window to the user so that it is more obvious that everything
                     // is visible in the flames.
-                    SpawnSettingsWindowCommand.Execute( null );
+                    SpawnSettingsWindowCommand.Execute(null);
 
                     // TODO: we want to navigate to process-threads-view but currently we cannot access viewmodel :(
                     //Settings.SelectedTabIndex = 1;
-                } ) );
+                }));
             }
         }
 
         public bool FlamesVisible
         {
             get { return myFlamesVisible; }
-            set { SetProperty( ref myFlamesVisible, value ); }
+            set { SetProperty(ref myFlamesVisible, value); }
         }
 
         public ICommand ExpandCollapseCommand { get; private set; }
@@ -76,31 +74,31 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         private void OnZoomHome()
         {
-            if( Presentation != null && FlamesVisible )
+            if (Presentation != null && FlamesVisible)
             {
-                Presentation.TimelineViewport.Set( Presentation.TimelineViewport.Min, Presentation.TimelineViewport.Max );
+                Presentation.TimelineViewport.Set(Presentation.TimelineViewport.Min, Presentation.TimelineViewport.Max);
             }
         }
 
         private void OnZoomIn()
         {
-            if( Presentation != null && FlamesVisible )
+            if (Presentation != null && FlamesVisible)
             {
-                Presentation.TimelineViewport.ZoomAtCenter( +0.1 );
+                Presentation.TimelineViewport.ZoomAtCenter(+0.1);
             }
         }
 
         private void OnZoomOut()
         {
-            if( Presentation != null && FlamesVisible )
+            if (Presentation != null && FlamesVisible)
             {
-                Presentation.TimelineViewport.ZoomAtCenter( -0.1 );
+                Presentation.TimelineViewport.ZoomAtCenter(-0.1);
             }
         }
 
         private void ClearSelections()
         {
-            if( Presentation != null && FlamesVisible )
+            if (Presentation != null && FlamesVisible)
             {
                 Presentation.Selections.Clear();
             }
@@ -111,7 +109,7 @@ namespace Plainion.Flames.Viewer.ViewModels
             var notification = new Notification();
             notification.Title = "Settings";
 
-            SpawnSettingsRequest.Raise( notification );
+            SpawnSettingsRequest.Raise(notification);
 
             // switch back to flames
             FlamesVisible = true;

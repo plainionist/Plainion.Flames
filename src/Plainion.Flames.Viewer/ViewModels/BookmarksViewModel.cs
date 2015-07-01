@@ -13,9 +13,7 @@ namespace Plainion.Flames.Viewer.ViewModels
     [Export]
     class BookmarksViewModel : ViewModelBase
     {
-        [ImportingConstructor]
-        public BookmarksViewModel(IProjectService projectService)
-            : base(projectService)
+        public BookmarksViewModel()
         {
             SelectedItems = new ObservableCollection<string>();
         }

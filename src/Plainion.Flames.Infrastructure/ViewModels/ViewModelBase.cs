@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Presentation;
@@ -9,19 +10,38 @@ namespace Plainion.Flames.Infrastructure.ViewModels
     public class ViewModelBase : BindableBase
     {
         private FlameSetPresentation myPresentation;
+        private IProjectService myProjectService;
 
-        protected ViewModelBase(IProjectService projectService)
+        // we dont go for ctor injection here by intention because then
+        // we would might have the need to call virtual methods from ctor (e.g. OnProjectChanged).
+        // this would cause method calls on derived classes for which the ctor didnt completed yet
+        [Import]
+        protected IProjectService ProjectService
         {
-            ProjectService = projectService;
-            ProjectService.ProjectChanged += ProjectService_ProjectChanged;
-         
-            if (projectService.Project != null)
+            get { return myProjectService; }
+            set
             {
-                ProjectService_ProjectChanged(null, EventArgs.Empty);
+                if (myProjectService == value)
+                {
+                    return;
+
+                }
+
+                if (myProjectService != null)
+                {
+                    myProjectService.ProjectChanged -= ProjectService_ProjectChanged;
+                }
+
+                myProjectService = value;
+
+                myProjectService.ProjectChanged += ProjectService_ProjectChanged;
+
+                if (myProjectService.Project != null)
+                {
+                    ProjectService_ProjectChanged(null, EventArgs.Empty);
+                }
             }
         }
-
-        protected IProjectService ProjectService { get; private set; }
 
         private void ProjectService_ProjectChanged(object sender, EventArgs e)
         {

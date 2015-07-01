@@ -11,9 +11,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
     {
         private CallFilterModule myModule;
 
-        [ImportingConstructor]
-        public CallFilterViewModel(IProjectService projectService)
-            : base(projectService)
+        public CallFilterViewModel()
         {
             NameFilterViewModel = new NameFilterViewModel();
             DurationFilterViewModel = new DurationFilterViewModel();

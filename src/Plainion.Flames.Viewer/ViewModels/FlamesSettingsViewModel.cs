@@ -16,13 +16,10 @@ namespace Plainion.Flames.Viewer.ViewModels
         private int myCallCount;
         private int mySelectedTabIndex;
 
-        [ImportingConstructor]
-        internal FlamesSettingsViewModel(IProjectService projectService)
-            : base(projectService)
+        internal FlamesSettingsViewModel()
         {
             TracesTreeSource = new TracesTree();
         }
-
 
         public TracesTree TracesTreeSource { get; private set; }
 
