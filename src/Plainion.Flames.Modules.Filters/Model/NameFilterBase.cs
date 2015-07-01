@@ -4,7 +4,8 @@ using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters.Model
 {
-    abstract class NameFilterBase : BindableBase, INameFilter
+    [DataContract]
+    abstract class NameFilterBase : SerializableBindableBase, INameFilter
     {
         private bool myIsShowFilter;
         private bool myIsApplied;

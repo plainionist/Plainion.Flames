@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -16,37 +17,43 @@ namespace Plainion.Flames.Modules.Filters
         private INameFilter myAllCallsFilter;
         private FlameSetPresentation myPresentation;
 
-        private CallFilterModule(DurationFilter durationFilter)
+        private CallFilterModule()
         {
-            NameFilters = new ObservableCollection<INameFilter>();
-
-            myAllCallsFilter = new AllCallsFilter { IsApplied = false, IsShowFilter = false };
-            myAllCallsFilter.PropertyChanged += OnNameFilterPropertyChanged;
-            NameFilters.Add(myAllCallsFilter);
-
-            NameFilters.CollectionChanged += OnNameFilterCollectionChanged;
-
-            DurationFilter = durationFilter;
-            DurationFilter.PropertyChanged += OnDurationFilterPropertyChanged;
         }
 
         public static CallFilterModule CreateEmpty()
         {
-            return new CallFilterModule(new DurationFilter());
-        }
+            var module = new CallFilterModule();
+            module.DurationFilter = new DurationFilter();
+            module.NameFilters = new ObservableCollection<INameFilter>();
 
-        public static CallFilterModule CreateFromDocument(FiltersDocument document)
-        {
-            var module = new CallFilterModule(document.DurationFilter);
-
-            foreach (var filter in document.NameFilters)
-            {
-                module.NameFilters.Add(filter);
-            }
+            module.Initialize();
 
             return module;
         }
 
+        public static CallFilterModule CreateFromDocument(FiltersDocument document)
+        {
+            var module = new CallFilterModule();
+            module.DurationFilter = document.DurationFilter;
+            module.NameFilters = new ObservableCollection<INameFilter>(document.NameFilters);
+
+            module.Initialize();
+
+            return module;
+        }
+
+        private void Initialize()
+        {
+            myAllCallsFilter = new AllCallsFilter { IsApplied = false, IsShowFilter = false };
+            myAllCallsFilter.PropertyChanged += OnNameFilterPropertyChanged;
+            NameFilters.Add( myAllCallsFilter );
+
+            NameFilters.CollectionChanged += OnNameFilterCollectionChanged;
+
+            DurationFilter.PropertyChanged += OnDurationFilterPropertyChanged;
+        }
+        
         public FlameSetPresentation Presentation
         {
             get { return myPresentation; }

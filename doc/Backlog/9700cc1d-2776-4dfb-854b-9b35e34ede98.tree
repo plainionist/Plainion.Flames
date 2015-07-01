@@ -12,12 +12,6 @@
         <Node Id="5647a08b-49ff-489e-a2cc-4784eacf490e">
           <Caption><![CDATA[data lifecylce cleanup]]></Caption>
         </Node>
-        <Node Id="92fd3083-b4fc-4765-b744-dfd28c34b9d8">
-          <Caption><![CDATA[repositories]]></Caption>
-          <Node Id="49a141aa-b21b-4fab-af63-6f68d5d43e82">
-            <Caption><![CDATA[filters]]></Caption>
-          </Node>
-        </Node>
         <Node Id="7198a872-5c92-4a01-9908-d60f32395599">
           <Caption><![CDATA[cleanup IProjectItemSerializer usage]]></Caption>
         </Node>

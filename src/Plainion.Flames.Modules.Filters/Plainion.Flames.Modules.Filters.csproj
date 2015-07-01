@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="FiltersDocument.cs" />
     <Compile Include="FiltersProvider.cs" />
+    <Compile Include="Model\SerializableBindableBase.cs" />
     <Compile Include="Views\CallFilterView.xaml.cs">
       <DependentUpon>CallFilterView.xaml</DependentUpon>
     </Compile>

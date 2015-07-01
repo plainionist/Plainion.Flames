@@ -5,7 +5,7 @@ using Plainion.Flames.Presentation;
 namespace Plainion.Flames.Modules.Filters.Model
 {
     [DataContract(Name = "DurationFilter", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/Filters")]
-    class DurationFilter : BindableBase, ICallFilter
+    class DurationFilter : SerializableBindableBase, ICallFilter
     {
         private long myThreshold;
         private double myMaximum;

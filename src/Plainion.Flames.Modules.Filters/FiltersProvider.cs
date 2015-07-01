@@ -23,11 +23,11 @@ namespace Plainion.Flames.Modules.Filters
                 return;
             }
 
-            //using (var stream = context.GetEntry(ProviderId))
-            //{
-            //    var serializer = new DataContractSerializer(typeof(FiltersDocument));
-            //    project.Items.Add((FiltersDocument)serializer.ReadObject(stream));
-            //}
+            using( var stream = context.GetEntry( ProviderId ) )
+            {
+                var serializer = new DataContractSerializer( typeof( FiltersDocument ), GetKnownDataContractTypes() );
+                project.Items.Add( ( FiltersDocument )serializer.ReadObject( stream ) );
+            }
         }
 
         public override void OnProjectUnloading(IProject project, IProjectSerializationContext context)
@@ -42,11 +42,11 @@ namespace Plainion.Flames.Modules.Filters
             document.DurationFilter = callFilterModule.DurationFilter;
             document.NameFilters.AddRange(callFilterModule.NameFilters.Where(f => !(f is AllCallsFilter)));
 
-            //using (var stream = context.CreateEntry(ProviderId))
-            //{
-            //    var serializer = new DataContractSerializer(typeof(FiltersDocument), GetKnownDataContractTypes());
-            //    serializer.WriteObject(stream, document);
-            //}
+            using( var stream = context.CreateEntry( ProviderId ) )
+            {
+                var serializer = new DataContractSerializer( typeof( FiltersDocument ), GetKnownDataContractTypes() );
+                serializer.WriteObject( stream, document );
+            }
         }
 
         private IEnumerable<Type> GetKnownDataContractTypes()
