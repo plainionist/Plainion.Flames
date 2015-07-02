@@ -38,7 +38,7 @@ namespace Plainion.Flames.Infrastructure.ViewModels
 
                 if (myProjectService.Project != null)
                 {
-                    ProjectService_ProjectChanged(null, EventArgs.Empty);
+                    ProjectService_ProjectChanged(myProjectService, EventArgs.Empty);
                 }
             }
         }

@@ -268,11 +268,6 @@ namespace Plainion.Flames.Viewer.Services
                 .ContinueWith(t =>
                 {
                     Project.Presentation = t.Result;
-
-                    foreach (var provider in ProjectItemProviders)
-                    {
-                        provider.OnPresentationCreated(Project);
-                    }
                 }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }

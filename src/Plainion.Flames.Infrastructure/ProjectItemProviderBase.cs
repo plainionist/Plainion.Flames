@@ -12,7 +12,5 @@ namespace Plainion.Flames.Infrastructure
         public virtual void OnProjectUnloading(IProject project, IProjectSerializationContext context) { }
 
         public virtual void OnProjectUnloaded(IProject project, IProjectSerializationContext context) { }
-
-        public virtual void OnPresentationCreated(IProject project) { }
     }
 }

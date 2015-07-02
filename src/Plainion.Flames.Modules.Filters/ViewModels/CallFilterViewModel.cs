@@ -25,6 +25,12 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
         public DurationFilterViewModel DurationFilterViewModel { get; private set; }
 
+        protected override void OnProjectChanged()
+        {
+            // new project - reset all user settings
+            myModule = null;
+        }
+
         protected override void OnPresentationChanged(FlameSetPresentation oldValue)
         {
             // lets preserve the module itself to preserve the user settings across presentations
@@ -39,13 +45,13 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             if (document == null)
             {
                 myModule = CallFilterModule.CreateEmpty();
-                myModule.Presentation = Presentation;
             }
             else
             {
                 myModule = CallFilterModule.CreateFromDocument(document);
-                myModule.Presentation = Presentation;
             }
+
+            myModule.Presentation = Presentation;
 
             // TODO: as a workaround let us add the entire CallFilterModule to the Project.Items
             ProjectService.Project.Items.Add(myModule);

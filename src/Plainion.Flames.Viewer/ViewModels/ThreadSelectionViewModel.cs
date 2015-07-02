@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.Composition;
+﻿using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Linq;
+using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Controls;
 using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Presentation;
+using Plainion.Flames.Viewer.Model;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
@@ -20,13 +23,52 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         public TracesTree TracesTreeSource { get; private set; }
 
+        protected override void OnProjectChanged()
+        {
+            // new project - reset all user settings
+            TracesTreeSource.Processes = null;
+
+            PropertyChangedEventManager.AddHandler(ProjectService.Project, Project_TraceLogChanged,
+                PropertySupport.ExtractPropertyName(() => ProjectService.Project.TraceLog));
+        }
+
+        private void Project_TraceLogChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // new tracelog - as process and thread instances are our model we have reset all user settings
+            TracesTreeSource.Processes = null;
+        }
+
         protected override void OnPresentationChanged(FlameSetPresentation oldValue)
         {
+            if (Presentation == null)
+            {
+                return;
+            }
+
+            // lets preserve the user settings across presentations.
+            // if we get here with a new project/tracelog we have reseted the TracesTreeSource already
+            if (TracesTreeSource.Processes != null)
+            {
+                return;
+            }
+
             TracesTreeSource.Processes = Presentation.Flames
                 .GroupBy(x => x.Model.Process)
                 .OrderBy(x => x.Key.Name)
                 .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()))
                 .ToList();
+
+            var selectedThreads = ProjectService.Project.Items.OfType<SelectedThreadsDocument>().SingleOrDefault();
+            if (selectedThreads != null)
+            {
+                foreach (var flame in Presentation.Flames)
+                {
+                    if (!selectedThreads.IsVisible(flame.ProcessId, flame.ThreadId))
+                    {
+                        flame.Visibility = ContentVisibility.Invisible;
+                    }
+                }
+            }
         }
     }
 }
