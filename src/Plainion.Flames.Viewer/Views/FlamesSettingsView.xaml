@@ -87,10 +87,6 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>
-
-            <TabItem Header="Processes &amp; Threads">
-                <bfi:TracesTreeView TracesSource="{Binding TracesTreeSource}"/>
-            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>

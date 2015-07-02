@@ -117,6 +117,7 @@
     <Compile Include="Services\ProjectSerializationContext.cs" />
     <Compile Include="Services\TraceLoaderService.cs" />
     <Compile Include="ShellViewModel.cs" />
+    <Compile Include="ViewModels\ThreadSelectionViewModel.cs" />
     <Compile Include="ViewModels\BookmarksViewModel.cs" />
     <Compile Include="ViewModels\FlamesSettingsViewModel.cs" />
     <Compile Include="ViewModels\SelectableProcessAdapter.cs" />
@@ -134,6 +135,9 @@
     <Compile Include="Views\LogLevelToBrushConverter.cs" />
     <Compile Include="Views\LogView.xaml.cs">
       <DependentUpon>LogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ThreadSelectionView.xaml.cs">
+      <DependentUpon>ThreadSelectionView.xaml</DependentUpon>
     </Compile>
     <Page Include="Shell.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -160,6 +164,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ThreadSelectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

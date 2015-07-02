@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.Composition;
-using Plainion.Flames.Viewer.Views;
 using Microsoft.Practices.Prism.MefExtensions.Modularity;
 using Microsoft.Practices.Prism.Modularity;
 using Microsoft.Practices.Prism.Regions;
+using Plainion.Flames.Viewer.Views;
 
 namespace Plainion.Flames.Viewer
 {
-    [ModuleExport( typeof( CoreModule ) )]
+    [ModuleExport(typeof(CoreModule))]
     public class CoreModule : IModule
     {
         [Import]
@@ -14,10 +14,12 @@ namespace Plainion.Flames.Viewer
 
         public void Initialize()
         {
-            RegionManager.RegisterViewWithRegion( RegionNames.LogView, typeof( LogView ) );
-            RegionManager.RegisterViewWithRegion( RegionNames.BrowserView, typeof( FlamesBrowser ) );
-            RegionManager.RegisterViewWithRegion( RegionNames.SettingsView, typeof( FlamesSettingsView ) );
-            RegionManager.RegisterViewWithRegion( Plainion.Flames.Infrastructure.RegionNames.FlamesSettings, typeof( BookmarksView ) );
+            RegionManager.RegisterViewWithRegion(RegionNames.LogView, typeof(LogView));
+            RegionManager.RegisterViewWithRegion(RegionNames.BrowserView, typeof(FlamesBrowser));
+            RegionManager.RegisterViewWithRegion(RegionNames.SettingsView, typeof(FlamesSettingsView));
+
+            RegionManager.RegisterViewWithRegion(Plainion.Flames.Infrastructure.RegionNames.FlamesSettings, typeof(BookmarksView));
+            RegionManager.RegisterViewWithRegion(Plainion.Flames.Infrastructure.RegionNames.FlamesSettings, typeof(ThreadSelectionView));
         }
     }
 }
