@@ -6,11 +6,11 @@ using Plainion.Flames.Viewer.ViewModels;
 namespace Plainion.Flames.Viewer.Views
 {
     [Export, PartCreationPolicy(CreationPolicy.NonShared)]
-    [ViewSortHint("0100")]
-    public partial class ThreadSelectionView : UserControl
+    [ViewSortHint("0010")]
+    public partial class TraceLogOverviewView : UserControl
     {
         [ImportingConstructor]
-        internal ThreadSelectionView(ThreadSelectionViewModel model)
+        internal TraceLogOverviewView(TraceLogOverviewViewModel model)
         {
             InitializeComponent();
 

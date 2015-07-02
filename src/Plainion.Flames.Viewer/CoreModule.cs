@@ -20,6 +20,7 @@ namespace Plainion.Flames.Viewer
 
             RegionManager.RegisterViewWithRegion(Plainion.Flames.Infrastructure.RegionNames.FlamesSettings, typeof(BookmarksView));
             RegionManager.RegisterViewWithRegion(Plainion.Flames.Infrastructure.RegionNames.FlamesSettings, typeof(ThreadSelectionView));
+            RegionManager.RegisterViewWithRegion(Plainion.Flames.Infrastructure.RegionNames.FlamesSettings, typeof(TraceLogOverviewView));
         }
     }
 }

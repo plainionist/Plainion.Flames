@@ -27,66 +27,6 @@
                     <Setter Property="Visibility" Value="{Binding Content.DataContext.ShowTab,Converter={StaticResource BoolToVisibilityConverter}}"/>
                 </Style>
             </TabControl.ItemContainerStyle>
-
-            <TabItem Header="General">
-                <StackPanel Orientation="Vertical">
-                    <GroupBox Header="General" Padding="1">
-                        <StackPanel Orientation="Vertical">
-                            <!-- TODO: find better way than this implicit contract to DataContext -->
-                            <CheckBox IsChecked="{Binding Presentation.HideEmptyFlames}" Content="Hide empty flames" Margin="3"/>
-                            <CheckBox IsChecked="{Binding Presentation.TimelineViewport.ShowAbsoluteTimestamps}" Content="Show absolute timestamps" Margin="3"/>
-                        </StackPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Trace information" Padding="2">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Trace creation timestamp"/>
-                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Presentation.Model.CreationTime}" TextAlignment="Right" Margin="5,0,0,0"/>
-
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Trace duration"/>
-                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding TraceDuration}" TextAlignment="Right" Margin="5,0,0,0"/>
-                        </Grid>
-                    </GroupBox>
-
-                    <GroupBox Header="Statistics" Padding="2">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Processes"/>
-                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding ProcessCount}" TextAlignment="Right" Margin="5,0,0,0"/>
-
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Threads"/>
-                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding ThreadCount}" TextAlignment="Right" Margin="5,0,0,0"/>
-
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Methods"/>
-                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Presentation.Model.Methods.Count}" TextAlignment="Right" Margin="5,0,0,0"/>
-
-                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Calls"/>
-                            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding CallCount}" TextAlignment="Right" Margin="5,0,0,0"/>
-                        </Grid>
-                    </GroupBox>
-                </StackPanel>
-            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>
