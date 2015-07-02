@@ -1,11 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="7198a872-5c92-4a01-9908-d60f32395599" Created="635705633617704272" LastModified="635705637398872351">
+<Node Id="7198a872-5c92-4a01-9908-d60f32395599" Created="635705633617704272" LastModified="635714328392485986">
   <Caption><![CDATA[cleanup IProjectItemSerializer usage]]></Caption>
-  <Content><![CDATA[- can we have everyting in service and async?
-  (see presentation creation)
-- where do we really need the context?
-- do we want to move the events to the project?
+  <Content><![CDATA[- reduce API to "loaded" and "undloading" of project first.
+  the trigger to do deserialization by the providers and to do
+  the serialization by the provider
+- everthing else has to be done by the view models (they have the project now)
 
-SelectedThreadsProvider
-- is the better model the TracesTree of the "Settings" view?]]></Content>
+- then try to harmonize the serialization so that we can do it centrally
+  and async
+  - therefore we need to harmonize the serialization technology or put it
+    into the documents (ISerializable)
+
+
+]]></Content>
 </Node>
