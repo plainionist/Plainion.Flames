@@ -6,9 +6,6 @@
       <Caption><![CDATA[Next steps]]></Caption>
       <Node Id="954520dd-58bb-463d-8a88-3e02747a70ab">
         <Caption><![CDATA[Cleanup model]]></Caption>
-        <Node Id="5fc5921e-1227-42ab-a729-a12f0a714fec">
-          <Caption><![CDATA[cleanup settings view]]></Caption>
-        </Node>
         <Node Id="7198a872-5c92-4a01-9908-d60f32395599">
           <Caption><![CDATA[cleanup IProjectItemSerializer usage]]></Caption>
         </Node>

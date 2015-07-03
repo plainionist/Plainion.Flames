@@ -70,12 +70,19 @@ namespace Plainion.Flames.Viewer.ViewModels
             SelectedItems.Clear();
             SelectedItems.CollectionChanged += OnSelectedItemsChanged;
 
-            Items = Presentation.Model.AssociatedEvents
-                .All<IBookmarks>()
-                .Select(b => b.Name)
-                .Distinct()
-                .OrderBy(n => n)
-                .ToList();
+            if (Presentation != null)
+            {
+                Items = Presentation.Model.AssociatedEvents
+                    .All<IBookmarks>()
+                    .Select(b => b.Name)
+                    .Distinct()
+                    .OrderBy(n => n)
+                    .ToList();
+            }
+            else
+            {
+                Items = null;
+            }
 
             OnPropertyChanged("Items");
         }

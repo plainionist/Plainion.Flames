@@ -19,16 +19,25 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         protected override void OnPresentationChanged(FlameSetPresentation oldValue)
         {
-            ProcessCount = Presentation.Flames
-                .Select(t => t.ProcessId)
-                .Distinct()
-                .Count();
+            if (Presentation == null)
+            {
+                ProcessCount = -1;
+                ThreadCount = -1;
+                CallCount = -1;
+            }
+            else
+            {
+                ProcessCount = Presentation.Flames
+                    .Select(t => t.ProcessId)
+                    .Distinct()
+                    .Count();
 
-            ThreadCount = Presentation.Flames.Count;
+                ThreadCount = Presentation.Flames.Count;
 
-            CallCount = Presentation.Flames
-                .SelectMany(t => t.Activities)
-                .Count();
+                CallCount = Presentation.Flames
+                    .SelectMany(t => t.Activities)
+                    .Count();
+            }
 
             OnPropertyChanged(() => TraceDuration);
         }
