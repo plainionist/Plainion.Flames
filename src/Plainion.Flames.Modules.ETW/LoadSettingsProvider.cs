@@ -12,7 +12,7 @@ namespace Plainion.Flames.Modules.ETW
     {
         private const string ProviderId = "{DE31E0F0-5068-4638-A343-731C108AA91B}.LoadSettings";
 
-        public override void OnTraceLogLoading(IProject project, IProjectSerializationContext context)
+        public override void OnProjectLoaded(IProject project, IProjectSerializationContext context)
         {
             if (context == null || !context.HasEntry(ProviderId))
             {

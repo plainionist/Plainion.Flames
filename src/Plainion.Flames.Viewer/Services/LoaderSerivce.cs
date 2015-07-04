@@ -137,7 +137,7 @@ namespace Plainion.Flames.Viewer.Services
         {
             foreach (var provider in ProjectItemProviders)
             {
-                provider.OnTraceLogLoading(project, context);
+                provider.OnProjectLoaded(project, context);
             }
 
             var builder = new TraceModelBuilder();
@@ -230,11 +230,6 @@ namespace Plainion.Flames.Viewer.Services
 
                     project.TraceLog.Dispose();
                     project.TraceLog = null;
-
-                    foreach (var provider in ProjectItemProviders)
-                    {
-                        provider.OnProjectUnloaded(project, context);
-                    }
                 }
             }
         }

@@ -16,7 +16,7 @@ namespace Plainion.Flames.Modules.Filters
 
         // TODO: actually we just need the eariest possible trigger that project was loaded
         // -> we use TraceLog loaded as workaround here
-        public override void OnTraceLogLoaded(IProject project, IProjectSerializationContext context)
+        public override void OnProjectLoaded(IProject project, IProjectSerializationContext context)
         {
             if (context == null || !context.HasEntry(ProviderId))
             {

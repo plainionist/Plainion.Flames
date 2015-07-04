@@ -13,7 +13,7 @@ namespace Plainion.Flames.Viewer.Services
     {
         private const string ProviderId = "{6E3426EF-676D-48B1-AA5D-E9661A5C6CCD}.SelectedThreads";
 
-        public override void OnTraceLogLoaded(IProject project, IProjectSerializationContext context)
+        public override void OnProjectLoaded(IProject project, IProjectSerializationContext context)
         {
             if (context == null || !context.HasEntry(ProviderId))
             {
