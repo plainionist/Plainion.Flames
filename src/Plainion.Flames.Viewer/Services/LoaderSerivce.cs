@@ -165,8 +165,6 @@ namespace Plainion.Flames.Viewer.Services
 
             // ... then set the tracelog - some view models react on that and expect the project items to be there again
             project.TraceLog = builder.Complete();
-
-            OnTracesLoadCompleted(project.TraceFiles);
         }
 
         private ITraceReader TryGetTraceReaderByExtension(string ext)
@@ -235,14 +233,6 @@ namespace Plainion.Flames.Viewer.Services
         {
             var mainTraceFile = project.TraceFiles.First();
             return Path.Combine(Path.GetDirectoryName(mainTraceFile), Path.GetFileNameWithoutExtension(mainTraceFile) + ".pfp");
-        }
-
-        [Import]
-        private TraceLoaderService TraceLoader { get; set; }
-
-        private void OnTracesLoadCompleted(IEnumerable<string> traceFiles)
-        {
-            TraceLoader.LoadCompleted(traceFiles);
         }
 
         public Task CreatePresentationAsync(IProgress<IProgressInfo> progress)

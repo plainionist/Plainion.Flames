@@ -11,25 +11,14 @@ namespace Plainion.Flames.Viewer.Services
     [Export( typeof( TraceLoaderService ) )]
     class TraceLoaderService : ITraceLoaderService
     {
-        public IEnumerable<string> LoadedTraceFiles { get; set; }
-
-        public event EventHandler LoadingCompleted;
+        [Import]
+        public Lazy<IProjectService> ProjectService { get; set; }
 
         public Action<string[]> UILoadAction { get; set; }
 
         public void ReloadCurrentTrace()
         {
-            UILoadAction( LoadedTraceFiles.ToArray() );
-        }
-
-        public void LoadCompleted( IEnumerable<string> traceFiles )
-        {
-            LoadedTraceFiles = traceFiles.ToList();
-
-            if( LoadingCompleted != null )
-            {
-                LoadingCompleted( this, EventArgs.Empty );
-            }
+            UILoadAction( ProjectService.Value.Project.TraceFiles.ToArray() );
         }
     }
 }

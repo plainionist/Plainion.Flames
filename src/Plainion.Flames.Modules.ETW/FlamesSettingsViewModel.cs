@@ -1,32 +1,35 @@
 ﻿using System;
-using System.Linq;
 using System.ComponentModel.Composition;
-using Plainion.Flames.Infrastructure.Services;
-using Microsoft.Practices.Prism.Mvvm;
 using System.IO;
+using System.Linq;
+using Plainion.Flames.Infrastructure.Services;
+using Plainion.Flames.Infrastructure.ViewModels;
+using Plainion.Flames.Model;
 
 namespace Plainion.Flames.Modules.ETW
 {
     [Export]
-    class FlamesSettingsViewModel : BindableBase
+    class FlamesSettingsViewModel : ViewModelBase
     {
-        private ITraceLoaderService myTraceLoader;
         private bool myInterpolateBrokenStackSamples;
         private bool myShowTab;
 
-        [ImportingConstructor]
-        public FlamesSettingsViewModel( ITraceLoaderService traceLoader )
-        {
-            myTraceLoader = traceLoader;
-            myTraceLoader.LoadingCompleted += OnLoadingCompleted;
-        }
+        [Import]
+        public ITraceLoaderService TraceLoader { get; set; }
 
-        private void OnLoadingCompleted( object sender, EventArgs e )
+        protected override void OnTraceLogChanged( ITraceLog oldValue )
         {
-            ShowTab = myTraceLoader.LoadedTraceFiles
-                .Select( f => Path.GetExtension( f ) )
-                .Any( ext => ext.Equals( ".etl", StringComparison.OrdinalIgnoreCase )
-                    || ext.Equals( ".etlx", StringComparison.OrdinalIgnoreCase ) );
+            if( TraceLog != null )
+            {
+                ShowTab = ProjectService.Project.TraceFiles
+                    .Select( f => Path.GetExtension( f ) )
+                    .Any( ext => ext.Equals( ".etl", StringComparison.OrdinalIgnoreCase )
+                        || ext.Equals( ".etlx", StringComparison.OrdinalIgnoreCase ) );
+            }
+            else
+            {
+                ShowTab = false;
+            }
         }
 
         public string Description { get { return "ETW settings"; } }
@@ -44,7 +47,7 @@ namespace Plainion.Flames.Modules.ETW
             {
                 if( SetProperty( ref myInterpolateBrokenStackSamples, value ) )
                 {
-                    myTraceLoader.ReloadCurrentTrace();
+                    TraceLoader.ReloadCurrentTrace();
                 }
             }
         }
