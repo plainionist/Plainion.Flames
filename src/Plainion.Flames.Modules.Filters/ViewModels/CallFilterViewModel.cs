@@ -37,6 +37,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             if (myModule != null)
             {
                 myModule.Presentation = Presentation;
+                NameFilterViewModel.Presentation = Presentation;
                 return;
             }
 

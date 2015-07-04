@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Plainion.Flames.Modules.Filters.Model;
+using Plainion.Flames.Presentation;
 using Plainion.Prism.Mvvm;
 
 namespace Plainion.Flames.Modules.Filters.ViewModels
@@ -22,6 +23,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
         private INameFilter mySelectedFilter;
         private FilterTarget myFilterTarget;
         private bool myPreviewUnmatchedItemsOnly;
+        private FlameSetPresentation myPresentation;
 
         public NameFilterViewModel()
         {
@@ -46,6 +48,8 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
                 if( SetProperty( ref myModule, value ) )
                 {
+                    Presentation = myModule.Presentation;
+
                     if( oldModule != null )
                     {
                         oldModule.NameFilterApplianceChanged -= OnNameFilterApplianceChanged;
@@ -57,17 +61,39 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
                     OnPropertyChanged( "Filters" );
 
                     SelectedFilter = null;
-                    myPreviewItems = null;
                     Filter = null;
-                    PreviewItems.Refresh();
                 }
+            }
+        }
+
+        public FlameSetPresentation Presentation
+        {
+            get { return myPresentation; }
+            internal set
+            {
+                if( myPresentation == value )
+                {
+                    return;
+                }
+
+                myPresentation = value;
+
+                ForceRefreshPreviewItems();
+            }
+        }
+
+        private void ForceRefreshPreviewItems()
+        {
+            myPreviewItems = null;
+            if( myPreviewItems != null )
+            {
+                PreviewItems.Refresh();
             }
         }
 
         private void OnNameFilterApplianceChanged( object sender, EventArgs e )
         {
-            myPreviewItems = null;
-            PreviewItems.Refresh();
+            ForceRefreshPreviewItems();
         }
 
         public ObservableCollection<INameFilter> Filters
@@ -192,16 +218,16 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
         {
             get
             {
-                if( myPreviewItems == null && myModule != null )
+                if( myPreviewItems == null && myModule != null && myPresentation!=null)
                 {
                     IEnumerable<string> preview = null;
 
                     switch( FilterTarget )
                     {
-                        case FilterTarget.Module: preview = myModule.Presentation.Model.Methods.Select( m => m.Module ); break;
-                        case FilterTarget.Namespace: preview = myModule.Presentation.Model.Methods.Select( m => m.Namespace ); break;
-                        case FilterTarget.Class: preview = myModule.Presentation.Model.Methods.Select( m => m.Class ); break;
-                        case FilterTarget.Method: preview = myModule.Presentation.Model.Methods.Select( m => m.Name ); break;
+                        case FilterTarget.Module: preview = myPresentation.Model.Methods.Select( m => m.Module ); break;
+                        case FilterTarget.Namespace: preview = myPresentation.Model.Methods.Select( m => m.Namespace ); break;
+                        case FilterTarget.Class: preview = myPresentation.Model.Methods.Select( m => m.Class ); break;
+                        case FilterTarget.Method: preview = myPresentation.Model.Methods.Select( m => m.Name ); break;
                         default: throw new NotSupportedException( FilterTarget.ToString() );
                     }
 

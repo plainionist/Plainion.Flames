@@ -114,8 +114,8 @@ namespace Plainion.Flames.Viewer.Services
 
             project.WasDeserialized = File.Exists(file);
 
-            // set it here to unload old project first
-            Project = project;
+            // unload old project
+            Project = null;
 
             if (File.Exists(file))
             {
@@ -139,6 +139,9 @@ namespace Plainion.Flames.Viewer.Services
             {
                 provider.OnProjectLoaded(project, context);
             }
+
+            // now all project items are loaded - publish the new project
+            Project = project;
 
             var builder = new TraceModelBuilder();
 
