@@ -16,48 +16,57 @@ namespace Plainion.Flames.Viewer.Services
 
         public override void OnProjectLoaded( IProject project, IProjectSerializationContext context )
         {
-            base.OnProjectLoaded( project, context );
-        }
-
-        public override void OnTraceLogLoaded(IProject project, IProjectSerializationContext context)
-        {
-            var initialNames = new FriendlyNamesDocument();
-            CollectInitialNames(project.TraceLog, initialNames);
-            project.Items.Add(initialNames);
-
-            if (context != null && context.HasEntry(ProviderId))
+            if( context != null && context.HasEntry( ProviderId ) )
             {
-                using (var stream = context.GetEntry(ProviderId))
+                using( var stream = context.GetEntry( ProviderId ) )
                 {
                     var serializer = new DataContractSerializer( typeof( FriendlyNamesDocument ) );
                     var friendlyNames = ( FriendlyNamesDocument )serializer.ReadObject( stream );
-                    ApplyFriendlyNames(project.TraceLog, friendlyNames);
+                    project.Items.Add( friendlyNames );
                 }
             }
         }
 
-        private void ApplyFriendlyNames(ITraceLog traceLog, IEnumerable<KeyValuePair<long, string>> friendlyNames)
+        public override void OnTraceLogLoaded( IProject project, IProjectSerializationContext context )
         {
-            foreach (var entry in friendlyNames)
+            var friendlyNames = project.Items.OfType<FriendlyNamesDocument>().SingleOrDefault();
+            if( friendlyNames != null )
+            {
+                // apply friendly names and keep in Project.Items to be able to 
+                // collect new friendly names when unloading project
+                ApplyFriendlyNames( project.TraceLog, friendlyNames );
+            }
+            else
+            {
+                // no persistent friendly names from previous runs - collect initial names
+                var initialNames = new FriendlyNamesDocument();
+                CollectInitialNames( project.TraceLog, initialNames );
+                project.Items.Add( initialNames );
+            }
+        }
+
+        private void ApplyFriendlyNames( ITraceLog traceLog, IEnumerable<KeyValuePair<long, string>> friendlyNames )
+        {
+            foreach( var entry in friendlyNames )
             {
                 int pid;
                 int tid;
-                PidTid.Decode(entry.Key, out pid, out tid);
+                PidTid.Decode( entry.Key, out pid, out tid );
 
-                var process = traceLog.Processes.SingleOrDefault(p => p.ProcessId == pid);
-                if (process == null)
+                var process = traceLog.Processes.SingleOrDefault( p => p.ProcessId == pid );
+                if( process == null )
                 {
                     // TODO: this should only happen if loading of trace has been aborted
                     continue;
                 }
 
-                if (tid == -1)
+                if( tid == -1 )
                 {
                     process.Name = entry.Value;
                 }
                 else
                 {
-                    var thread = traceLog.GetThreads(process).Single(t => t.ThreadId == tid);
+                    var thread = traceLog.GetThreads( process ).Single( t => t.ThreadId == tid );
                     thread.Name = entry.Value;
                 }
             }
@@ -70,23 +79,23 @@ namespace Plainion.Flames.Viewer.Services
         /// </summary>
         private void CollectInitialNames( ITraceLog log, FriendlyNamesDocument repository )
         {
-            foreach (var process in log.Processes)
+            foreach( var process in log.Processes )
             {
-                long key = PidTid.Encode(process.ProcessId);
+                long key = PidTid.Encode( process.ProcessId );
 
-                repository[key] = process.Name;
+                repository[ key ] = process.Name;
 
-                foreach (var thread in log.GetThreads(process))
+                foreach( var thread in log.GetThreads( process ) )
                 {
-                    key = PidTid.Encode(process.ProcessId, thread.ThreadId);
-                    repository[key] = thread.Name;
+                    key = PidTid.Encode( process.ProcessId, thread.ThreadId );
+                    repository[ key ] = thread.Name;
                 }
             }
         }
 
-        public override void OnProjectUnloading(IProject project, IProjectSerializationContext context)
+        public override void OnProjectUnloading( IProject project, IProjectSerializationContext context )
         {
-            if (project.TraceLog == null)
+            if( project.TraceLog == null )
             {
                 return;
             }
@@ -94,32 +103,32 @@ namespace Plainion.Flames.Viewer.Services
             var initialNames = project.Items.OfType<FriendlyNamesDocument>().Single();
             var friendlyNames = new FriendlyNamesDocument();
 
-            foreach (var process in project.TraceLog.Processes)
+            foreach( var process in project.TraceLog.Processes )
             {
-                var key = PidTid.Encode(process.ProcessId);
+                var key = PidTid.Encode( process.ProcessId );
 
-                var origName = initialNames[key];
-                if (origName != process.Name)
+                var origName = initialNames[ key ];
+                if( origName != process.Name )
                 {
-                    friendlyNames[key] = process.Name;
+                    friendlyNames[ key ] = process.Name;
                 }
 
-                foreach (var thread in project.TraceLog.GetThreads(process))
+                foreach( var thread in project.TraceLog.GetThreads( process ) )
                 {
-                    key = PidTid.Encode(process.ProcessId, thread.ThreadId);
+                    key = PidTid.Encode( process.ProcessId, thread.ThreadId );
 
-                    origName = initialNames[key];
-                    if (origName != thread.Name)
+                    origName = initialNames[ key ];
+                    if( origName != thread.Name )
                     {
-                        friendlyNames[key] = thread.Name;
+                        friendlyNames[ key ] = thread.Name;
                     }
                 }
             }
 
-            using (var stream = context.CreateEntry(ProviderId))
+            using( var stream = context.CreateEntry( ProviderId ) )
             {
                 var serializer = new DataContractSerializer( typeof( FriendlyNamesDocument ) );
-                serializer.WriteObject(stream, friendlyNames);
+                serializer.WriteObject( stream, friendlyNames );
             }
         }
     }
