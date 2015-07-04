@@ -166,11 +166,6 @@ namespace Plainion.Flames.Viewer.Services
             // ... then set the tracelog - some view models react on that and expect the project items to be there again
             project.TraceLog = builder.Complete();
 
-            foreach( var provider in ProjectItemProviders )
-            {
-                provider.OnTraceLogLoaded(project, context);
-            }
-
             OnTracesLoadCompleted(project.TraceFiles);
         }
 

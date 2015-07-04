@@ -7,8 +7,6 @@ namespace Plainion.Flames.Infrastructure
 
         public virtual void OnProjectLoaded(IProject project, IProjectSerializationContext context) { }
 
-        public virtual void OnTraceLogLoaded(IProject project, IProjectSerializationContext context) { }
-
         public virtual void OnProjectUnloading(IProject project, IProjectSerializationContext context) { }
     }
 }
