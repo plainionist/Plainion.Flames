@@ -11,12 +11,12 @@ namespace Plainion.Flames.Viewer.ViewModels
         public int SelectedTabIndex
         {
             get { return mySelectedTabIndex; }
-            set { SetProperty(ref mySelectedTabIndex, value); }
+            set { SetProperty( ref mySelectedTabIndex, value ); }
         }
 
         protected override void OnProjectChanged()
         {
-            if (ProjectService.Project.WasDeserialized)
+            if( ProjectService.Project != null && ProjectService.Project.WasDeserialized )
             {
                 // we loaded user settings from disk which might filter out certain threads or calls.
                 // lets jump to process and threads view

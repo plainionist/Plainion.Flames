@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Controls;
 using Plainion.Flames.Infrastructure.ViewModels;
+using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 using Plainion.Flames.Viewer.Model;
 
@@ -27,12 +28,9 @@ namespace Plainion.Flames.Viewer.ViewModels
         {
             // new project - reset all user settings
             TracesTreeSource.Processes = null;
-
-            PropertyChangedEventManager.AddHandler(ProjectService.Project, Project_TraceLogChanged,
-                PropertySupport.ExtractPropertyName(() => ProjectService.Project.TraceLog));
         }
 
-        private void Project_TraceLogChanged(object sender, PropertyChangedEventArgs e)
+        protected override void OnTraceLogChanged( ITraceLog oldValue )
         {
             // new tracelog - as process and thread instances are our model we have reset all user settings
             TracesTreeSource.Processes = null;

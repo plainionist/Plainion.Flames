@@ -3,12 +3,14 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Services;
+using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Infrastructure.ViewModels
 {
     public class ViewModelBase : BindableBase
     {
+        private ITraceLog myTraceLog;
         private FlameSetPresentation myPresentation;
         private IProjectService myProjectService;
 
@@ -21,13 +23,13 @@ namespace Plainion.Flames.Infrastructure.ViewModels
             get { return myProjectService; }
             set
             {
-                if (myProjectService == value)
+                if( myProjectService == value )
                 {
                     return;
 
                 }
 
-                if (myProjectService != null)
+                if( myProjectService != null )
                 {
                     myProjectService.ProjectChanged -= ProjectService_ProjectChanged;
                 }
@@ -36,43 +38,67 @@ namespace Plainion.Flames.Infrastructure.ViewModels
 
                 myProjectService.ProjectChanged += ProjectService_ProjectChanged;
 
-                if (myProjectService.Project != null)
-                {
-                    ProjectService_ProjectChanged(myProjectService, EventArgs.Empty);
-                }
+                ProjectService_ProjectChanged( myProjectService, EventArgs.Empty );
             }
         }
 
-        private void ProjectService_ProjectChanged(object sender, EventArgs e)
+        private void ProjectService_ProjectChanged( object sender, EventArgs e )
         {
-            Presentation = ProjectService.Project.Presentation;
+            if( myProjectService.Project != null )
+            {
+                TraceLog = ProjectService.Project.TraceLog;
+                Presentation = ProjectService.Project.Presentation;
 
-            PropertyChangedEventManager.AddHandler(ProjectService.Project, Project_PresentationChanged,
-                PropertySupport.ExtractPropertyName(() => ProjectService.Project.Presentation));
+                PropertyChangedEventManager.AddHandler( ProjectService.Project, Project_TraceLogChanged,
+                    PropertySupport.ExtractPropertyName( () => ProjectService.Project.TraceLog ) );
+
+                PropertyChangedEventManager.AddHandler( ProjectService.Project, Project_PresentationChanged,
+                    PropertySupport.ExtractPropertyName( () => ProjectService.Project.Presentation ) );
+            }
 
             OnProjectChanged();
         }
 
         protected virtual void OnProjectChanged() { }
 
-        private void Project_PresentationChanged(object sender, PropertyChangedEventArgs e)
+        private void Project_TraceLogChanged( object sender, PropertyChangedEventArgs e )
+        {
+            TraceLog = ProjectService.Project.TraceLog;
+        }
+
+        private void Project_PresentationChanged( object sender, PropertyChangedEventArgs e )
         {
             Presentation = ProjectService.Project.Presentation;
         }
+
+        public ITraceLog TraceLog
+        {
+            get { return myTraceLog; }
+            set
+            {
+                var oldValue = myTraceLog;
+                if( SetProperty( ref myTraceLog, value ) )
+                {
+                    OnTraceLogChanged( oldValue );
+                }
+            }
+        }
+
+        protected virtual void OnTraceLogChanged( ITraceLog oldValue ) { }
 
         public FlameSetPresentation Presentation
         {
             get { return myPresentation; }
             set
             {
-                var oldPresentation = myPresentation;
-                if (SetProperty(ref myPresentation, value))
+                var oldValue = myPresentation;
+                if( SetProperty( ref myPresentation, value ) )
                 {
-                    OnPresentationChanged(oldPresentation);
+                    OnPresentationChanged( oldValue );
                 }
             }
         }
 
-        protected virtual void OnPresentationChanged(FlameSetPresentation oldValue) { }
+        protected virtual void OnPresentationChanged( FlameSetPresentation oldValue ) { }
     }
 }
