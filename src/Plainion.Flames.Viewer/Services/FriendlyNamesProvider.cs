@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Plainion.Flames.Infrastructure;
 using Plainion.Flames.Model;
+using Plainion.Flames.Viewer.Model;
 
 namespace Plainion.Flames.Viewer.Services
 {
@@ -13,47 +14,14 @@ namespace Plainion.Flames.Viewer.Services
     {
         private const string ProviderId = "{866583EB-9C7C-4938-BDC8-FCCC77E42921}.FriendlyNames";
 
-        [DataContract(Name = "FriendlyNames", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/FriendlyNames")]
-        class FriendlyNames : IEnumerable<KeyValuePair<long, string>>
+        public override void OnProjectLoaded( IProject project, IProjectSerializationContext context )
         {
-            [DataMember(Name = "Version")]
-            public const byte Version = 1;
-
-            [DataMember(Name = "Names")]
-            private Dictionary<long, string> myEntries;
-
-            public FriendlyNames()
-            {
-                myEntries = new Dictionary<long, string>();
-            }
-
-            public string this[long key]
-            {
-                get
-                {
-                    string name;
-                    return myEntries.TryGetValue(key, out name) ? name : null;
-                }
-                set
-                {
-                    myEntries[key] = value;
-                }
-            }
-
-            public IEnumerator<KeyValuePair<long, string>> GetEnumerator()
-            {
-                return myEntries.GetEnumerator();
-            }
-
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                return myEntries.GetEnumerator();
-            }
+            base.OnProjectLoaded( project, context );
         }
 
         public override void OnTraceLogLoaded(IProject project, IProjectSerializationContext context)
         {
-            var initialNames = new FriendlyNames();
+            var initialNames = new FriendlyNamesDocument();
             CollectInitialNames(project.TraceLog, initialNames);
             project.Items.Add(initialNames);
 
@@ -61,18 +29,9 @@ namespace Plainion.Flames.Viewer.Services
             {
                 using (var stream = context.GetEntry(ProviderId))
                 {
-                    var serializer = new DataContractSerializer(typeof(FriendlyNames));
-                    var friendlyNames = (FriendlyNames)serializer.ReadObject(stream);
+                    var serializer = new DataContractSerializer( typeof( FriendlyNamesDocument ) );
+                    var friendlyNames = ( FriendlyNamesDocument )serializer.ReadObject( stream );
                     ApplyFriendlyNames(project.TraceLog, friendlyNames);
-                }
-            }
-            else
-            {
-                var legacyDeserializer = new FriendlyNamesDeserializerLegacy();
-                var entries = legacyDeserializer.Deserialize(project);
-                if (entries != null)
-                {
-                    ApplyFriendlyNames(project.TraceLog, entries);
                 }
             }
         }
@@ -109,7 +68,7 @@ namespace Plainion.Flames.Viewer.Services
         /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
         /// able to detect proecess/thread names (better) the user can benefit from it automatically.
         /// </summary>
-        private void CollectInitialNames(ITraceLog log, FriendlyNames repository)
+        private void CollectInitialNames( ITraceLog log, FriendlyNamesDocument repository )
         {
             foreach (var process in log.Processes)
             {
@@ -132,8 +91,8 @@ namespace Plainion.Flames.Viewer.Services
                 return;
             }
 
-            var initialNames = project.Items.OfType<FriendlyNames>().Single();
-            var friendlyNames = new FriendlyNames();
+            var initialNames = project.Items.OfType<FriendlyNamesDocument>().Single();
+            var friendlyNames = new FriendlyNamesDocument();
 
             foreach (var process in project.TraceLog.Processes)
             {
@@ -159,7 +118,7 @@ namespace Plainion.Flames.Viewer.Services
 
             using (var stream = context.CreateEntry(ProviderId))
             {
-                var serializer = new DataContractSerializer(typeof(FriendlyNames));
+                var serializer = new DataContractSerializer( typeof( FriendlyNamesDocument ) );
                 serializer.WriteObject(stream, friendlyNames);
             }
         }
