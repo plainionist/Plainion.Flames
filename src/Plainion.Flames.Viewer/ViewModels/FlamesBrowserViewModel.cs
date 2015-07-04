@@ -8,6 +8,7 @@ using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Plainion.Flames.Controls;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Infrastructure.ViewModels;
+using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Viewer.ViewModels
@@ -35,9 +36,9 @@ namespace Plainion.Flames.Viewer.ViewModels
             SpawnSettingsRequest = new InteractionRequest<Notification>();
         }
 
-        protected override void OnProjectChanged()
+        protected override void OnTraceLogChanged( ITraceLog oldValue )
         {
-            if( ProjectService.Project != null && ProjectService.Project.WasDeserialized )
+            if( ProjectService.Project != null && ProjectService.Project.WasDeserialized && TraceLog != null )
             {
                 // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
                 Application.Current.Dispatcher.BeginInvoke( DispatcherPriority.ApplicationIdle, new Action( () =>
