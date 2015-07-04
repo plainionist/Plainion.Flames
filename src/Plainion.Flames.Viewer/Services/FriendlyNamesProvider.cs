@@ -27,72 +27,6 @@ namespace Plainion.Flames.Viewer.Services
             }
         }
 
-        public override void OnTraceLogLoaded( IProject project, IProjectSerializationContext context )
-        {
-            var friendlyNames = project.Items.OfType<FriendlyNamesDocument>().SingleOrDefault();
-            if( friendlyNames != null )
-            {
-                // apply friendly names and keep in Project.Items to be able to 
-                // collect new friendly names when unloading project
-                ApplyFriendlyNames( project.TraceLog, friendlyNames );
-            }
-            else
-            {
-                // no persistent friendly names from previous runs - collect initial names
-                var initialNames = new FriendlyNamesDocument();
-                CollectInitialNames( project.TraceLog, initialNames );
-                project.Items.Add( initialNames );
-            }
-        }
-
-        private void ApplyFriendlyNames( ITraceLog traceLog, IEnumerable<KeyValuePair<long, string>> friendlyNames )
-        {
-            foreach( var entry in friendlyNames )
-            {
-                int pid;
-                int tid;
-                PidTid.Decode( entry.Key, out pid, out tid );
-
-                var process = traceLog.Processes.SingleOrDefault( p => p.ProcessId == pid );
-                if( process == null )
-                {
-                    // TODO: this should only happen if loading of trace has been aborted
-                    continue;
-                }
-
-                if( tid == -1 )
-                {
-                    process.Name = entry.Value;
-                }
-                else
-                {
-                    var thread = traceLog.GetThreads( process ).Single( t => t.ThreadId == tid );
-                    thread.Name = entry.Value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Names of processes and threads can be changed directly in the model. Here we keep the initial 
-        /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
-        /// able to detect proecess/thread names (better) the user can benefit from it automatically.
-        /// </summary>
-        private void CollectInitialNames( ITraceLog log, FriendlyNamesDocument repository )
-        {
-            foreach( var process in log.Processes )
-            {
-                long key = PidTid.Encode( process.ProcessId );
-
-                repository[ key ] = process.Name;
-
-                foreach( var thread in log.GetThreads( process ) )
-                {
-                    key = PidTid.Encode( process.ProcessId, thread.ThreadId );
-                    repository[ key ] = thread.Name;
-                }
-            }
-        }
-
         public override void OnProjectUnloading( IProject project, IProjectSerializationContext context )
         {
             if( project.TraceLog == null )
@@ -103,24 +37,20 @@ namespace Plainion.Flames.Viewer.Services
             var initialNames = project.Items.OfType<FriendlyNamesDocument>().Single();
             var friendlyNames = new FriendlyNamesDocument();
 
+            // only save what was really changed!
+            string origName = null;
             foreach( var process in project.TraceLog.Processes )
             {
-                var key = PidTid.Encode( process.ProcessId );
-
-                var origName = initialNames[ key ];
-                if( origName != process.Name )
+                if( initialNames.TryGetName( process.ProcessId, out origName ) && origName != process.Name )
                 {
-                    friendlyNames[ key ] = process.Name;
+                    friendlyNames.Add( process.ProcessId, process.Name );
                 }
 
                 foreach( var thread in project.TraceLog.GetThreads( process ) )
                 {
-                    key = PidTid.Encode( process.ProcessId, thread.ThreadId );
-
-                    origName = initialNames[ key ];
-                    if( origName != thread.Name )
+                    if( initialNames.TryGetName( process.ProcessId, thread.ThreadId, out origName ) && origName != thread.Name )
                     {
-                        friendlyNames[ key ] = thread.Name;
+                        friendlyNames.Add( process.ProcessId, thread.ThreadId, thread.Name );
                     }
                 }
             }

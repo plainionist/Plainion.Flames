@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Plainion.Flames.Viewer.Model
 {
     [DataContract( Name = "FriendlyNames", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/FriendlyNames" )]
-    class FriendlyNamesDocument : IEnumerable<KeyValuePair<long, string>>
+    class FriendlyNamesDocument 
     {
         [DataMember( Name = "Version" )]
         public const byte Version = 1;
@@ -17,27 +17,40 @@ namespace Plainion.Flames.Viewer.Model
             myEntries = new Dictionary<long, string>();
         }
 
-        public string this[ long key ]
+        public void Add( int pid, string name )
         {
-            get
-            {
-                string name;
-                return myEntries.TryGetValue( key, out name ) ? name : null;
-            }
-            set
-            {
-                myEntries[ key ] = value;
-            }
+            myEntries[ Encode( pid ) ] = name;
         }
 
-        public IEnumerator<KeyValuePair<long, string>> GetEnumerator()
+        public void Add( int pid, int tid, string name )
         {
-            return myEntries.GetEnumerator();
+            myEntries[ Encode( pid, tid ) ] = name;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        private static long Encode( int pid, int tid = -1 )
         {
-            return myEntries.GetEnumerator();
+            long b = tid;
+            b = b << 32;
+            b = b | ( uint )pid;
+            return b;
+        }
+
+        private static void Decode( long value, out int pid, out int tid )
+        {
+            pid = ( int )( value & uint.MaxValue );
+            tid = ( int )( value >> 32 );
+        }
+
+        public bool TryGetName( int pid, out string name )
+        {
+            var key = Encode( pid, -1 );
+            return myEntries.TryGetValue( key, out name );
+        }
+
+        public bool TryGetName( int pid, int tid, out string name )
+        {
+            var key = Encode( pid, tid );
+            return myEntries.TryGetValue( key, out name );
         }
     }
 }

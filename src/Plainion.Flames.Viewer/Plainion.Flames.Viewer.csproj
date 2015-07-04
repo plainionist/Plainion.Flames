@@ -113,7 +113,6 @@
     <Compile Include="Services\FriendlyNamesProvider.cs" />
     <Compile Include="Services\LoggingSink.cs" />
     <Compile Include="Services\LoaderSerivce.cs" />
-    <Compile Include="Services\PidTid.cs" />
     <Compile Include="Services\ProfilingService.cs" />
     <Compile Include="Services\ProjectSerializationContext.cs" />
     <Compile Include="Services\TraceLoaderService.cs" />

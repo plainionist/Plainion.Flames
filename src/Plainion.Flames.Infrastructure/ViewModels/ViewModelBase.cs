@@ -44,19 +44,20 @@ namespace Plainion.Flames.Infrastructure.ViewModels
 
         private void ProjectService_ProjectChanged( object sender, EventArgs e )
         {
+            OnProjectChanged();
+
             if( myProjectService.Project != null )
             {
                 TraceLog = ProjectService.Project.TraceLog;
-                Presentation = ProjectService.Project.Presentation;
 
                 PropertyChangedEventManager.AddHandler( ProjectService.Project, Project_TraceLogChanged,
                     PropertySupport.ExtractPropertyName( () => ProjectService.Project.TraceLog ) );
 
+                Presentation = ProjectService.Project.Presentation;
+
                 PropertyChangedEventManager.AddHandler( ProjectService.Project, Project_PresentationChanged,
                     PropertySupport.ExtractPropertyName( () => ProjectService.Project.Presentation ) );
             }
-
-            OnProjectChanged();
         }
 
         protected virtual void OnProjectChanged() { }

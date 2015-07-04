@@ -146,7 +146,6 @@ namespace Plainion.Flames.Viewer.Services
             {
                 builder.ReaderContextHints.Add(item);
             }
-            project.Items.Clear();
 
             foreach (var traceFile in project.TraceFiles)
             {
@@ -157,14 +156,17 @@ namespace Plainion.Flames.Viewer.Services
                 await reader.ReadAsync(traceFile, builder, progress);
             }
 
-            project.TraceLog = builder.Complete();
-
-            foreach (var hint in builder.ReaderContextHints)
+            // first copy back the project items
+            project.Items.Clear();
+            foreach( var hint in builder.ReaderContextHints )
             {
                 project.Items.Add(hint);
             }
 
-            foreach (var provider in ProjectItemProviders)
+            // ... then set the tracelog - some view models react on that and expect the project items to be there again
+            project.TraceLog = builder.Complete();
+
+            foreach( var provider in ProjectItemProviders )
             {
                 provider.OnTraceLogLoaded(project, context);
             }
