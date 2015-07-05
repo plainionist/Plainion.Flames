@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Plainion.Flames.Infrastructure;
+using Plainion.Flames.Infrastructure.Model;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
@@ -242,18 +243,19 @@ namespace Plainion.Flames.Viewer.Services
         {
             Contract.Invariant(Project != null, "No project exists");
 
-            return Task.Run<FlameSetPresentation>(() =>
+            return Task.Run<FlameSetPresentation>( () =>
                 {
-                    progress.Report(new UndefinedProgress("Creating presentation"));
+                    progress.Report( new UndefinedProgress( "Creating presentation" ) );
 
                     var factory = new PresentationFactory();
-                    return factory.CreateFlameSetPresentation(Project.TraceLog);
-                })
+                    return factory.CreateFlameSetPresentation( Project.TraceLog );
+                } )
                 .RethrowExceptionsInUIThread()
-                .ContinueWith(t =>
+                .ContinueWith( t =>
                 {
                     Project.Presentation = t.Result;
-                }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
+                }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext() )
+                .RethrowExceptionsInUIThread();
         }
     }
 }

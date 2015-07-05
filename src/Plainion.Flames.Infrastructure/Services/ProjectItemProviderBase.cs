@@ -1,5 +1,6 @@
-﻿
-namespace Plainion.Flames.Infrastructure
+﻿using Plainion.Flames.Infrastructure.Model;
+
+namespace Plainion.Flames.Infrastructure.Services
 {
     public class ProjectItemProviderBase : IProjectItemProvider
     {

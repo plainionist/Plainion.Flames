@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Plainion.Flames.Infrastructure
+namespace Plainion.Flames.Infrastructure.Services
 {
     public interface IProjectSerializationContext 
     {

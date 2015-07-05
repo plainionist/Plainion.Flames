@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using Plainion.Flames.Infrastructure.Model;
 
 namespace Plainion.Flames.Infrastructure.Services
 {

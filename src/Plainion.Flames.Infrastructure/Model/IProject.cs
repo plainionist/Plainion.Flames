@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 
-namespace Plainion.Flames.Infrastructure
+namespace Plainion.Flames.Infrastructure.Model
 {
     public interface IProject : INotifyPropertyChanged
     {

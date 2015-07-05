@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.Prism.Mvvm;
-using Plainion.Flames.Infrastructure;
+using Plainion.Flames.Infrastructure.Model;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 
