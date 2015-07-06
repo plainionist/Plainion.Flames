@@ -17,14 +17,14 @@ namespace Plainion.Flames.Modules.ETW
         [Import]
         public ITraceLoaderService TraceLoader { get; set; }
 
-        protected override void OnTraceLogChanged( ITraceLog oldValue )
+        protected override void OnTraceLogChanged()
         {
-            if( TraceLog != null )
+            if (TraceLog != null)
             {
                 ShowTab = ProjectService.Project.TraceFiles
-                    .Select( f => Path.GetExtension( f ) )
-                    .Any( ext => ext.Equals( ".etl", StringComparison.OrdinalIgnoreCase )
-                        || ext.Equals( ".etlx", StringComparison.OrdinalIgnoreCase ) );
+                    .Select(f => Path.GetExtension(f))
+                    .Any(ext => ext.Equals(".etl", StringComparison.OrdinalIgnoreCase)
+                        || ext.Equals(".etlx", StringComparison.OrdinalIgnoreCase));
             }
             else
             {
@@ -37,7 +37,7 @@ namespace Plainion.Flames.Modules.ETW
         public bool ShowTab
         {
             get { return myShowTab; }
-            set { SetProperty( ref myShowTab, value ); }
+            set { SetProperty(ref myShowTab, value); }
         }
 
         public bool InterpolateBrokenStackSamples
@@ -45,7 +45,7 @@ namespace Plainion.Flames.Modules.ETW
             get { return myInterpolateBrokenStackSamples; }
             set
             {
-                if( SetProperty( ref myInterpolateBrokenStackSamples, value ) )
+                if (SetProperty(ref myInterpolateBrokenStackSamples, value))
                 {
                     TraceLoader.ReloadCurrentTrace();
                 }

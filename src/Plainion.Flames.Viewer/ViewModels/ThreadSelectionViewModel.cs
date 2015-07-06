@@ -32,45 +32,45 @@ namespace Plainion.Flames.Viewer.ViewModels
             TracesTreeSource.Processes = null;
         }
 
-        protected override void OnTraceLogChanged( ITraceLog oldValue )
+        protected override void OnTraceLogChanged()
         {
             // new tracelog - as process and thread instances are our model we have reset all user settings
             TracesTreeSource.Processes = null;
 
-            if( TraceLog != null )
+            if (TraceLog != null)
             {
                 // first collect the "real" initial names -  as provided by the TraceLog itself
                 var initialNames = new FriendlyNamesDocument();
-                CollectInitialNames( initialNames );
+                CollectInitialNames(initialNames);
 
                 // apply friendly names if available
                 var friendlyNames = ProjectService.Project.Items.OfType<FriendlyNamesDocument>().SingleOrDefault();
-                if( friendlyNames != null )
+                if (friendlyNames != null)
                 {
                     // friendly names deserialized - apply to TraceLog
-                    ApplyFriendlyNames( friendlyNames );
-                    ProjectService.Project.Items.Remove( friendlyNames );
+                    ApplyFriendlyNames(friendlyNames);
+                    ProjectService.Project.Items.Remove(friendlyNames);
                 }
 
                 // add initial names so that we can calculate the diff on shutdown
-                ProjectService.Project.Items.Add( initialNames );
+                ProjectService.Project.Items.Add(initialNames);
             }
         }
 
-        private void ApplyFriendlyNames( FriendlyNamesDocument document )
+        private void ApplyFriendlyNames(FriendlyNamesDocument document)
         {
             string name = null;
 
-            foreach( var process in TraceLog.Processes )
+            foreach (var process in TraceLog.Processes)
             {
-                if( document.TryGetName( process.ProcessId, out name ) )
+                if (document.TryGetName(process.ProcessId, out name))
                 {
                     process.Name = name;
                 }
 
-                foreach( var thread in TraceLog.GetThreads( process ) )
+                foreach (var thread in TraceLog.GetThreads(process))
                 {
-                    if( document.TryGetName( process.ProcessId, thread.ThreadId, out name ) )
+                    if (document.TryGetName(process.ProcessId, thread.ThreadId, out name))
                     {
                         thread.Name = name;
                     }
@@ -83,45 +83,45 @@ namespace Plainion.Flames.Viewer.ViewModels
         /// names so that we store only the user modified names on shutdown. This way we ensure that if we might later be
         /// able to detect proecess/thread names (better) the user can benefit from it automatically.
         /// </summary>
-        private void CollectInitialNames( FriendlyNamesDocument document )
+        private void CollectInitialNames(FriendlyNamesDocument document)
         {
-            foreach( var process in TraceLog.Processes )
+            foreach (var process in TraceLog.Processes)
             {
-                document.Add( process.ProcessId, process.Name );
+                document.Add(process.ProcessId, process.Name);
 
-                foreach( var thread in TraceLog.GetThreads( process ) )
+                foreach (var thread in TraceLog.GetThreads(process))
                 {
-                    document.Add( process.ProcessId, thread.ThreadId, thread.Name );
+                    document.Add(process.ProcessId, thread.ThreadId, thread.Name);
                 }
             }
         }
 
-        protected override void OnPresentationChanged( FlameSetPresentation oldValue )
+        protected override void OnPresentationChanged()
         {
-            if( Presentation == null )
+            if (Presentation == null)
             {
                 return;
             }
 
             // lets preserve the user settings across presentations.
             // if we get here with a new project/tracelog we have reseted the TracesTreeSource already
-            if( TracesTreeSource.Processes != null )
+            if (TracesTreeSource.Processes != null)
             {
                 return;
             }
 
             TracesTreeSource.Processes = Presentation.Flames
-                .GroupBy( x => x.Model.Process )
-                .OrderBy( x => x.Key.Name )
-                .Select( x => new SelectableProcessAdapter( x.Key, x.AsEnumerable() ) )
+                .GroupBy(x => x.Model.Process)
+                .OrderBy(x => x.Key.Name)
+                .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()))
                 .ToList();
 
             var selectedThreads = ProjectService.Project.Items.OfType<SelectedThreadsDocument>().SingleOrDefault();
-            if( selectedThreads != null )
+            if (selectedThreads != null)
             {
-                foreach( var flame in Presentation.Flames )
+                foreach (var flame in Presentation.Flames)
                 {
-                    if( !selectedThreads.IsVisible( flame.ProcessId, flame.ThreadId ) )
+                    if (!selectedThreads.IsVisible(flame.ProcessId, flame.ThreadId))
                     {
                         flame.Visibility = ContentVisibility.Invisible;
                     }

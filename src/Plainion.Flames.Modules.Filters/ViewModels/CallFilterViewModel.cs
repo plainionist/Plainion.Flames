@@ -31,7 +31,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             myModule = null;
         }
 
-        protected override void OnPresentationChanged(FlameSetPresentation oldValue)
+        protected override void OnPresentationChanged()
         {
             // lets preserve the module itself to preserve the user settings across presentations
             if (myModule != null)

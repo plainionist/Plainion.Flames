@@ -17,7 +17,7 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         public bool ShowTab { get { return true; } }
 
-        protected override void OnPresentationChanged(FlameSetPresentation oldValue)
+        protected override void OnPresentationChanged()
         {
             if (Presentation == null)
             {

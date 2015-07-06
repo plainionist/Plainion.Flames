@@ -23,51 +23,63 @@ namespace Plainion.Flames.Infrastructure.ViewModels
             get { return myProjectService; }
             set
             {
-                if( myProjectService == value )
+                if (myProjectService == value)
                 {
                     return;
 
                 }
 
-                if( myProjectService != null )
+                if (myProjectService != null)
                 {
+                    myProjectService.ProjectChanged -= ProjectService_ProjectChanging;
                     myProjectService.ProjectChanged -= ProjectService_ProjectChanged;
                 }
 
                 myProjectService = value;
 
+                myProjectService.ProjectChanging += ProjectService_ProjectChanging;
                 myProjectService.ProjectChanged += ProjectService_ProjectChanged;
 
-                ProjectService_ProjectChanged( myProjectService, EventArgs.Empty );
+                ProjectService_ProjectChanged(myProjectService, EventArgs.Empty);
             }
         }
 
-        private void ProjectService_ProjectChanged( object sender, EventArgs e )
+        private void ProjectService_ProjectChanging(object sender, EventArgs e)
+        {
+            Presentation = null;
+            TraceLog = null;
+
+            OnProjectChanging();
+        }
+
+        protected virtual void OnProjectChanging() { }
+
+        private void ProjectService_ProjectChanged(object sender, EventArgs e)
         {
             OnProjectChanged();
 
-            if( myProjectService.Project != null )
+            if (myProjectService.Project != null)
             {
                 TraceLog = ProjectService.Project.TraceLog;
 
-                PropertyChangedEventManager.AddHandler( ProjectService.Project, Project_TraceLogChanged,
-                    PropertySupport.ExtractPropertyName( () => ProjectService.Project.TraceLog ) );
+                PropertyChangedEventManager.AddHandler(ProjectService.Project, Project_TraceLogChanged,
+                    PropertySupport.ExtractPropertyName(() => ProjectService.Project.TraceLog));
 
                 Presentation = ProjectService.Project.Presentation;
 
-                PropertyChangedEventManager.AddHandler( ProjectService.Project, Project_PresentationChanged,
-                    PropertySupport.ExtractPropertyName( () => ProjectService.Project.Presentation ) );
+                PropertyChangedEventManager.AddHandler(ProjectService.Project, Project_PresentationChanged,
+                    PropertySupport.ExtractPropertyName(() => ProjectService.Project.Presentation));
             }
         }
 
         protected virtual void OnProjectChanged() { }
 
-        private void Project_TraceLogChanged( object sender, PropertyChangedEventArgs e )
+        private void Project_TraceLogChanged(object sender, PropertyChangedEventArgs e)
         {
             TraceLog = ProjectService.Project.TraceLog;
         }
 
-        private void Project_PresentationChanged( object sender, PropertyChangedEventArgs e )
+        private void Project_PresentationChanged(object sender, PropertyChangedEventArgs e)
         {
             Presentation = ProjectService.Project.Presentation;
         }
@@ -77,29 +89,27 @@ namespace Plainion.Flames.Infrastructure.ViewModels
             get { return myTraceLog; }
             set
             {
-                var oldValue = myTraceLog;
-                if( SetProperty( ref myTraceLog, value ) )
+                if (SetProperty(ref myTraceLog, value))
                 {
-                    OnTraceLogChanged( oldValue );
+                    OnTraceLogChanged();
                 }
             }
         }
 
-        protected virtual void OnTraceLogChanged( ITraceLog oldValue ) { }
+        protected virtual void OnTraceLogChanged() { }
 
         public FlameSetPresentation Presentation
         {
             get { return myPresentation; }
             set
             {
-                var oldValue = myPresentation;
-                if( SetProperty( ref myPresentation, value ) )
+                if (SetProperty(ref myPresentation, value))
                 {
-                    OnPresentationChanged( oldValue );
+                    OnPresentationChanged();
                 }
             }
         }
 
-        protected virtual void OnPresentationChanged( FlameSetPresentation oldValue ) { }
+        protected virtual void OnPresentationChanged() { }
     }
 }
