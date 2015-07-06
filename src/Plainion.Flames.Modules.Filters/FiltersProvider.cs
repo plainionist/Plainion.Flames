@@ -18,21 +18,21 @@ namespace Plainion.Flames.Modules.Filters
 
         // TODO: actually we just need the eariest possible trigger that project was loaded
         // -> we use TraceLog loaded as workaround here
-        public override void OnProjectLoaded(IProject project, IProjectSerializationContext context)
+        public override void OnProjectDeserialized(IProject project, IProjectSerializationContext context)
         {
-            if (context == null || !context.HasEntry(ProviderId))
+            if (!context.HasEntry(ProviderId))
             {
                 return;
             }
 
-            using( var stream = context.GetEntry( ProviderId ) )
+            using (var stream = context.GetEntry(ProviderId))
             {
-                var serializer = new DataContractSerializer( typeof( FiltersDocument ), GetKnownDataContractTypes() );
-                project.Items.Add( ( FiltersDocument )serializer.ReadObject( stream ) );
+                var serializer = new DataContractSerializer(typeof(FiltersDocument), GetKnownDataContractTypes());
+                project.Items.Add((FiltersDocument)serializer.ReadObject(stream));
             }
         }
 
-        public override void OnProjectUnloading(IProject project, IProjectSerializationContext context)
+        public override void OnProjectSerializing(IProject project, IProjectSerializationContext context)
         {
             var callFilterModule = project.Items.OfType<CallFilterModule>().SingleOrDefault();
             if (callFilterModule == null)
@@ -44,10 +44,10 @@ namespace Plainion.Flames.Modules.Filters
             document.DurationFilter = callFilterModule.DurationFilter;
             document.NameFilters.AddRange(callFilterModule.NameFilters.Where(f => !(f is AllCallsFilter)));
 
-            using( var stream = context.CreateEntry( ProviderId ) )
+            using (var stream = context.CreateEntry(ProviderId))
             {
-                var serializer = new DataContractSerializer( typeof( FiltersDocument ), GetKnownDataContractTypes() );
-                serializer.WriteObject( stream, document );
+                var serializer = new DataContractSerializer(typeof(FiltersDocument), GetKnownDataContractTypes());
+                serializer.WriteObject(stream, document);
             }
         }
 

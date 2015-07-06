@@ -6,8 +6,8 @@ namespace Plainion.Flames.Infrastructure.Services
     [InheritedExport]
     public interface IProjectItemProvider
     {
-        void OnProjectLoaded(IProject project, IProjectSerializationContext context);
+        void OnProjectDeserialized(IProject project, IProjectSerializationContext context);
 
-        void OnProjectUnloading(IProject project, IProjectSerializationContext context);
+        void OnProjectSerializing(IProject project, IProjectSerializationContext context);
     }
 }

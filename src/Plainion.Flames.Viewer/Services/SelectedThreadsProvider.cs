@@ -15,9 +15,9 @@ namespace Plainion.Flames.Viewer.Services
     {
         private const string ProviderId = "{6E3426EF-676D-48B1-AA5D-E9661A5C6CCD}.SelectedThreads";
 
-        public override void OnProjectLoaded(IProject project, IProjectSerializationContext context)
+        public override void OnProjectDeserialized(IProject project, IProjectSerializationContext context)
         {
-            if (context == null || !context.HasEntry(ProviderId))
+            if (!context.HasEntry(ProviderId))
             {
                 return;
             }
@@ -29,7 +29,7 @@ namespace Plainion.Flames.Viewer.Services
             }
         }
 
-        public override void OnProjectUnloading(IProject project, IProjectSerializationContext context)
+        public override void OnProjectSerializing(IProject project, IProjectSerializationContext context)
         {
             if (project.Presentation == null)
             {

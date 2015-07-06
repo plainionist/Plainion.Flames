@@ -6,8 +6,8 @@ namespace Plainion.Flames.Infrastructure.Services
     {
         protected ProjectItemProviderBase() { }
 
-        public virtual void OnProjectLoaded(IProject project, IProjectSerializationContext context) { }
+        public virtual void OnProjectDeserialized(IProject project, IProjectSerializationContext context) { }
 
-        public virtual void OnProjectUnloading(IProject project, IProjectSerializationContext context) { }
+        public virtual void OnProjectSerializing(IProject project, IProjectSerializationContext context) { }
     }
 }

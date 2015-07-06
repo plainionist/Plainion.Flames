@@ -128,16 +128,9 @@ namespace Plainion.Flames.Viewer.Services
 
                         foreach( var provider in ProjectItemProviders )
                         {
-                            provider.OnProjectLoaded( project, context );
+                            provider.OnProjectDeserialized( project, context );
                         }
                     }
-                }
-            }
-            else
-            {
-                foreach( var provider in ProjectItemProviders )
-                {
-                    provider.OnProjectLoaded( project, null );
                 }
             }
 
@@ -226,16 +219,15 @@ namespace Plainion.Flames.Viewer.Services
                 using( var archive = new ZipArchive( stream, ZipArchiveMode.Create ) )
                 {
                     var context = new ProjectSerializationContext( archive );
-
                     foreach( var provider in ProjectItemProviders )
                     {
-                        provider.OnProjectUnloading( Project, context );
+                        provider.OnProjectSerializing( Project, context );
                     }
-
-                    project.TraceLog.Dispose();
-                    project.TraceLog = null;
                 }
             }
+
+            project.TraceLog.Dispose();
+            project.TraceLog = null;
         }
 
         private static string GetProjectFile( Project project )
