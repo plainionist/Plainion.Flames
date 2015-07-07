@@ -47,13 +47,13 @@ namespace Plainion.Flames.Modules.Filters
         {
             myAllCallsFilter = new AllCallsFilter { IsApplied = false, IsShowFilter = false };
             myAllCallsFilter.PropertyChanged += OnNameFilterPropertyChanged;
-            NameFilters.Add( myAllCallsFilter );
+            NameFilters.Add(myAllCallsFilter);
 
             NameFilters.CollectionChanged += OnNameFilterCollectionChanged;
 
             DurationFilter.PropertyChanged += OnDurationFilterPropertyChanged;
         }
-        
+
         public FlameSetPresentation Presentation
         {
             get { return myPresentation; }
@@ -158,6 +158,11 @@ namespace Plainion.Flames.Modules.Filters
 
         private void ApplyDurationFilter()
         {
+            if (Presentation == null)
+            {
+                return;
+            }
+
             foreach (var flame in Presentation.Flames)
             {
                 bool isEmpty = true;
@@ -215,6 +220,11 @@ namespace Plainion.Flames.Modules.Filters
 
         private void ApplyNameFilters()
         {
+            if (Presentation == null)
+            {
+                return;
+            }
+
             if (NameFilters.Where(m => m != myAllCallsFilter && m.IsApplied).Any(m => m.IsShowFilter))
             {
                 myAllCallsFilter.PropertyChanged -= OnNameFilterPropertyChanged;

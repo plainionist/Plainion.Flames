@@ -29,7 +29,11 @@ namespace Plainion.Flames.Viewer.Services
         [ImportingConstructor]
         public LoaderSerivce( IEventAggregator eventAggregator )
         {
-            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe( x => Unload( Project ) );
+            eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe(x =>
+            {
+                // enforce unload of project incl. ProjectChanging event
+                Project = null;
+            });
         }
 
         IProject IProjectService.Project { get { return myProject; } }

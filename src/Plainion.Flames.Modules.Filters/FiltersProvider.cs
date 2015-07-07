@@ -33,15 +33,11 @@ namespace Plainion.Flames.Modules.Filters
 
         public override void OnProjectSerializing(IProject project, IProjectSerializationContext context)
         {
-            var callFilterModule = project.Items.OfType<CallFilterModule>().SingleOrDefault();
-            if (callFilterModule == null)
+            var document = project.Items.OfType<FiltersDocument>().SingleOrDefault();
+            if (document == null)
             {
                 return;
             }
-
-            var document = new FiltersDocument();
-            document.DurationFilter = callFilterModule.DurationFilter;
-            document.NameFilters.AddRange(callFilterModule.NameFilters.Where(f => !(f is AllCallsFilter)));
 
             using (var stream = context.CreateEntry(ProviderId))
             {

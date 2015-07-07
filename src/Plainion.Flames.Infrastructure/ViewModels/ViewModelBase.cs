@@ -31,7 +31,7 @@ namespace Plainion.Flames.Infrastructure.ViewModels
 
                 if (myProjectService != null)
                 {
-                    myProjectService.ProjectChanged -= ProjectService_ProjectChanging;
+                    myProjectService.ProjectChanging -= ProjectService_ProjectChanging;
                     myProjectService.ProjectChanged -= ProjectService_ProjectChanged;
                 }
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Infrastructure.ViewModels;
+using Plainion.Flames.Modules.Filters.Model;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters.ViewModels
@@ -24,6 +25,20 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
         public NameFilterViewModel NameFilterViewModel { get; private set; }
 
         public DurationFilterViewModel DurationFilterViewModel { get; private set; }
+
+        protected override void OnProjectChanging()
+        {
+            if (ProjectService.Project == null)
+            {
+                return;
+            }
+
+            var document = new FiltersDocument();
+            document.DurationFilter = myModule.DurationFilter;
+            document.NameFilters.AddRange(myModule.NameFilters.Where(f => !(f is AllCallsFilter)));
+
+            ProjectService.Project.Items.Add(document);
+        }
 
         protected override void OnProjectChanged()
         {
@@ -50,6 +65,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             else
             {
                 myModule = CallFilterModule.CreateFromDocument(document);
+                ProjectService.Project.Items.Remove(document);
             }
 
             myModule.Presentation = Presentation;
