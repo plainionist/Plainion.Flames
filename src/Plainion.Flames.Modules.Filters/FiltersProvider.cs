@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Plainion.Flames.Infrastructure;
 using Plainion.Flames.Infrastructure.Model;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Modules.Filters.Model;
