@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Linq;
+using System.Runtime.Serialization;
 using Plainion.Flames.Infrastructure.Model;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Viewer.Model;
@@ -28,25 +29,16 @@ namespace Plainion.Flames.Viewer.Services
 
         public override void OnProjectSerializing(IProject project, IProjectSerializationContext context)
         {
-            if (project.Presentation == null)
+            var document = project.Items.OfType<SelectedThreadsDocument>().SingleOrDefault();
+            if (document == null)
             {
                 return;
-            }
-
-            var selectedThreads = new SelectedThreadsDocument();
-
-            foreach (var flame in project.Presentation.Flames)
-            {
-                if (flame.Visibility != Presentation.ContentVisibility.Invisible)
-                {
-                    selectedThreads.Add(flame.ProcessId, flame.ThreadId);
-                }
             }
 
             using (var stream = context.CreateEntry(ProviderId))
             {
                 var serializer = new DataContractSerializer(typeof(SelectedThreadsDocument));
-                serializer.WriteObject(stream, selectedThreads);
+                serializer.WriteObject(stream, document);
             }
         }
     }

@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Linq;
-using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Controls;
 using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 using Plainion.Flames.Viewer.Model;
-using Plainion.Flames.Viewer.Services;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
@@ -25,6 +21,26 @@ namespace Plainion.Flames.Viewer.ViewModels
         public bool ShowTab { get { return true; } }
 
         public TracesTree TracesTreeSource { get; private set; }
+
+        protected override void OnProjectChanging()
+        {
+            if (ProjectService.Project == null || ProjectService.Project.Presentation == null)
+            {
+                return;
+            }
+
+            var selectedThreads = new SelectedThreadsDocument();
+
+            foreach (var flame in ProjectService.Project.Presentation.Flames)
+            {
+                if (flame.Visibility != ContentVisibility.Invisible)
+                {
+                    selectedThreads.Add(flame.ProcessId, flame.ThreadId);
+                }
+            }
+
+            ProjectService.Project.Items.Add(selectedThreads);
+        }
 
         protected override void OnProjectChanged()
         {
@@ -116,16 +132,17 @@ namespace Plainion.Flames.Viewer.ViewModels
                 .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()))
                 .ToList();
 
-            var selectedThreads = ProjectService.Project.Items.OfType<SelectedThreadsDocument>().SingleOrDefault();
-            if (selectedThreads != null)
+            var document = ProjectService.Project.Items.OfType<SelectedThreadsDocument>().SingleOrDefault();
+            if (document != null)
             {
                 foreach (var flame in Presentation.Flames)
                 {
-                    if (!selectedThreads.IsVisible(flame.ProcessId, flame.ThreadId))
+                    if (!document.IsVisible(flame.ProcessId, flame.ThreadId))
                     {
                         flame.Visibility = ContentVisibility.Invisible;
                     }
                 }
+                ProjectService.Project.Items.Remove(document);
             }
         }
     }
