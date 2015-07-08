@@ -46,10 +46,10 @@ namespace Plainion.Flames.Infrastructure.ViewModels
 
         private void ProjectService_ProjectChanging(object sender, EventArgs e)
         {
+            OnProjectChanging();
+
             Presentation = null;
             TraceLog = null;
-
-            OnProjectChanging();
         }
 
         protected virtual void OnProjectChanging() { }

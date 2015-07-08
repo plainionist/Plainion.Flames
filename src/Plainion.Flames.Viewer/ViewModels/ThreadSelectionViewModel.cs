@@ -24,14 +24,14 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         protected override void OnProjectChanging()
         {
-            if (ProjectService.Project == null || ProjectService.Project.Presentation == null)
+            if (Presentation == null)
             {
                 return;
             }
 
             var selectedThreads = new SelectedThreadsDocument();
 
-            foreach (var flame in ProjectService.Project.Presentation.Flames)
+            foreach (var flame in Presentation.Flames)
             {
                 if (flame.Visibility != ContentVisibility.Invisible)
                 {
@@ -40,6 +40,30 @@ namespace Plainion.Flames.Viewer.ViewModels
             }
 
             ProjectService.Project.Items.Add(selectedThreads);
+
+            var initialNames = ProjectService.Project.Items.OfType<FriendlyNamesDocument>().Single();
+            var friendlyNames = new FriendlyNamesDocument();
+
+            // only save what was really changed!
+            string origName = null;
+            foreach (var process in TraceLog.Processes)
+            {
+                if (initialNames.TryGetName(process.ProcessId, out origName) && origName != process.Name)
+                {
+                    friendlyNames.Add(process.ProcessId, process.Name);
+                }
+
+                foreach (var thread in TraceLog.GetThreads(process))
+                {
+                    if (initialNames.TryGetName(process.ProcessId, thread.ThreadId, out origName) && origName != thread.Name)
+                    {
+                        friendlyNames.Add(process.ProcessId, thread.ThreadId, thread.Name);
+                    }
+                }
+            }
+
+            ProjectService.Project.Items.Remove(initialNames);
+            ProjectService.Project.Items.Add(friendlyNames);
         }
 
         protected override void OnProjectChanged()
