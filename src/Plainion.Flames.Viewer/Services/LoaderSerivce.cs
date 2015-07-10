@@ -131,12 +131,9 @@ namespace Plainion.Flames.Viewer.Services
                         foreach (var entry in archive.Entries)
                         {
                             var factory = Documents.SingleOrDefault(doc => doc.Metadata.Name == entry.Name);
-                            if (factory != null)
-                            {
-                                var document = factory.CreateExport();
-                                document.Value.Deserialize(entry.Open());
-                                project.Items.Add(document.Value);
-                            }
+                            var document = factory.CreateExport();
+                            document.Value.Deserialize(entry.Open());
+                            project.Items.Add(document.Value);
                         }
                     }
                 }
