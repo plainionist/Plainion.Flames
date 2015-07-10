@@ -27,7 +27,7 @@ namespace Plainion.Flames.Viewer.Services
         private string mySaveTraceFilter;
 
         [ImportingConstructor]
-        public LoaderSerivce( IEventAggregator eventAggregator )
+        public LoaderSerivce(IEventAggregator eventAggregator)
         {
             eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe(x =>
             {
@@ -43,26 +43,26 @@ namespace Plainion.Flames.Viewer.Services
             get { return myProject; }
             private set
             {
-                if( myProject == value )
+                if (myProject == value)
                 {
                     return;
                 }
 
-                if( myProject != null )
+                if (myProject != null)
                 {
-                    if( ProjectChanging != null )
+                    if (ProjectChanging != null)
                     {
-                        ProjectChanging( this, EventArgs.Empty );
+                        ProjectChanging(this, EventArgs.Empty);
                     }
 
-                    Unload( myProject );
+                    Unload(myProject);
                 }
 
                 myProject = value;
 
-                if( ProjectChanged != null )
+                if (ProjectChanged != null)
                 {
-                    ProjectChanged( this, EventArgs.Empty );
+                    ProjectChanged(this, EventArgs.Empty);
                 }
             }
         }
@@ -84,11 +84,11 @@ namespace Plainion.Flames.Viewer.Services
         {
             get
             {
-                if( myOpenTraceFilter == null )
+                if (myOpenTraceFilter == null)
                 {
-                    myOpenTraceFilter = "All files (*.*)|*.*|" + string.Join( "|", TraceReaders
-                        .SelectMany( r => r.FileFilters )
-                        .Select( f => string.Format( "{0}|*{1}", f.Description, f.Extension ) ) );
+                    myOpenTraceFilter = "All files (*.*)|*.*|" + string.Join("|", TraceReaders
+                        .SelectMany(r => r.FileFilters)
+                        .Select(f => string.Format("{0}|*{1}", f.Description, f.Extension)));
                 }
 
                 return myOpenTraceFilter;
@@ -99,133 +99,168 @@ namespace Plainion.Flames.Viewer.Services
         {
             get
             {
-                if( mySaveTraceFilter == null )
+                if (mySaveTraceFilter == null)
                 {
-                    mySaveTraceFilter = string.Join( "|", TraceWriters
-                        .SelectMany( r => r.FileFilters )
-                        .Select( f => string.Format( "{0}|*{1}", f.Description, f.Extension ) ) );
+                    mySaveTraceFilter = string.Join("|", TraceWriters
+                        .SelectMany(r => r.FileFilters)
+                        .Select(f => string.Format("{0}|*{1}", f.Description, f.Extension)));
                 }
 
                 return mySaveTraceFilter;
             }
         }
 
+        [ImportMany(typeof(IDocument))]
+        public IEnumerable<ExportFactory<IDocument, IDocumentMetadata>> Documents { get; private set; }
+
         // TODO: what would be the contract if nothing could be loaded?
-        public async Task LoadAsync( IEnumerable<string> traceFiles, IProgress<IProgressInfo> progress )
+        public async Task LoadAsync(IEnumerable<string> traceFiles, IProgress<IProgressInfo> progress)
         {
-            var project = new Project( traceFiles );
+            var project = new Project(traceFiles);
 
-            var file = GetProjectFile( project );
+            var file = GetProjectFile(project);
 
-            project.WasDeserialized = File.Exists( file );
+            project.WasDeserialized = File.Exists(file);
 
             // unload old project
             Project = null;
 
-            if( File.Exists( file ) )
+            if (File.Exists(file))
             {
-                using( var stream = new FileStream( file, FileMode.Open ) )
-                {
-                    using( var archive = new ZipArchive( stream, ZipArchiveMode.Read ) )
-                    {
-                        var context = new ProjectSerializationContext( archive );
+                //using (var stream = new FileStream(file, FileMode.Open))
+                //{
+                //    using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
+                //    {
+                //        var context = new ProjectSerializationContext(archive);
 
-                        foreach( var provider in ProjectItemProviders )
+                //        foreach (var provider in ProjectItemProviders)
+                //        {
+                //            provider.OnProjectDeserialized(project, context);
+                //        }
+                //    }
+                //}
+
+                using (var stream = new FileStream(file, FileMode.Open))
+                {
+                    using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
+                    {
+                        foreach (var entry in archive.Entries)
                         {
-                            provider.OnProjectDeserialized( project, context );
+                            var factory = Documents.SingleOrDefault(doc => doc.Metadata.Name == entry.Name);
+                            if (factory != null)
+                            {
+                                var document = factory.CreateExport();
+                                document.Value.Deserialize(entry.Open());
+                                project.Items.Add(document.Value);
+                            }
                         }
                     }
                 }
             }
 
-            await LoadTraceLogAsync( project, progress );
+            await LoadTraceLogAsync(project, progress);
         }
 
-        private async Task LoadTraceLogAsync( Project project, IProgress<IProgressInfo> progress )
+        private async Task LoadTraceLogAsync(Project project, IProgress<IProgressInfo> progress)
         {
             // now all project items are loaded - publish the new project
             Project = project;
 
             var builder = new TraceModelBuilder();
 
-            foreach( var item in project.Items )
+            foreach (var item in project.Items)
             {
-                builder.ReaderContextHints.Add( item );
+                builder.ReaderContextHints.Add(item);
             }
 
-            foreach( var traceFile in project.TraceFiles )
+            foreach (var traceFile in project.TraceFiles)
             {
-                var ext = Path.GetExtension( traceFile );
-                var reader = TryGetTraceReaderByExtension( ext );
-                Contract.Requires( reader != null, "No Reader found for file extension: " + ext );
+                var ext = Path.GetExtension(traceFile);
+                var reader = TryGetTraceReaderByExtension(ext);
+                Contract.Requires(reader != null, "No Reader found for file extension: " + ext);
 
-                await reader.ReadAsync( traceFile, builder, progress );
+                await reader.ReadAsync(traceFile, builder, progress);
             }
 
             // first copy back the project items
             project.Items.Clear();
-            foreach( var hint in builder.ReaderContextHints )
+            foreach (var hint in builder.ReaderContextHints)
             {
-                project.Items.Add( hint );
+                project.Items.Add(hint);
             }
 
             // ... then set the tracelog - some view models react on that and expect the project items to be there again
             project.TraceLog = builder.Complete();
         }
 
-        private ITraceReader TryGetTraceReaderByExtension( string ext )
+        private ITraceReader TryGetTraceReaderByExtension(string ext)
         {
             return TraceReaders
-                .SingleOrDefault( r => r.FileFilters
-                    .Any( f => f.Extension.Equals( ext, StringComparison.OrdinalIgnoreCase ) ) );
+                .SingleOrDefault(r => r.FileFilters
+                    .Any(f => f.Extension.Equals(ext, StringComparison.OrdinalIgnoreCase)));
         }
 
-        public bool CanLoad( string f )
+        public bool CanLoad(string f)
         {
-            return TryGetTraceReaderByExtension( Path.GetExtension( f ) ) != null;
+            return TryGetTraceReaderByExtension(Path.GetExtension(f)) != null;
         }
 
         /// <summary>
         /// Saves certain aspects (provided by ITraceLog) of the project.
         /// </summary>
-        public Task ExportAsync( ITraceLog traceLog, string filename, IProgress<IProgressInfo> progress )
+        public Task ExportAsync(ITraceLog traceLog, string filename, IProgress<IProgressInfo> progress)
         {
-            Contract.RequiresNotNull( traceLog, "traceLog" );
+            Contract.RequiresNotNull(traceLog, "traceLog");
 
             var writer = TraceWriters
-                .Single( r => r.FileFilters
-                    .Any( f => f.Extension.Equals( Path.GetExtension( filename ), StringComparison.OrdinalIgnoreCase ) ) );
+                .Single(r => r.FileFilters
+                    .Any(f => f.Extension.Equals(Path.GetExtension(filename), StringComparison.OrdinalIgnoreCase)));
 
-            return Task.Run( () =>
+            return Task.Run(() =>
                 {
-                    var task = writer.WriteAsync( traceLog, filename, progress );
+                    var task = writer.WriteAsync(traceLog, filename, progress);
 
                     task.Wait();
-                } );
+                });
         }
 
-        private void Unload( Project project )
+        private void Unload(Project project)
         {
-            if( project == null )
+            if (project == null)
             {
                 return;
             }
 
-            var file = GetProjectFile( project );
+            var file = GetProjectFile(project);
 
-            if( File.Exists( file ) )
+            if (File.Exists(file))
             {
-                File.Delete( file );
+                File.Delete(file);
             }
 
-            using( var stream = new FileStream( file, FileMode.OpenOrCreate ) )
+            //using (var stream = new FileStream(file, FileMode.OpenOrCreate))
+            //{
+            //    using (var archive = new ZipArchive(stream, ZipArchiveMode.Create))
+            //    {
+            //        var context = new ProjectSerializationContext(archive);
+            //        foreach (var provider in ProjectItemProviders)
+            //        {
+            //            provider.OnProjectSerializing(Project, context);
+            //        }
+            //    }
+            //}
+
+            using (var stream = new FileStream(file, FileMode.OpenOrCreate))
             {
-                using( var archive = new ZipArchive( stream, ZipArchiveMode.Create ) )
+                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create))
                 {
-                    var context = new ProjectSerializationContext( archive );
-                    foreach( var provider in ProjectItemProviders )
+                    foreach (var doc in Project.Items.OfType<IDocument>())
                     {
-                        provider.OnProjectSerializing( Project, context );
+                        var attr = (DocumentAttribute)doc.GetType().GetCustomAttributes(typeof(DocumentAttribute), false).Single();
+                        using (var entryStream = archive.CreateEntry(attr.Name, CompressionLevel.Fastest).Open())
+                        {
+                            doc.Serialize(entryStream);
+                        }
                     }
                 }
             }
@@ -234,28 +269,28 @@ namespace Plainion.Flames.Viewer.Services
             project.TraceLog = null;
         }
 
-        private static string GetProjectFile( Project project )
+        private static string GetProjectFile(Project project)
         {
             var mainTraceFile = project.TraceFiles.First();
-            return Path.Combine( Path.GetDirectoryName( mainTraceFile ), Path.GetFileNameWithoutExtension( mainTraceFile ) + ".pfp" );
+            return Path.Combine(Path.GetDirectoryName(mainTraceFile), Path.GetFileNameWithoutExtension(mainTraceFile) + ".pfp");
         }
 
-        public Task CreatePresentationAsync( IProgress<IProgressInfo> progress )
+        public Task CreatePresentationAsync(IProgress<IProgressInfo> progress)
         {
-            Contract.Invariant( Project != null, "No project exists" );
+            Contract.Invariant(Project != null, "No project exists");
 
-            return Task.Run<FlameSetPresentation>( () =>
+            return Task.Run<FlameSetPresentation>(() =>
                 {
-                    progress.Report( new UndefinedProgress( "Creating presentation" ) );
+                    progress.Report(new UndefinedProgress("Creating presentation"));
 
                     var factory = new PresentationFactory();
-                    return factory.CreateFlameSetPresentation( Project.TraceLog );
-                } )
+                    return factory.CreateFlameSetPresentation(Project.TraceLog);
+                })
                 .RethrowExceptionsInUIThread()
-                .ContinueWith( t =>
+                .ContinueWith(t =>
                 {
                     Project.Presentation = t.Result;
-                }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext() )
+                }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext())
                 .RethrowExceptionsInUIThread();
         }
     }
