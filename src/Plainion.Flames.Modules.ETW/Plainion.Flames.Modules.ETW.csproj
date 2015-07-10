@@ -108,7 +108,6 @@
     <Compile Include="OpenTraceViewModel.cs" />
     <Compile Include="QueueTextWriter.cs" />
     <Compile Include="Builders\BuilderUtils.cs" />
-    <Compile Include="LoadSettingsProvider.cs" />
     <Compile Include="TraceFile.cs" />
     <Compile Include="Builders\ThreadCallBuilder.cs" />
     <Compile Include="TraceFileHandle.cs" />

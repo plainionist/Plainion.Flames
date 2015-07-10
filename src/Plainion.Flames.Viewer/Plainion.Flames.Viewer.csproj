@@ -109,11 +109,9 @@
     <Compile Include="Model\Project.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Model\SelectedThreadsDocument.cs" />
-    <Compile Include="Services\FriendlyNamesProvider.cs" />
     <Compile Include="Services\LoggingSink.cs" />
     <Compile Include="Services\LoaderSerivce.cs" />
     <Compile Include="Services\ProfilingService.cs" />
-    <Compile Include="Services\ProjectSerializationContext.cs" />
     <Compile Include="Services\TraceLoaderService.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Compile Include="ViewModels\TraceLogOverviewViewModel.cs" />

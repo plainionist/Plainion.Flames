@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Plainion.Flames.Infrastructure.Model;
 
 namespace Plainion.Flames.Viewer.Model
 {
+    [Document("{866583EB-9C7C-4938-BDC8-FCCC77E42921}.FriendlyNames")]
     [DataContract( Name = "FriendlyNames", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/FriendlyNames" )]
-    class FriendlyNamesDocument 
+    class FriendlyNamesDocument : DataContractDocumentBase<FriendlyNamesDocument>
     {
         [DataMember( Name = "Version" )]
         public const byte Version = 1;
@@ -51,6 +53,11 @@ namespace Plainion.Flames.Viewer.Model
         {
             var key = Encode( pid, tid );
             return myEntries.TryGetValue( key, out name );
+        }
+
+        protected override void OnDeserialized(FriendlyNamesDocument document)
+        {
+            myEntries = document.myEntries;
         }
     }
 }

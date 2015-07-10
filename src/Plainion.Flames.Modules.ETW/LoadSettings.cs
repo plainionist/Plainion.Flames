@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using Plainion.Flames.Infrastructure.Model;
 
 namespace Plainion.Flames.Modules.ETW
 {
+    [Document("{DE31E0F0-5068-4638-A343-731C108AA91B}.LoadSettings")]
     [DataContract(Name = "EtwLoadSettings", Namespace = "https://github.com/ronin4net/Plainion.Flames/Project/EtwLoadSettings")]
-    class LoadSettings
+    class LoadSettings : DataContractDocumentBase<LoadSettings>
     {
         [DataMember(Name = "Version")]
         public const byte Version = 1;
@@ -44,6 +43,13 @@ namespace Plainion.Flames.Modules.ETW
             symbolPath += @";srv*d:\Symbols*http://msdl.microsoft.com/download/symbols";
 
             SymbolPath = symbolPath;
+        }
+
+        protected override void OnDeserialized(LoadSettings document)
+        {
+            SymbolPath = document.SymbolPath;
+            UseDefaultWebProxy = document.UseDefaultWebProxy;
+            SelectedProcesses = document.SelectedProcesses;
         }
     }
 }

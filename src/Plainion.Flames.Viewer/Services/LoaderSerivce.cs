@@ -77,9 +77,6 @@ namespace Plainion.Flames.Viewer.Services
         [ImportMany]
         public IEnumerable<ITraceWriter> TraceWriters { get; private set; }
 
-        [ImportMany]
-        public IEnumerable<IProjectItemProvider> ProjectItemProviders { get; private set; }
-
         public string OpenTraceFilter
         {
             get
@@ -127,19 +124,6 @@ namespace Plainion.Flames.Viewer.Services
 
             if (File.Exists(file))
             {
-                //using (var stream = new FileStream(file, FileMode.Open))
-                //{
-                //    using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
-                //    {
-                //        var context = new ProjectSerializationContext(archive);
-
-                //        foreach (var provider in ProjectItemProviders)
-                //        {
-                //            provider.OnProjectDeserialized(project, context);
-                //        }
-                //    }
-                //}
-
                 using (var stream = new FileStream(file, FileMode.Open))
                 {
                     using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
@@ -237,18 +221,6 @@ namespace Plainion.Flames.Viewer.Services
             {
                 File.Delete(file);
             }
-
-            //using (var stream = new FileStream(file, FileMode.OpenOrCreate))
-            //{
-            //    using (var archive = new ZipArchive(stream, ZipArchiveMode.Create))
-            //    {
-            //        var context = new ProjectSerializationContext(archive);
-            //        foreach (var provider in ProjectItemProviders)
-            //        {
-            //            provider.OnProjectSerializing(Project, context);
-            //        }
-            //    }
-            //}
 
             using (var stream = new FileStream(file, FileMode.OpenOrCreate))
             {

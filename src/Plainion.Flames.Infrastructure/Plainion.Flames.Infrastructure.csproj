@@ -71,9 +71,6 @@
     <Compile Include="Model\IDocument.cs" />
     <Compile Include="Model\IDocumentMetadata.cs" />
     <Compile Include="Model\IProject.cs" />
-    <Compile Include="Services\IProjectItemProvider.cs" />
-    <Compile Include="Services\IProjectSerializationContext.cs" />
-    <Compile Include="Services\ProjectItemProviderBase.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Services\IProjectService.cs" />
     <Compile Include="Services\ITraceLoaderService.cs" />
