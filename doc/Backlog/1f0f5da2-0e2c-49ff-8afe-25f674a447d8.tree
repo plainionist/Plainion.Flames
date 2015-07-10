@@ -121,6 +121,9 @@
       <Node Id="32715587-1bbd-4151-9cf3-05239340e65d">
         <Caption><![CDATA[Associated data]]></Caption>
       </Node>
+      <Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb">
+        <Caption><![CDATA[document design decisions]]></Caption>
+      </Node>
     </Node>
     <Node Id="199ebe05-f2b7-430a-a553-d538cbfaf3d0">
       <Caption><![CDATA[Reorder flames via drag and drop]]></Caption>
@@ -157,6 +160,12 @@
       <Node Id="3bcfac19-d3d2-4cf6-b697-d6dfe8a61433">
         <Caption><![CDATA[TracesTreeView - cursor keys not working]]></Caption>
       </Node>
+    </Node>
+    <Node Id="7793c7af-8454-4841-abd0-3303f3c48ec4">
+      <Caption><![CDATA["open" project file]]></Caption>
+    </Node>
+    <Node Id="03c9b0e3-0c1c-4783-b0b4-12070662350d">
+      <Caption><![CDATA[how to continue with CallFilterModule]]></Caption>
     </Node>
   </Node>
 </Tree>

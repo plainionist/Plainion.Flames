@@ -4,20 +4,8 @@
     <Caption><![CDATA[Planning]]></Caption>
     <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
       <Caption><![CDATA[Next steps]]></Caption>
-      <Node Id="954520dd-58bb-463d-8a88-3e02747a70ab">
-        <Caption><![CDATA[Cleanup model]]></Caption>
-        <Node Id="7a821d1c-11c0-414b-af16-6f36ae5de1aa">
-          <Caption><![CDATA[do we have a memory leak]]></Caption>
-        </Node>
-        <Node Id="764f90e5-c481-4406-bccd-9c04dad4dbcb">
-          <Caption><![CDATA[document design decisions]]></Caption>
-        </Node>
-        <Node Id="7793c7af-8454-4841-abd0-3303f3c48ec4">
-          <Caption><![CDATA["open" project file]]></Caption>
-        </Node>
-        <Node Id="03c9b0e3-0c1c-4783-b0b4-12070662350d">
-          <Caption><![CDATA[how to continue with CallFilterModule]]></Caption>
-        </Node>
+      <Node Id="7a821d1c-11c0-414b-af16-6f36ae5de1aa">
+        <Caption><![CDATA[do we have a memory leak]]></Caption>
       </Node>
       <Node Id="0738501d-a3d7-46a3-951a-b33f1af26bcc">
         <Caption><![CDATA[cleanup rendering]]></Caption>

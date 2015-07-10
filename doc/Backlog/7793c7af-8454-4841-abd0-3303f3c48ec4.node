@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="7793c7af-8454-4841-abd0-3303f3c48ec4" Created="635688563362128899" LastModified="635688563760238706">
+<Node Id="7793c7af-8454-4841-abd0-3303f3c48ec4" Created="635688563362128899" LastModified="635721276101611406" Origin="954520dd-58bb-463d-8a88-3e02747a70ab">
   <Caption><![CDATA["open" project file]]></Caption>
   <Content><![CDATA[allow passing project file via command line
 drag and drop
