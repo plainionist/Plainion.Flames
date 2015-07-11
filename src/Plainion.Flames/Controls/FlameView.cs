@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Controls

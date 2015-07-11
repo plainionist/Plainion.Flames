@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using Plainion.Flames.Presentation;
 using Microsoft.Practices.Prism.Commands;
+using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Controls
 {
