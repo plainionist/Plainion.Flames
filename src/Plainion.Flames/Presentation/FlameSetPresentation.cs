@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Plainion.Flames.Model;
 using Microsoft.Practices.Prism.Mvvm;
-using Plainion;
+using Plainion.Flames.Model;
 
 namespace Plainion.Flames.Presentation
 {

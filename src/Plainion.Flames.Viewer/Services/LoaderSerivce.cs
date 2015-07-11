@@ -262,5 +262,11 @@ namespace Plainion.Flames.Viewer.Services
                 }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext())
                 .RethrowExceptionsInUIThread();
         }
+
+        public void UnloadAll()
+        {
+            // trigger unload of the current projec
+            Project = null;
+        }
     }
 }
