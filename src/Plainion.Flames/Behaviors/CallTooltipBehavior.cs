@@ -44,7 +44,14 @@ namespace Plainion.Flames.Behaviors
             AssociatedObject.MouseMove += AssociatedObject_MouseMove;
             AssociatedObject.MouseLeave += AssociatedObject_MouseLeave;
 
+            AssociatedObject.Unloaded += AssociatedObject_Unloaded;
+
             OnRenderedCallsChanged( null, null );
+        }
+
+        private void AssociatedObject_Unloaded( object sender, RoutedEventArgs e )
+        {
+            Cleanup();
         }
 
         private void OnRenderedCallsChanged( object sender, EventArgs e )
@@ -54,7 +61,7 @@ namespace Plainion.Flames.Behaviors
                 return;
             }
 
-            myModel = new Lazy<IList<Activity>>( () => 
+            myModel = new Lazy<IList<Activity>>( () =>
                 AssociatedObject.RenderedActivities
                     .OrderByDescending( a => a.VisibleDepth )
                     .ToList() );
@@ -133,14 +140,21 @@ namespace Plainion.Flames.Behaviors
 
         protected override void OnDetaching()
         {
+            Cleanup();
+
+            base.OnDetaching();
+        }
+
+        private void Cleanup()
+        {
+            AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
+
             AssociatedObject.MouseDown -= AssociatedObject_MouseDown;
             AssociatedObject.MouseMove -= AssociatedObject_MouseMove;
             AssociatedObject.MouseLeave -= AssociatedObject_MouseLeave;
 
             var renderedCallsDescriptor = DependencyPropertyDescriptor.FromProperty( FlameView.RenderedActivitiesProperty, typeof( FlameView ) );
-            renderedCallsDescriptor.RemoveValueChanged( this, OnRenderedCallsChanged );
-
-            base.OnDetaching();
+            renderedCallsDescriptor.RemoveValueChanged( AssociatedObject, OnRenderedCallsChanged );
         }
     }
 }
