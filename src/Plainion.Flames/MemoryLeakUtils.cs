@@ -20,10 +20,10 @@ namespace Plainion.Flames
         // resolution: OneTime, INotifyPropertyChanged
         private static void PrintReflectTypeDescriptionProviderContents()
         {
-            // get the ReflectTypeDescriptionProvider._propertyCache field
-            var typeRtdp = typeof( PropertyDescriptor ).Module.GetType( "System.ComponentModel.ReflectTypeDescriptionProvider" );
-            var fieldInfo = typeRtdp.GetField( "_propertyCache", BindingFlags.Static | BindingFlags.NonPublic );
-            var propertyCache = ( Hashtable )fieldInfo.GetValue( null );
+            var type = typeof( PropertyDescriptor ).Module.GetType( "System.ComponentModel.ReflectTypeDescriptionProvider" );
+            var propertyCache = ( Hashtable )type
+                .GetField( "_propertyCache", BindingFlags.Static | BindingFlags.NonPublic )
+                .GetValue( null );
             if( propertyCache == null )
             {
                 return;
@@ -33,10 +33,9 @@ namespace Plainion.Flames
             var entries = new DictionaryEntry[ propertyCache.Count ];
             propertyCache.CopyTo( entries, 0 );
 
-            var valueChangedHandlersFieldInfo = typeof( PropertyDescriptor ).GetField( "valueChangedHandlers",
-                BindingFlags.Instance | BindingFlags.NonPublic );
+            var valueChangedHandlersFieldInfo = typeof( PropertyDescriptor )
+                .GetField( "valueChangedHandlers", BindingFlags.Instance | BindingFlags.NonPublic );
 
-            // count the "value changed" handlers for each type
             foreach( var entry in entries )
             {
                 var pds = ( PropertyDescriptor[] )entry.Value;
@@ -48,14 +47,15 @@ namespace Plainion.Flames
                 foreach( var pd in pds )
                 {
                     var valueChangedHandlers = ( Hashtable )valueChangedHandlersFieldInfo.GetValue( pd );
-
-                    if( valueChangedHandlers != null && valueChangedHandlers.Count > 0 )
+                    if( valueChangedHandlers == null || valueChangedHandlers.Count == 0 )
                     {
-                        Debug.WriteLine( string.Format( "LEAK(non-observable property): ObservedType={0}, ObservedProperty={1}, HandlerCount={2}",
-                            entry.Key,
-                            pd.Name,
-                            valueChangedHandlers.Count ) );
+                        continue;
                     }
+
+                    Debug.WriteLine( string.Format( "LEAK(non-observable property): ObservedType={0}, ObservedProperty={1}, HandlerCount={2}",
+                        entry.Key,
+                        pd.Name,
+                        valueChangedHandlers.Count ) );
                 }
             }
         }
@@ -64,51 +64,45 @@ namespace Plainion.Flames
         private static void PrintDPCustomTypeDescriptorContents()
         {
             var type = typeof( DependencyObject ).Module.GetType( "MS.Internal.ComponentModel.DPCustomTypeDescriptor" );
-            var fieldInfo = type.GetField( "_propertyMap", BindingFlags.Static | BindingFlags.NonPublic );
-            var propertyMap = ( IDictionary )fieldInfo.GetValue( null );
+            var propertyMap = ( IDictionary )type.GetField( "_propertyMap", BindingFlags.Static | BindingFlags.NonPublic )
+                .GetValue( null );
             if( propertyMap == null )
             {
                 return;
             }
 
-
-            /*
-Name
- Plainion.Flames!Plainion.Flames.Controls.FlameView
-+ LIB <<mscorlib!Dictionary>>
-|+ WindowsBase!MS.Internal.ComponentModel.DependencyObjectPropertyDescriptor
-||+ LIB <<mscorlib!Dictionary>>
-|||+ [static var MS.Internal.ComponentModel.DPCustomTypeDescriptor._propertyMap]
-||||+ [static vars]
-             */
             foreach( DictionaryEntry entry in propertyMap )
             {
-                var key = entry.Key;
-                if( entry.Value != null )
+                var dependencyObjectPropertyDescriptor = entry.Value;
+                if( dependencyObjectPropertyDescriptor == null )
                 {
-                    var dependencyObjectPropertyDescriptor = entry.Value;
-                    var trackersField = dependencyObjectPropertyDescriptor.GetType().GetField( "_trackers", BindingFlags.Instance | BindingFlags.NonPublic );
-                    var trackers = ( IDictionary )trackersField.GetValue( dependencyObjectPropertyDescriptor );
-                    if( trackers != null )
-                    {
-                        foreach( DictionaryEntry trackerEntry in trackers )
-                        {
-                            var tracker = trackerEntry.Value;
+                    continue;
+                }
 
-                            var changedHandler = ( EventHandler )tracker.GetType()
-                                .GetField( "Changed", BindingFlags.Instance | BindingFlags.NonPublic )
-                                .GetValue( tracker );
-                            if( changedHandler != null )
-                            {
-                                Debug.WriteLine( string.Format( "LEAK(AddValueChanged): ObservedType={0}, ObservedProperty={1}, HandlerTarget={2}, HandlerName={3}",
-                                    tracker.GetType().GetField( "_object", BindingFlags.Instance | BindingFlags.NonPublic )
-                                        .GetValue( tracker ).GetType().FullName,
-                                    ( ( DependencyProperty )tracker.GetType().GetField( "_property", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( tracker ) ).Name,
-                                    changedHandler.Target.GetType().FullName,
-                                    changedHandler.Method.Name ) );
-                            }
-                        }
+                var trackers = GetTrackersFieldFromDependencyObjectPropertyDescriptor( dependencyObjectPropertyDescriptor );
+                if( trackers == null )
+                {
+                    continue;
+                }
+
+                foreach( DictionaryEntry trackerEntry in trackers )
+                {
+                    var tracker = trackerEntry.Value;
+
+                    var changedHandler = ( EventHandler )tracker.GetType()
+                        .GetField( "Changed", BindingFlags.Instance | BindingFlags.NonPublic )
+                        .GetValue( tracker );
+                    if( changedHandler == null )
+                    {
+                        continue;
                     }
+
+                    Debug.WriteLine( string.Format( "LEAK(AddValueChanged): ObservedType={0}, ObservedProperty={1}, HandlerTarget={2}, HandlerName={3}",
+                        tracker.GetType().GetField( "_object", BindingFlags.Instance | BindingFlags.NonPublic )
+                            .GetValue( tracker ).GetType().FullName,
+                        ( ( DependencyProperty )tracker.GetType().GetField( "_property", BindingFlags.Instance | BindingFlags.NonPublic ).GetValue( tracker ) ).Name,
+                        changedHandler.Target.GetType().FullName,
+                        changedHandler.Method.Name ) );
                 }
             }
         }
@@ -118,14 +112,19 @@ Name
             var dependencyObjectPropertyDescriptor = descriptor.GetType().GetProperty( "Property", BindingFlags.Instance | BindingFlags.NonPublic )
                 .GetValue( descriptor );
 
-            var trackersField = dependencyObjectPropertyDescriptor.GetType().GetField( "_trackers", BindingFlags.Instance | BindingFlags.NonPublic );
-            var trackers = ( IDictionary )trackersField.GetValue( dependencyObjectPropertyDescriptor );
+            var trackers = GetTrackersFieldFromDependencyObjectPropertyDescriptor( dependencyObjectPropertyDescriptor );
 
             //var key = DependencyObjectPropertyDescriptor.FromObj( component );
             var fromObj = dependencyObjectPropertyDescriptor.GetType().GetMethod( "FromObj", BindingFlags.Static | BindingFlags.NonPublic );
             var key = fromObj.Invoke( null, new[] { component } );
 
             return trackers[ key ];
+        }
+
+        private static IDictionary GetTrackersFieldFromDependencyObjectPropertyDescriptor( object dependencyObjectPropertyDescriptor )
+        {
+            var trackersField = dependencyObjectPropertyDescriptor.GetType().GetField( "_trackers", BindingFlags.Instance | BindingFlags.NonPublic );
+            return ( IDictionary )trackersField.GetValue( dependencyObjectPropertyDescriptor );
         }
     }
 }
