@@ -17,9 +17,7 @@ namespace Plainion.Flames.Viewer.ViewModels
             ProcessId = traceProcess.ProcessId;
             Name = traceProcess.Name;
 
-            Threads = flames
-                .Select( f => new SelectableThreadAdapter( f ) )
-                .ToList();
+            Threads = flames.Select( f => new SelectableThreadAdapter( f ) );
 
             myModel.PropertyChanged += OnModelPropertyChanged;
         }

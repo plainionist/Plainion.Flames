@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Plainion.Flames.Infrastructure.Controls;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
-    class SelectableThreadAdapter : TraceThreadNode, IDisposable
+    class SelectableThreadAdapter : TraceThreadNode
     {
         private Flame myFlame;
 
@@ -47,15 +46,6 @@ namespace Plainion.Flames.Viewer.ViewModels
         protected override void OnNameChanged()
         {
             myFlame.Model.Name = Name;
-        }
-
-        public void Dispose()
-        {
-            if( myFlame != null )
-            {
-                myFlame.PropertyChanged -= OnFlamePropertyChanged;
-                myFlame = null;
-            }
         }
     }
 }

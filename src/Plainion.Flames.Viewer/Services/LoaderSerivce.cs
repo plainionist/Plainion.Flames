@@ -6,6 +6,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Plainion.Flames.Infrastructure;
 using Plainion.Flames.Infrastructure.Model;
@@ -236,6 +238,15 @@ namespace Plainion.Flames.Viewer.Services
 
             project.TraceLog.Dispose();
             project.TraceLog = null;
+
+            // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
+            // trigger GC after application does idle so that all Unload handlers could cleanup so that
+            // we can free all memory no longer needed
+            Application.Current.Dispatcher.BeginInvoke( DispatcherPriority.ApplicationIdle, new Action( () =>
+            {
+                GC.Collect();
+            } ) );
+
         }
 
         private static string GetProjectFile( Project project )

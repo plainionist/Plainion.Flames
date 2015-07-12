@@ -93,7 +93,7 @@
                     </ObjectDataProvider>
                 </Grid.Resources>
 
-                <ComboBox Grid.Column="0" ItemsSource="{Binding Source={StaticResource FilterTargets}}"
+                <ComboBox Grid.Column="0" ItemsSource="{Binding Source={StaticResource FilterTargets}, Mode=OneTime}"
                           SelectedItem="{Binding FilterTarget}"/>
 
                 <pn:SearchTextBox Grid.Column="1" SearchMode="Instant" 

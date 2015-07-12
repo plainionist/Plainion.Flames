@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Threading;
 
 namespace Plainion.Flames
@@ -16,15 +19,17 @@ namespace Plainion.Flames
             // queue it in - we want to have the app idle - esp. all controls should be unloaded first
             Application.Current.Dispatcher.BeginInvoke( DispatcherPriority.ApplicationIdle, new Action( () =>
             {
-                PrintReflectTypeDescriptionProviderContents();
+                InspectReflectTypeDescriptionProvider();
 
-                PrintDPCustomTypeDescriptorContents();
+                InspectDPCustomTypeDescriptor();
+
+                InspectViewManager();
             } ) );
         }
 
         // http://code.logos.com/blog/2008/10/detecting_bindings_that_should_be_onetime.html
         // resolution: OneTime, INotifyPropertyChanged
-        private static void PrintReflectTypeDescriptionProviderContents()
+        private static void InspectReflectTypeDescriptionProvider()
         {
             var type = typeof( PropertyDescriptor ).Module.GetType( "System.ComponentModel.ReflectTypeDescriptionProvider" );
             var propertyCache = ( Hashtable )type
@@ -67,7 +72,7 @@ namespace Plainion.Flames
         }
 
         // resolution: RemoveValueChanged()
-        private static void PrintDPCustomTypeDescriptorContents()
+        private static void InspectDPCustomTypeDescriptor()
         {
             var type = typeof( DependencyObject ).Module.GetType( "MS.Internal.ComponentModel.DPCustomTypeDescriptor" );
             var propertyMap = ( IDictionary )type.GetField( "_propertyMap", BindingFlags.Static | BindingFlags.NonPublic )
@@ -131,6 +136,50 @@ namespace Plainion.Flames
         {
             var trackersField = dependencyObjectPropertyDescriptor.GetType().GetField( "_trackers", BindingFlags.Instance | BindingFlags.NonPublic );
             return ( IDictionary )trackersField.GetValue( dependencyObjectPropertyDescriptor );
+        }
+
+        private static void InspectViewManager()
+        {
+            var type = typeof( Binding ).Module.GetType( "MS.Internal.Data.ViewManager" );
+            var viewManager = ( IDictionary )type.GetProperty( "Current", BindingFlags.Static | BindingFlags.NonPublic )
+                .GetValue( null );
+            if( viewManager == null )
+            {
+                return;
+            }
+
+            var inactiveViewTables = ( IDictionary )type.GetField( "_inactiveViewTables", BindingFlags.Instance | BindingFlags.NonPublic )
+                .GetValue( viewManager );
+            if( inactiveViewTables == null )
+            {
+                return;
+            }
+
+            if( inactiveViewTables.Count == 0 )
+            {
+                return;
+            }
+
+            var entries = inactiveViewTables.OfType<DictionaryEntry>().ToList();
+
+            foreach( var entry in entries )
+            {
+                var viewTable = ( IEnumerable )entry.Key;
+                var entryWithViewRecord = ( DictionaryEntry )viewTable.OfType<object>().First();
+                var collectionView = ( ICollectionView )entryWithViewRecord.Value.GetType()
+                    .GetProperty( "View", BindingFlags.Instance | BindingFlags.NonPublic )
+                    .GetValue( entryWithViewRecord.Value );
+                var sourceCollection = collectionView.SourceCollection;
+
+                if( collectionView.IsEmpty )
+                {
+                    continue;
+                }
+
+                Debug.WriteLine( string.Format( "LEAK(ViewManager): CollectionType={0}, Count={1}",
+                    collectionView.SourceCollection.GetType().FullName,
+                    collectionView.SourceCollection.OfType<object>().Count() ) );
+            }
         }
     }
 }

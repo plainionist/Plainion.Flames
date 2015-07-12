@@ -32,7 +32,7 @@ namespace Plainion.Flames.Viewer.ViewModels
                     .Distinct()
                     .Count();
 
-                ThreadCount = Presentation.Flames.Count;
+                ThreadCount = Presentation.Flames.Count();
 
                 CallCount = Presentation.Flames
                     .SelectMany(t => t.Activities)

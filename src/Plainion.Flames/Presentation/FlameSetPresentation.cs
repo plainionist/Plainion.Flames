@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Flames.Model;
 
@@ -7,6 +8,11 @@ namespace Plainion.Flames.Presentation
     public class FlameSetPresentation : BindableBase
     {
         private bool myHideEmptyFlames;
+        // http://referencesource.microsoft.com/#PresentationFramework/Framework/MS/Internal/Data/ViewManager.cs
+        // we use ObservableCollection here to avoid that ViewManager holds a strong ref to our collection.
+        // this will be removed in some time so it is not a real leak (see comments in linked source code) but as
+        // we hold havy data here (flames) we want to avoid holding it longer than necessary
+        private ObservableCollection<Flame> myFlames;
 
         internal FlameSetPresentation( TraceLog traceLog, IColorLut colorLut )
         {
@@ -17,7 +23,8 @@ namespace Plainion.Flames.Presentation
             TimelineViewport = new TimelineViewport( traceLog );
             ColorLut = colorLut;
 
-            Flames = new List<Flame>();
+            Flames = new ObservableCollection<Flame>();
+
             HideEmptyFlames = true;
             Selections = new SelectionModule();
         }
@@ -26,7 +33,18 @@ namespace Plainion.Flames.Presentation
 
         public TimelineViewport TimelineViewport { get; private set; }
 
-        public IReadOnlyList<Flame> Flames { get; internal set; }
+        /// <summary>
+        /// Creates a copy.
+        /// Does not notify changes.
+        /// </summary>
+        public IEnumerable<Flame> Flames
+        {
+            get { return myFlames; }
+            internal set
+            {
+                myFlames = value == null ? null : new ObservableCollection<Flame>( value );
+            }
+        }
 
         public SelectionModule Selections { get; private set; }
 

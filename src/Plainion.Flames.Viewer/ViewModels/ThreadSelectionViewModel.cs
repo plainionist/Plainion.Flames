@@ -153,8 +153,7 @@ namespace Plainion.Flames.Viewer.ViewModels
             TracesTreeSource.Processes = Presentation.Flames
                 .GroupBy(x => x.Model.Process)
                 .OrderBy(x => x.Key.Name)
-                .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()))
-                .ToList();
+                .Select(x => new SelectableProcessAdapter(x.Key, x.AsEnumerable()));
 
             var document = ProjectService.Project.Items.OfType<SelectedThreadsDocument>().SingleOrDefault();
             if (document != null)

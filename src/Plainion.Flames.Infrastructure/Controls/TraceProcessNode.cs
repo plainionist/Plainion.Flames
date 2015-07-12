@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.Practices.Prism.Mvvm;
 
 namespace Plainion.Flames.Infrastructure.Controls
 {
-    [DebuggerDisplay("{Name}, PID={ProcessId}")]
-    public class TraceProcessNode : EditableTreeNode, IDisposable
+    [DebuggerDisplay( "{Name}, PID={ProcessId}" )]
+    public class TraceProcessNode : EditableTreeNode
     {
         private int myProcessId;
         private string myName;
-        private IEnumerable<TraceThreadNode> myThreads;
+        // http://referencesource.microsoft.com/#PresentationFramework/Framework/MS/Internal/Data/ViewManager.cs
+        // we use ObservableCollection here to avoid that ViewManager holds a strong ref to our collection.
+        // this will be removed in some time so it is not a real leak (see comments in linked source code) but as
+        // we hold havy data here (flames) we want to avoid holding it longer than necessary
+        private ObservableCollection<TraceThreadNode> myThreads;
 
         // only used if here are no threads
         private bool myIsVisible;
@@ -49,32 +52,34 @@ namespace Plainion.Flames.Infrastructure.Controls
         protected virtual void OnNameChanged()
         {
         }
-        
+
+        /// <summary>
+        /// Creates a copy
+        /// </summary>
         public IEnumerable<TraceThreadNode> Threads
         {
             get { return myThreads; }
             set
             {
-                var oldThreads = myThreads;
-
-                if( SetProperty( ref myThreads, value ) )
+                if( myThreads != null )
                 {
-                    if( oldThreads != null )
+                    foreach( var t in myThreads )
                     {
-                        foreach( var t in oldThreads )
-                        {
-                            t.PropertyChanged -= OnThreadPropertyChanged;
-                        }
-                    }
-
-                    if( myThreads != null )
-                    {
-                        foreach( var t in myThreads )
-                        {
-                            t.PropertyChanged += OnThreadPropertyChanged;
-                        }
+                        t.PropertyChanged -= OnThreadPropertyChanged;
                     }
                 }
+
+                myThreads = value == null ? null : new ObservableCollection<TraceThreadNode>( value );
+                
+                if( myThreads != null )
+                {
+                    foreach( var t in myThreads )
+                    {
+                        t.PropertyChanged += OnThreadPropertyChanged;
+                    }
+                }
+
+                OnPropertyChanged( "Threads" );
             }
         }
 
@@ -123,19 +128,6 @@ namespace Plainion.Flames.Infrastructure.Controls
 
                 OnPropertyChanged( "IsVisible" );
             }
-        }
-
-        public virtual void Dispose()
-        {
-            if( myThreads != null )
-            {
-                foreach( var thread in myThreads.OfType<IDisposable>() )
-                {
-                    thread.Dispose();
-                }
-            }
-
-            Threads = null;
         }
     }
 }
