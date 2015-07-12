@@ -71,7 +71,8 @@
                     </i:Interaction.Behaviors>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" Foreground="{Binding ., Converter={StaticResource BookmarkToBrushConverter}}"/>
+                            <TextBlock Text="{Binding Name, Mode=OneTime}" 
+                                       Foreground="{Binding ., Converter={StaticResource BookmarkToBrushConverter}, Mode=OneTime}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
