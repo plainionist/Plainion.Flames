@@ -11,16 +11,16 @@
             <v:DurationToTimeStringConverter x:Key="DurationToTimeStringConverter"/>
         </TextBlock.Resources>
         
-        <Run FontWeight="Bold" Text="{Binding Name, Mode=OneWay}"/>
+        <Run FontWeight="Bold" Text="{Binding Name, Mode=OneTime}"/>
         <LineBreak/>
-        <Run Text="{Binding Model.Method, Mode=OneWay, Converter={StaticResource MethodToFullnameConverter}}"/>
+        <Run Text="{Binding Model.Method, Mode=OneTime, Converter={StaticResource MethodToFullnameConverter}}"/>
         <LineBreak/>
         <Run>
             <Run.Text>
                 <MultiBinding StringFormat="{}[{0} -> {1}] Duration: {2}" Mode="OneWay">
-                    <Binding Path="StartTimeString"/>
-                    <Binding Path="EndTimeString"/>
-                    <Binding Path="Duration" Converter="{StaticResource DurationToTimeStringConverter}" />
+                    <Binding Path="StartTimeString" Mode="OneTime"/>
+                    <Binding Path="EndTimeString" Mode="OneTime"/>
+                    <Binding Path="Duration" Mode="OneTime" Converter="{StaticResource DurationToTimeStringConverter}" />
                 </MultiBinding>
             </Run.Text>
         </Run>
@@ -28,8 +28,8 @@
         <Run>
             <Run.Text>
                 <MultiBinding StringFormat="{}PID={0}, TID={1}" Mode="OneWay">
-                    <Binding Path="Flame.ProcessId" />
-                    <Binding Path="Flame.ThreadId" />
+                    <Binding Path="Flame.ProcessId" Mode="OneTime"/>
+                    <Binding Path="Flame.ThreadId" Mode="OneTime"/>
                 </MultiBinding>
             </Run.Text>
         </Run>
