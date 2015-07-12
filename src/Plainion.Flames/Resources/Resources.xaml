@@ -50,9 +50,9 @@
                 </TextBlock.Text>
             </TextBlock>
             <pn:EditableTextBlock Text="{Binding Name}" Padding="5,0,0,0" IsInEditMode="{Binding IsInEditMode, Mode=TwoWay}"/>
-            <GroupBox Header="Bookmarks">
+            <GroupBox Header="Bookmarks" DataContext="{Binding Flame.Bookmarks, Mode=OneTime}">
                 <GroupBox.Visibility>
-                    <Binding Path="Flame.Bookmarks.Items">
+                    <Binding Path="Items" Mode="OneTime">
                         <Binding.Converter>
                             <pn:ConverterChain>
                                 <pn:IsEmptyConverter/>
@@ -62,12 +62,12 @@
                         </Binding.Converter>
                     </Binding>
                 </GroupBox.Visibility>
-                <ListBox ItemsSource="{Binding Flame.Bookmarks.Items}" SelectionMode="Extended">
+                <ListBox ItemsSource="{Binding Items, Mode=OneTime}" SelectionMode="Extended">
                     <ListBox.Resources>
-                        <v:BookmarkToBrushConverter x:Key="BookmarkToBrushConverter" ColorLut="{Binding Flame.ColorLut}"/>
+                        <v:BookmarkToBrushConverter x:Key="BookmarkToBrushConverter" ColorLut="{Binding Flame.ColorLut, Mode=OneTime}"/>
                     </ListBox.Resources>
                     <i:Interaction.Behaviors>
-                        <pn:MultiSelectBehavior SelectedItems="{Binding Flame.Bookmarks.SelectedItems}"/>
+                        <pn:MultiSelectBehavior SelectedItems="{Binding SelectedItems, Mode=OneTime}"/>
                     </i:Interaction.Behaviors>
                     <ListBox.ItemTemplate>
                         <DataTemplate>

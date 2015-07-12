@@ -47,9 +47,14 @@ namespace Plainion.Flames.Modules.Filters
 
         private void Initialize()
         {
+            foreach(var filter in NameFilters)
+            {
+                filter.PropertyChanged += OnNameFilterPropertyChanged;
+            }
+
             myAllCallsFilter = new AllCallsFilter { IsApplied = false, IsShowFilter = false };
             myAllCallsFilter.PropertyChanged += OnNameFilterPropertyChanged;
-            NameFilters.Add(myAllCallsFilter);
+            NameFilters.Add( myAllCallsFilter );
 
             NameFilters.CollectionChanged += OnNameFilterCollectionChanged;
 

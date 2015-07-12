@@ -14,7 +14,7 @@
                 <bf:BookmarkToBrushConverter x:Key="BookmarkToBrushConverter" ColorLut="{Binding Presentation.ColorLut}"/>
             </ListBox.Resources>
             <i:Interaction.Behaviors>
-                <pn:MultiSelectBehavior SelectedItems="{Binding SelectedItems}"/>
+                <pn:MultiSelectBehavior SelectedItems="{Binding SelectedItems, Mode=OneTime}"/>
             </i:Interaction.Behaviors>
             <ListBox.ItemTemplate>
                 <DataTemplate>
