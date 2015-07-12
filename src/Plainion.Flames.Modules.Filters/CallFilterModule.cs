@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -9,7 +8,10 @@ using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters
 {
-    class CallFilterModule
+    // https://support.microsoft.com/de-de/kb/938416
+    // we cannot use "OneTime" for DurationFilter in DurationFilterView because Module could change so we 
+    // will implement INotifyPropertyChanged here even if we actually dont need it.
+    class CallFilterModule : SerializableBindableBase
     {
         private const uint FilterMaskBit = 1;
         private const uint DurationMaskBit = 2;

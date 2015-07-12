@@ -44,15 +44,15 @@ namespace Plainion.Flames
 
             foreach( var entry in entries )
             {
-                var pds = ( PropertyDescriptor[] )entry.Value;
-                if( pds == null )
+                var propertyDescriptors = ( PropertyDescriptor[] )entry.Value;
+                if( propertyDescriptors == null )
                 {
                     continue;
                 }
 
-                foreach( var pd in pds )
+                foreach( var propertyDescriptor in propertyDescriptors )
                 {
-                    var valueChangedHandlers = ( Hashtable )valueChangedHandlersFieldInfo.GetValue( pd );
+                    var valueChangedHandlers = ( Hashtable )valueChangedHandlersFieldInfo.GetValue( propertyDescriptor );
                     if( valueChangedHandlers == null || valueChangedHandlers.Count == 0 )
                     {
                         continue;
@@ -60,7 +60,7 @@ namespace Plainion.Flames
 
                     Debug.WriteLine( string.Format( "LEAK(non-observable property): ObservedType={0}, ObservedProperty={1}, HandlerCount={2}",
                         entry.Key,
-                        pd.Name,
+                        propertyDescriptor.Name,
                         valueChangedHandlers.Count ) );
                 }
             }
