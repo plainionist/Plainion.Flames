@@ -268,7 +268,7 @@ namespace Plainion.Flames.Viewer.Services
             // trigger unload of the current projec
             Project = null;
 
-            MemoryLeakUtils.PrintKnownLeaks();
+            MemoryLeakUtils.GenerateLeakStats();
         }
     }
 }

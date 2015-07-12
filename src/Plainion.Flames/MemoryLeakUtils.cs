@@ -4,16 +4,22 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Plainion.Flames
 {
     public class MemoryLeakUtils
     {
-        public static void PrintKnownLeaks()
+        public static void GenerateLeakStats()
         {
-            PrintReflectTypeDescriptionProviderContents();
+            // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
+            // queue it in - we want to have the app idle - esp. all controls should be unloaded first
+            Application.Current.Dispatcher.BeginInvoke( DispatcherPriority.ApplicationIdle, new Action( () =>
+            {
+                PrintReflectTypeDescriptionProviderContents();
 
-            PrintDPCustomTypeDescriptorContents();
+                PrintDPCustomTypeDescriptorContents();
+            } ) );
         }
 
         // http://code.logos.com/blog/2008/10/detecting_bindings_that_should_be_onetime.html

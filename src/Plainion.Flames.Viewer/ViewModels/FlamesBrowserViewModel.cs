@@ -47,9 +47,6 @@ namespace Plainion.Flames.Viewer.ViewModels
                     // lets display settings window to the user so that it is more obvious that everything
                     // is visible in the flames.
                     SpawnSettingsWindowCommand.Execute(null);
-
-                    // TODO: we want to navigate to process-threads-view but currently we cannot access viewmodel :(
-                    //Settings.SelectedTabIndex = 1;
                 }));
             }
         }
