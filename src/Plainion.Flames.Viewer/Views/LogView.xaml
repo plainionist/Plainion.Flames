@@ -10,11 +10,11 @@
         <l:LogLevelToBrushConverter x:Key="LogLevelToBrushConverter"/>
     </UserControl.Resources>
     <Grid>
-        <ListView ItemsSource="{Binding Messages}" Background="WhiteSmoke">
+        <ListView ItemsSource="{Binding Messages, Mode=OneTime}" Background="WhiteSmoke">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Path=Message}" 
-                               Foreground="{Binding Level, Converter={StaticResource LogLevelToBrushConverter}}"/>
+                    <TextBlock Text="{Binding Path=Message, Mode=OneTime}" 
+                               Foreground="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToBrushConverter}}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
