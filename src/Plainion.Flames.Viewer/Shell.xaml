@@ -31,7 +31,7 @@
 
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
-        <KeyBinding Key="F4" Modifiers="Alt" Command="{Binding CloseCommand}"/>
+        <KeyBinding Key="F4" Modifiers="Alt" Command="{Binding ExitCommand}"/>
     </Window.InputBindings>
 
     <pn:AdornedControl IsAdornerVisible="{Binding IsBusy}">

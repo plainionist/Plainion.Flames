@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
+using Plainion.Windows.Diagnostics;
 
 namespace Plainion.Flames.Viewer
 {
@@ -12,6 +14,11 @@ namespace Plainion.Flames.Viewer
             InitializeComponent();
 
             DataContext = model;
+
+            if (Debugger.IsAttached)
+            {
+                new InspectionWindow().Show();
+            }
         }
     }
 }

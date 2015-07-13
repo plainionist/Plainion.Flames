@@ -7,6 +7,8 @@ namespace Plainion.Windows.Diagnostics
         public InspectionWindow()
         {
             InitializeComponent();
+
+            DataContext = new InspectionWindowModel();
         }
     }
 }
