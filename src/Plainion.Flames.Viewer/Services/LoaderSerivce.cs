@@ -18,6 +18,7 @@ using Plainion.Flames.Viewer.Model;
 using Plainion.Prism.Events;
 using Plainion.Progress;
 using Plainion.Windows;
+using Plainion.Windows.Diagnostics;
 
 namespace Plainion.Flames.Viewer.Services
 {

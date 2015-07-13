@@ -196,6 +196,10 @@
       <Project>{f32ff1af-14d4-43b4-a0f3-4aa399dfff55}</Project>
       <Name>Plainion.Flames</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Plainion.Windows.Diagnostics\Plainion.Windows.Diagnostics.csproj">
+      <Project>{5dcd5ab0-39e2-4640-b136-7b0310aa17f4}</Project>
+      <Name>Plainion.Windows.Diagnostics</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="flames.ico" />

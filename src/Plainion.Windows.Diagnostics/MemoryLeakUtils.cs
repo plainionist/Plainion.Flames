@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 
-namespace Plainion.Flames
+namespace Plainion.Windows.Diagnostics
 {
     public class MemoryLeakUtils
     {

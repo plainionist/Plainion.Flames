@@ -64,7 +64,6 @@
     <Compile Include="Controls\MethodToFullnameConverter.cs" />
     <Compile Include="Controls\BookmarkToBrushConverter.cs" />
     <Compile Include="Controls\FlameHeader.cs" />
-    <Compile Include="MemoryLeakUtils.cs" />
     <Compile Include="Model\AssociatedEventsCollectionExtensions.cs" />
     <Compile Include="Model\AssociatedEventsCollection.cs" />
     <Compile Include="Model\IAssociatedEvents.cs" />
