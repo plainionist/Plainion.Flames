@@ -19,18 +19,23 @@ namespace Plainion.Windows.Diagnostics
 
         public static TextWriter Writer { get; set; }
 
-        public static void GenerateLeakStats()
+        public static void GenerateLeakStatsAsync()
         {
             // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
             // queue it in - we want to have the app idle - esp. all controls should be unloaded first
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
             {
-                InspectReflectTypeDescriptionProvider();
-
-                InspectDPCustomTypeDescriptor();
-
-                InspectViewManager();
+                GenerateLeakStats();
             }));
+        }
+
+        public static void GenerateLeakStats()
+        {
+            InspectReflectTypeDescriptionProvider();
+
+            InspectDPCustomTypeDescriptor();
+
+            InspectViewManager();
         }
 
         // http://code.logos.com/blog/2008/10/detecting_bindings_that_should_be_onetime.html

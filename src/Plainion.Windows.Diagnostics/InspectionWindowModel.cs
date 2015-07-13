@@ -26,7 +26,11 @@ namespace Plainion.Windows.Diagnostics
 
         private void OnRefresh()
         {
+            myLog = new StringWriter();
+            MemoryLeakUtils.Writer = myLog;
+
             MemoryLeakUtils.GenerateLeakStats();
+            
             OnPropertyChanged("Log");
         }
     }
