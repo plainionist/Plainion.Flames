@@ -10,26 +10,26 @@ using System.Windows.Threading;
 
 namespace Plainion.Windows.Diagnostics
 {
-    public class MemoryLeakUtils
+    public class WpfStatics
     {
-        static MemoryLeakUtils()
+        static WpfStatics()
         {
             Writer = new DebugTextWriter();
         }
 
         public static TextWriter Writer { get; set; }
 
-        public static void GenerateLeakStatsAsync()
+        public static void CollectStatisticsOnIdle()
         {
             // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
             // queue it in - we want to have the app idle - esp. all controls should be unloaded first
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
             {
-                GenerateLeakStats();
+                CollectStatistics();
             }));
         }
 
-        public static void GenerateLeakStats()
+        public static void CollectStatistics()
         {
             InspectReflectTypeDescriptionProvider();
 
@@ -74,7 +74,7 @@ namespace Plainion.Windows.Diagnostics
                         continue;
                     }
 
-                    Writer.WriteLine("LEAK(non-observable property): ObservedType={0}, ObservedProperty={1}, HandlerCount={2}",
+                    Writer.WriteLine("Non-observable property: ObservedType={0}, ObservedProperty={1}, HandlerCount={2}",
                         entry.Key,
                         propertyDescriptor.Name,
                         valueChangedHandlers.Count);
@@ -119,7 +119,7 @@ namespace Plainion.Windows.Diagnostics
                         continue;
                     }
 
-                    Writer.WriteLine("LEAK(AddValueChanged): ObservedType={0}, ObservedProperty={1}, HandlerTarget={2}, HandlerName={3}",
+                    Writer.WriteLine("AddValueChanged: ObservedType={0}, ObservedProperty={1}, HandlerTarget={2}, HandlerName={3}",
                         tracker.GetType().GetField("_object", BindingFlags.Instance | BindingFlags.NonPublic)
                             .GetValue(tracker).GetType().FullName,
                         ((DependencyProperty)tracker.GetType().GetField("_property", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(tracker)).Name,
@@ -187,7 +187,7 @@ namespace Plainion.Windows.Diagnostics
                     continue;
                 }
 
-                Writer.WriteLine("LEAK(ViewManager): CollectionType={0}, Count={1}",
+                Writer.WriteLine("ViewManager: CollectionType={0}, Count={1}",
                     collectionView.SourceCollection.GetType().FullName,
                     collectionView.SourceCollection.OfType<object>().Count());
             }

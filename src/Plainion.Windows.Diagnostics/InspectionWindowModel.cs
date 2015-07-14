@@ -14,7 +14,7 @@ namespace Plainion.Windows.Diagnostics
             RefreshCommand = new DelegateCommand(OnRefresh);
 
             myLog = new StringWriter();
-            MemoryLeakUtils.Writer = myLog;
+            WpfStatics.Writer = myLog;
         }
 
         public string Log
@@ -27,9 +27,9 @@ namespace Plainion.Windows.Diagnostics
         private void OnRefresh()
         {
             myLog = new StringWriter();
-            MemoryLeakUtils.Writer = myLog;
+            WpfStatics.Writer = myLog;
 
-            MemoryLeakUtils.GenerateLeakStats();
+            WpfStatics.CollectStatistics();
             
             OnPropertyChanged("Log");
         }

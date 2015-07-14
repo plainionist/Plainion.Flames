@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InspectionWindowModel.cs" />
-    <Compile Include="MemoryLeakUtils.cs" />
+    <Compile Include="WpfStatics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
