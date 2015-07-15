@@ -19,6 +19,8 @@ namespace Plainion.Windows.Diagnostics
 
         public static TextWriter Writer { get; set; }
 
+        internal static Action StatisticsUpdated { get; set; }
+
         public static void CollectStatisticsOnIdle()
         {
             // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
@@ -36,12 +38,24 @@ namespace Plainion.Windows.Diagnostics
             InspectDPCustomTypeDescriptor();
 
             InspectViewManager();
+
+            if (StatisticsUpdated != null)
+            {
+                StatisticsUpdated();
+            }
         }
 
         // http://code.logos.com/blog/2008/10/detecting_bindings_that_should_be_onetime.html
         // resolution: OneTime, INotifyPropertyChanged
         private static void InspectReflectTypeDescriptionProvider()
         {
+            var finding = new DiagnosticFinding(
+                "Data binding to non-observable property causes memory leak",
+                "Choose one of the following options:" + Environment.NewLine +
+                "  a) convert to DependencyProperty" + Environment.NewLine +
+                "  b) implement INotifyPropertyChanged in owning type" + Environment.NewLine +
+                "  c) bind with BindingMode=OneTime");
+
             var type = typeof(PropertyDescriptor).Module.GetType("System.ComponentModel.ReflectTypeDescriptionProvider");
             var propertyCache = (Hashtable)type
                 .GetField("_propertyCache", BindingFlags.Static | BindingFlags.NonPublic)
@@ -74,17 +88,25 @@ namespace Plainion.Windows.Diagnostics
                         continue;
                     }
 
-                    Writer.WriteLine("Non-observable property: ObservedType={0}, ObservedProperty={1}, HandlerCount={2}",
-                        entry.Key,
-                        propertyDescriptor.Name,
-                        valueChangedHandlers.Count);
+                    finding.AddLocation("ObservedType={0}, ObservedProperty={1}, HandlerCount={2}",
+                        entry.Key, propertyDescriptor.Name, valueChangedHandlers.Count);
                 }
+            }
+
+            if (finding.Locations.Any())
+            {
+                finding.WriteTo(Writer);
+                Writer.WriteLine();
             }
         }
 
         // resolution: RemoveValueChanged()
         private static void InspectDPCustomTypeDescriptor()
         {
+            var finding = new DiagnosticFinding(
+                "Observation of DependencyProperty using DependencyPropertyDescriptor.AddValueChanged() causes memory leak",
+                "Call DependencyPropertyDescriptor.RemoveValueChanged() to remove the event handler.");
+
             var type = typeof(DependencyObject).Module.GetType("MS.Internal.ComponentModel.DPCustomTypeDescriptor");
             var propertyMap = (IDictionary)type.GetField("_propertyMap", BindingFlags.Static | BindingFlags.NonPublic)
                 .GetValue(null);
@@ -119,13 +141,19 @@ namespace Plainion.Windows.Diagnostics
                         continue;
                     }
 
-                    Writer.WriteLine("AddValueChanged: ObservedType={0}, ObservedProperty={1}, HandlerTarget={2}, HandlerName={3}",
+                    finding.AddLocation("ObservedType={0}, ObservedProperty={1}, HandlerTarget={2}, HandlerName={3}",
                         tracker.GetType().GetField("_object", BindingFlags.Instance | BindingFlags.NonPublic)
                             .GetValue(tracker).GetType().FullName,
                         ((DependencyProperty)tracker.GetType().GetField("_property", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(tracker)).Name,
                         changedHandler.Target.GetType().FullName,
                         changedHandler.Method.Name);
                 }
+            }
+
+            if (finding.Locations.Any())
+            {
+                finding.WriteTo(Writer);
+                Writer.WriteLine();
             }
         }
 
@@ -151,6 +179,11 @@ namespace Plainion.Windows.Diagnostics
 
         private static void InspectViewManager()
         {
+            var finding = new DiagnosticFinding(
+                "Data binding to non-observable collection OR uage of non-observable collection together with CollectionViewSource causes higher memory footpint."+
+                "This is no real memory leak - the memory will be released after some 'Purge cylces' of the ViewManager. See http://referencesource.microsoft.com/PresentationFramework/Framework/MS/Internal/Data/ViewManager.cs.html",
+                "If you need to free the memory as soon as it is no longer needed by your application consider converting this collection into one which implements INotifyCollectionChanged (e.g. ObservableCollection<>) - even if the collection is immutable.");
+
             var type = typeof(Binding).Module.GetType("MS.Internal.Data.ViewManager");
             var viewManager = (IDictionary)type.GetProperty("Current", BindingFlags.Static | BindingFlags.NonPublic)
                 .GetValue(null);
@@ -187,9 +220,15 @@ namespace Plainion.Windows.Diagnostics
                     continue;
                 }
 
-                Writer.WriteLine("ViewManager: CollectionType={0}, Count={1}",
+                finding.AddLocation("CollectionType={0}, Count={1}",
                     collectionView.SourceCollection.GetType().FullName,
                     collectionView.SourceCollection.OfType<object>().Count());
+            }
+
+            if (finding.Locations.Any())
+            {
+                finding.WriteTo(Writer);
+                Writer.WriteLine();
             }
         }
     }

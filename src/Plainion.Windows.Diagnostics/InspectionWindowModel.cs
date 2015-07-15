@@ -15,6 +15,7 @@ namespace Plainion.Windows.Diagnostics
 
             myLog = new StringWriter();
             WpfStatics.Writer = myLog;
+            WpfStatics.StatisticsUpdated = () => OnPropertyChanged("Log");
         }
 
         public string Log
@@ -30,8 +31,6 @@ namespace Plainion.Windows.Diagnostics
             WpfStatics.Writer = myLog;
 
             WpfStatics.CollectStatistics();
-            
-            OnPropertyChanged("Log");
         }
     }
 }
