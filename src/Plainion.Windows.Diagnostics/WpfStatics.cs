@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -14,12 +14,12 @@ namespace Plainion.Windows.Diagnostics
     {
         static WpfStatics()
         {
-            Writer = new DebugTextWriter();
+            Findings = new ObservableCollection<DiagnosticFinding>();
         }
 
-        public static TextWriter Writer { get; set; }
+        public static ObservableCollection<DiagnosticFinding> Findings { get; private set; }
 
-        internal static Action StatisticsUpdated { get; set; }
+        public static bool WriteToDebugConsole { get; private set; }
 
         public static void CollectStatisticsOnIdle()
         {
@@ -33,15 +33,24 @@ namespace Plainion.Windows.Diagnostics
 
         public static void CollectStatistics()
         {
+            Findings.Clear();
+
             InspectReflectTypeDescriptionProvider();
 
             InspectDPCustomTypeDescriptor();
 
             InspectViewManager();
 
-            if (StatisticsUpdated != null)
+            if (WriteToDebugConsole)
             {
-                StatisticsUpdated();
+                using (var writer = new DebugTextWriter())
+                {
+                    foreach (var finding in Findings)
+                    {
+                        finding.WriteTo(writer);
+                        writer.WriteLine();
+                    }
+                }
             }
         }
 
@@ -95,8 +104,7 @@ namespace Plainion.Windows.Diagnostics
 
             if (finding.Locations.Any())
             {
-                finding.WriteTo(Writer);
-                Writer.WriteLine();
+                Findings.Add(finding);
             }
         }
 
@@ -152,8 +160,7 @@ namespace Plainion.Windows.Diagnostics
 
             if (finding.Locations.Any())
             {
-                finding.WriteTo(Writer);
-                Writer.WriteLine();
+                Findings.Add(finding);
             }
         }
 
@@ -227,8 +234,7 @@ namespace Plainion.Windows.Diagnostics
 
             if (finding.Locations.Any())
             {
-                finding.WriteTo(Writer);
-                Writer.WriteLine();
+                Findings.Add(finding);
             }
         }
     }

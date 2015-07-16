@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
@@ -7,30 +7,16 @@ namespace Plainion.Windows.Diagnostics
 {
     class InspectionWindowModel : BindableBase
     {
-        private StringWriter myLog;
-
         public InspectionWindowModel()
         {
-            RefreshCommand = new DelegateCommand(OnRefresh);
-
-            myLog = new StringWriter();
-            WpfStatics.Writer = myLog;
-            WpfStatics.StatisticsUpdated = () => OnPropertyChanged("Log");
+            RefreshCommand = new DelegateCommand(() => WpfStatics.CollectStatistics());
         }
 
-        public string Log
+        public ObservableCollection<DiagnosticFinding> Findings
         {
-            get { return myLog.ToString(); }
+            get { return WpfStatics.Findings; }
         }
 
         public ICommand RefreshCommand { get; private set; }
-
-        private void OnRefresh()
-        {
-            myLog = new StringWriter();
-            WpfStatics.Writer = myLog;
-
-            WpfStatics.CollectStatistics();
-        }
     }
 }

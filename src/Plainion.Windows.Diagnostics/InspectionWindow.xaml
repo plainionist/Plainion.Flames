@@ -10,9 +10,35 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBox Grid.Row="0" Text="{Binding Log, Mode=OneWay}" Margin="2" TextWrapping="NoWrap" IsReadOnly="True"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <ListBox Grid.Row="0" ItemsSource="{Binding Findings}" Margin="2"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock TextWrapping="Wrap">
+                            <Run FontWeight="Bold" Text="Description:"/>
+                            <Run Text="{Binding Description, Mode=OneTime}"/>
+                            <LineBreak/>
+                            <Run FontWeight="Bold" Text="Locations:"/>
+                        </TextBlock>
+                        <ItemsControl ItemsSource="{Binding Locations, Mode=OneTime}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                                        <Run Text="{Binding .,Mode=OneTime}"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock TextWrapping="Wrap">
+                            <Run FontWeight="Bold" Text="Resolution:"/>
+                            <Run Text="{Binding Resolution, Mode=OneTime}"/>
+                            <LineBreak/>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Button Grid.Row="1" HorizontalAlignment="Right" Content="Refresh" Margin="2" Command="{Binding RefreshCommand}"/>
     </Grid>
 </Window>
