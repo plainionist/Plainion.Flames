@@ -102,7 +102,7 @@ namespace Plainion.Flames.Presentation
         public int Height
         {
             get { return myHeight; }
-            private set { SetProperty( ref myHeight, value ); }
+            set { SetProperty( ref myHeight, value ); }
         }
 
         public ContentVisibility Visibility

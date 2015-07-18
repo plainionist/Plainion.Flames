@@ -104,24 +104,18 @@
                                         <pn:BindingProxy x:Key="FlamePresentationProxy" Data="{Binding}"/>
                                     </Border.Resources>
 
-                                    <Grid ContextMenu="{Binding Path=FlameHeaderContextMenu, ElementName=_this}" Background="Transparent">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="3"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.DataContext>
+                                    <DockPanel LastChildFill="True" Background="Transparent"
+                                               ContextMenu="{Binding Path=FlameHeaderContextMenu, ElementName=_this}">
+                                        <DockPanel.DataContext>
                                             <v:FlameHeader Flame="{Binding Data, Source={StaticResource FlamePresentationProxy}}"/>
-                                        </Grid.DataContext>
+                                        </DockPanel.DataContext>
 
-                                        <ContentPresenter Grid.Row="0" ContentTemplate="{Binding FlameHeaderTemplate, ElementName=_this}"
-                                                          Content="{Binding}"/>
+                                        <ContentPresenter ContentTemplate="{Binding FlameHeaderTemplate, ElementName=_this}"
+                                                          Content="{Binding}" DockPanel.Dock="Top"/>
 
-                                        <!--
-                                        <Grid Grid.Row="1" Cursor="SizeNS" Background="Transparent"
-                                              Visibility="{Binding Flame.IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
--->
-
-                                    </Grid>
+                                        <v:FlameResizer Visibility="{Binding Flame.IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                        Flame="{Binding Flame, Mode=OneWay}"/>
+                                    </DockPanel>
                                 </Border>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

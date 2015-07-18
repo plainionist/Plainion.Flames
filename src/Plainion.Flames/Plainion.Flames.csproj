@@ -61,6 +61,9 @@
     <Compile Include="Behaviors\CallTooltipBehavior.cs" />
     <Compile Include="Behaviors\ZoomOnMouseWheelBehavior.cs" />
     <Compile Include="Controls\DurationToTimeStringConverter.cs" />
+    <Compile Include="Controls\FlameResizer.xaml.cs">
+      <DependentUpon>FlameResizer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MethodToFullnameConverter.cs" />
     <Compile Include="Controls\BookmarkToBrushConverter.cs" />
     <Compile Include="Controls\FlameHeader.cs" />
@@ -111,6 +114,10 @@
     <Compile Include="Controls\VisualTreeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\FlameResizer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Resources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
