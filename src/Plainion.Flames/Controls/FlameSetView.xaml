@@ -17,7 +17,6 @@
         <Style TargetType="{x:Type ListViewItem}">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Stretch" />
-            <Setter Property="Height" Value="{Binding Height}"/>
             <Setter Property="Visibility" Value="{Binding Visibility, Converter={StaticResource ContentVisibilityToVisibilityConverter}}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Margin" Value="0"/>
@@ -65,8 +64,8 @@
         <v:TimeScaleView Grid.Column="1" Grid.Row="0" 
                          TimelineViewport="{Binding Presentation.TimelineViewport, ElementName=_this}"
                          Font="{Binding TimeScaleFont, ElementName=_this}"/>
-        
-        <Grid Grid.Row="1" Grid.Column="0" x:Name="HeaderResizer"/>        
+
+        <Grid Grid.Row="1" Grid.Column="0" x:Name="HeaderResizer"/>
         <Grid Grid.Row="1" Grid.Column="1" x:Name="FlameResizer"/>
 
         <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
@@ -91,18 +90,37 @@
                                 <Border BorderThickness="0 0 0 1" Margin="-6 0 -6 0" Padding="0"
                                         BorderBrush="{StaticResource GridBrush}"
                                         Background="Transparent">
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsExpanded}" Value="false">
+                                                    <Setter Property="Height" Value="{Binding Height}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
 
                                     <Border.Resources>
                                         <pn:BindingProxy x:Key="FlamePresentationProxy" Data="{Binding}"/>
                                     </Border.Resources>
 
                                     <Grid ContextMenu="{Binding Path=FlameHeaderContextMenu, ElementName=_this}" Background="Transparent">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="3"/>
+                                        </Grid.RowDefinitions>
                                         <Grid.DataContext>
                                             <v:FlameHeader Flame="{Binding Data, Source={StaticResource FlamePresentationProxy}}"/>
                                         </Grid.DataContext>
 
-                                        <ContentPresenter ContentTemplate="{Binding FlameHeaderTemplate, ElementName=_this}"
+                                        <ContentPresenter Grid.Row="0" ContentTemplate="{Binding FlameHeaderTemplate, ElementName=_this}"
                                                           Content="{Binding}"/>
+
+                                        <!--
+                                        <Grid Grid.Row="1" Cursor="SizeNS" Background="Transparent"
+                                              Visibility="{Binding Flame.IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+-->
+
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -136,7 +154,7 @@
 
         <GridSplitter Grid.Column="0" Grid.Row="1" VerticalAlignment="Stretch" Width="5" ResizeDirection="Columns"
                       Background="Transparent"/>
-        
+
         <v:TimeSlider Grid.Column="1" Grid.Row="2" TimelineViewport="{Binding Presentation.TimelineViewport, ElementName=_this}"/>
     </Grid>
 </UserControl>

@@ -141,6 +141,10 @@ namespace Plainion.Flames.Controls
             {
                 Invalidate();
             }
+            else if( e.PropertyName == "IsExpanded" )
+            {
+                Invalidate();
+            }
         }
 
         private void OnSelectedBookmarksChanged( object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e )
@@ -169,9 +173,22 @@ namespace Plainion.Flames.Controls
             base.OnRenderSizeChanged( sizeInfo );
         }
 
+        protected override Size MeasureOverride( Size availableSize )
+        {
+            if( Flame == null )
+            {
+                return default( Size );
+            }
+
+            return new Size( availableSize.Width,
+                double.IsInfinity( availableSize.Height ) ? ( double )Flame.Height : Math.Max( availableSize.Height, Flame.Height ) );
+        }
+
         // called to indicate that the view is no longer up to date
         private void Invalidate()
         {
+            InvalidateMeasure();
+            
             // mark the latest rendering output as invalid
             RenderedActivities = null;
 

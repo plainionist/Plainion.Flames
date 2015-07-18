@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
@@ -20,20 +21,7 @@ namespace Plainion.Flames.Controls
         public bool IsInEditMode
         {
             get { return myIsInEditMode; }
-            set
-            {
-                if( myIsInEditMode == value )
-                {
-                    return;
-                }
-
-                myIsInEditMode = value;
-
-                if( PropertyChanged != null )
-                {
-                    PropertyChanged( this, new PropertyChangedEventArgs( "IsInEditMode" ) );
-                }
-            }
+            set { SetProperty( ref myIsInEditMode, value ); }
         }
 
         public Flame Flame
@@ -86,6 +74,23 @@ namespace Plainion.Flames.Controls
         {
             get { return Flame != null ? Flame.Name : null; }
             set { if( Flame != null ) Flame.Name = value; }
+        }
+
+        private bool SetProperty<T>( ref T storage, T value, [CallerMemberName] string propertyName = null )
+        {
+            if( object.Equals( storage, value ) )
+            {
+                return false;
+            }
+
+            storage = value;
+
+            if( PropertyChanged != null )
+            {
+                PropertyChanged( this, new PropertyChangedEventArgs( propertyName ) );
+            }
+
+            return true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
