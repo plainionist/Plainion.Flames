@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="5db0d763-3b7f-437b-9ea4-87ce2ccb891f" Created="635722778155110666" LastModified="635722778746684502">
-  <Caption><![CDATA[flame size]]></Caption>
-  <Content><![CDATA[if header is heigher than activities depth then flame is not properly resized.
-listview row is hard bound to size of flame content. should be 
-max out of header and flame content]]></Content>
-</Node>

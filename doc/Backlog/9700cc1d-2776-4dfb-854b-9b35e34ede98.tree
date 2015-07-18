@@ -4,9 +4,6 @@
     <Caption><![CDATA[Planning]]></Caption>
     <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
       <Caption><![CDATA[Next steps]]></Caption>
-      <Node Id="5db0d763-3b7f-437b-9ea4-87ce2ccb891f">
-        <Caption><![CDATA[flame size]]></Caption>
-      </Node>
       <Node Id="e03364de-fce0-45f7-b144-112ee105a10f">
         <Caption><![CDATA[Move Plainion.Windows.Diagnostics to Plainion.Windows]]></Caption>
       </Node>
