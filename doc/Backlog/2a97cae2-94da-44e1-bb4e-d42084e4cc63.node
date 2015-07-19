@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="2a97cae2-94da-44e1-bb4e-d42084e4cc63" Created="635606715852528853" LastModified="635662545438576798" Origin="02667b37-3638-41ed-8e08-993c66a56201">
-  <Caption><![CDATA[Remove VisiblityMask from CallRepresentation]]></Caption>
+<Node Id="2a97cae2-94da-44e1-bb4e-d42084e4cc63" Created="635606715852528853" LastModified="635728824691878477" Origin="02667b37-3638-41ed-8e08-993c66a56201">
+  <Caption><![CDATA[Remove VisiblityMask from Activity]]></Caption>
   <Content><![CDATA[- actually this is a cache
 - it creates a lot of trouble keeping that in a correct state
 - it HAS to be handled by the FlamesView!

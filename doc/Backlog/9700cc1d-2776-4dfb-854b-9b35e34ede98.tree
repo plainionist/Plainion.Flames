@@ -4,13 +4,10 @@
     <Caption><![CDATA[Planning]]></Caption>
     <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
       <Caption><![CDATA[Next steps]]></Caption>
-      <Node Id="e03364de-fce0-45f7-b144-112ee105a10f">
-        <Caption><![CDATA[Move Plainion.Windows.Diagnostics to Plainion.Windows]]></Caption>
-      </Node>
       <Node Id="0738501d-a3d7-46a3-951a-b33f1af26bcc">
         <Caption><![CDATA[cleanup rendering]]></Caption>
         <Node Id="2a97cae2-94da-44e1-bb4e-d42084e4cc63">
-          <Caption><![CDATA[Remove VisiblityMask from CallRepresentation]]></Caption>
+          <Caption><![CDATA[Remove VisiblityMask from Activity]]></Caption>
         </Node>
       </Node>
     </Node>

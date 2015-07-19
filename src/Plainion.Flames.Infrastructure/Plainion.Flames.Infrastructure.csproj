@@ -35,9 +35,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Plainion.Core.2.3.0.0\lib\NET45\Plainion.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Plainion.Windows, Version=1.8.0.0, Culture=neutral, PublicKeyToken=11fdbc7b87b9a0de, processorArchitecture=MSIL">
+    <Reference Include="Plainion.Windows, Version=1.9.0.0, Culture=neutral, PublicKeyToken=11fdbc7b87b9a0de, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Plainion.Windows.1.8.0.0\lib\NET45\Plainion.Windows.dll</HintPath>
+      <HintPath>..\..\packages\Plainion.Windows.1.9.0.0\lib\NET45\Plainion.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

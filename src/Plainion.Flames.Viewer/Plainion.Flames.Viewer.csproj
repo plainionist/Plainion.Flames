@@ -74,9 +74,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Plainion.Prism.1.5.0.0\lib\NET45\Plainion.Prism.dll</HintPath>
     </Reference>
-    <Reference Include="Plainion.Windows, Version=1.8.0.0, Culture=neutral, PublicKeyToken=11fdbc7b87b9a0de, processorArchitecture=MSIL">
+    <Reference Include="Plainion.Windows, Version=1.9.0.0, Culture=neutral, PublicKeyToken=11fdbc7b87b9a0de, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Plainion.Windows.1.8.0.0\lib\NET45\Plainion.Windows.dll</HintPath>
+      <HintPath>..\..\packages\Plainion.Windows.1.9.0.0\lib\NET45\Plainion.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -195,10 +195,6 @@
     <ProjectReference Include="..\Plainion.Flames\Plainion.Flames.csproj">
       <Project>{f32ff1af-14d4-43b4-a0f3-4aa399dfff55}</Project>
       <Name>Plainion.Flames</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plainion.Windows.Diagnostics\Plainion.Windows.Diagnostics.csproj">
-      <Project>{5dcd5ab0-39e2-4640-b136-7b0310aa17f4}</Project>
-      <Name>Plainion.Windows.Diagnostics</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
