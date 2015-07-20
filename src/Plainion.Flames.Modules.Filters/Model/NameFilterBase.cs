@@ -40,6 +40,6 @@ namespace Plainion.Flames.Modules.Filters.Model
 
         public abstract bool? IsVisible( FilterTarget target, string value );
 
-        public abstract bool? IsVisible( Activity call );
+        public abstract bool? IsVisible( Activity activity );
     }
 }

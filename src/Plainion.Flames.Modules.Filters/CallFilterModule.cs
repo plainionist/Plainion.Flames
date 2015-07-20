@@ -178,23 +178,22 @@ namespace Plainion.Flames.Modules.Filters
                 {
                     FlamesEventSource.Log.CallVisibilityModifying(flame.GetHashCode());
 
-                    foreach (var call in flame.Activities)
+                    foreach (var activity in flame.Activities)
                     {
-                        var ret = DurationFilter.IsVisible(call);
+                        var ret = DurationFilter.IsVisible(activity);
                         if (ret == null)
                         {
-                            // this filter is no longer relevant
-                            modifier.SetVisibilityMask(call, call.VisiblityMask & (~DurationMaskBit));
+                            modifier.SetVisibilityMask(activity, activity.VisiblityMask & (~DurationMaskBit));
                             continue;
                         }
 
                         if (ret == true)
                         {
-                            modifier.SetVisibilityMask(call, call.VisiblityMask & (~DurationMaskBit));
+                            modifier.SetVisibilityMask(activity, activity.VisiblityMask & (~DurationMaskBit));
                         }
                         else
                         {
-                            modifier.SetVisibilityMask(call, call.VisiblityMask | DurationMaskBit);
+                            modifier.SetVisibilityMask(activity, activity.VisiblityMask | DurationMaskBit);
                         }
                     }
 
@@ -203,9 +202,9 @@ namespace Plainion.Flames.Modules.Filters
                         continue;
                     }
 
-                    foreach (var call in flame.Activities)
+                    foreach (var activity in flame.Activities)
                     {
-                        if (call.VisiblityMask == 0)
+                        if (activity.VisiblityMask == 0)
                         {
                             isEmpty = false;
                             break;
@@ -255,25 +254,24 @@ namespace Plainion.Flames.Modules.Filters
                 {
                     FlamesEventSource.Log.CallVisibilityModifying(flame.GetHashCode());
 
-                    foreach (var call in flame.Activities)
+                    foreach (var activity in flame.Activities)
                     {
                         foreach (var filter in NameFilters)
                         {
-                            var ret = filter.IsVisible(call);
+                            var ret = filter.IsVisible(activity);
                             if (ret == null)
                             {
-                                // this mask is no longer relevant
-                                modifier.SetVisibilityMask(call, call.VisiblityMask & (~FilterMaskBit));
+                                modifier.SetVisibilityMask(activity, activity.VisiblityMask & (~FilterMaskBit));
                                 continue;
                             }
 
                             if (ret == true)
                             {
-                                modifier.SetVisibilityMask(call, call.VisiblityMask & (~FilterMaskBit));
+                                modifier.SetVisibilityMask(activity, activity.VisiblityMask & (~FilterMaskBit));
                             }
                             else
                             {
-                                modifier.SetVisibilityMask(call, call.VisiblityMask | FilterMaskBit);
+                                modifier.SetVisibilityMask(activity, activity.VisiblityMask | FilterMaskBit);
                             }
 
                             break;
@@ -285,9 +283,9 @@ namespace Plainion.Flames.Modules.Filters
                         continue;
                     }
 
-                    foreach (var call in flame.Activities)
+                    foreach (var activity in flame.Activities)
                     {
-                        if (call.VisiblityMask == 0)
+                        if (activity.VisiblityMask == 0)
                         {
                             isEmpty = false;
                             break;

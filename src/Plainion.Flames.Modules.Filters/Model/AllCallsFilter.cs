@@ -10,7 +10,7 @@ namespace Plainion.Flames.Modules.Filters.Model
         {
         }
 
-        public override bool? IsVisible( Activity call )
+        public override bool? IsVisible( Activity activity )
         {
             if( !IsApplied )
             {

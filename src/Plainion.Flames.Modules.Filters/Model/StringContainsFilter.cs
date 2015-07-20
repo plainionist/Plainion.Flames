@@ -20,14 +20,14 @@ namespace Plainion.Flames.Modules.Filters.Model
         [DataMember(Name = "Filter")]
         public string Filter { get; private set; }
 
-        public override bool? IsVisible( Activity call )
+        public override bool? IsVisible( Activity activity )
         {
             if( !IsApplied )
             {
                 return null;
             }
 
-            if( !Matches( call.Model.Method ) )
+            if( !Matches( activity.Model.Method ) )
             {
                 return null;
             }

@@ -41,14 +41,14 @@ namespace Plainion.Flames.Modules.Filters.Model
             get { return myThreshold > 0; }
         }
 
-        public bool? IsVisible( Activity call )
+        public bool? IsVisible( Activity activity )
         {
             if( !IsApplied )
             {
                 return null;
             }
 
-            if( call.Duration >= myThreshold )
+            if( activity.Duration >= myThreshold )
             {
                 return null;
             }
