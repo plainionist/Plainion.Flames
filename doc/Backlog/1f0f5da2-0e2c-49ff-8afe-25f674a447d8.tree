@@ -2,15 +2,6 @@
 <Tree>
   <Node Id="1f0f5da2-0e2c-49ff-8afe-25f674a447d8">
     <Caption><![CDATA[Backlog]]></Caption>
-    <Node Id="62a639ef-d2f5-4158-bdfc-d3844b50affe">
-      <Caption><![CDATA[Cleanup "BrokenStack" handling]]></Caption>
-      <Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5">
-        <Caption><![CDATA["BROKEN" pseudo frame]]></Caption>
-      </Node>
-    </Node>
-    <Node Id="67b4b922-7bb0-4b70-87b9-5124961a1ab7">
-      <Caption><![CDATA[TrueFlames]]></Caption>
-    </Node>
     <Node Id="f84a4f91-a8d6-4e55-9768-eb28e097d9fa">
       <Caption><![CDATA[interop with perfview/wpa]]></Caption>
     </Node>

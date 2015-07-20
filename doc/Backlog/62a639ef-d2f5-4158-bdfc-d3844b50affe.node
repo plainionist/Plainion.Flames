@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="62a639ef-d2f5-4158-bdfc-d3844b50affe" Created="635602099087940608" LastModified="635655631121256549">
+<Node Id="62a639ef-d2f5-4158-bdfc-d3844b50affe" Created="635602099087940608" LastModified="635729945988925676" Origin="1f0f5da2-0e2c-49ff-8afe-25f674a447d8">
   <Caption><![CDATA[Cleanup "BrokenStack" handling]]></Caption>
   <Content><![CDATA[ITraceLoaderService
 - if we want to keep the option to relaod a trace then the viewmodel
