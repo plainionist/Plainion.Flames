@@ -71,6 +71,7 @@
     <Compile Include="Model\IBookmarks.cs" />
     <Compile Include="Model\ITraceLog.cs" />
     <Compile Include="Model\Method.cs" />
+    <Compile Include="Model\Methods.cs" />
     <Compile Include="Model\ModelReference.cs" />
     <Compile Include="Model\Bookmarks.cs" />
     <Compile Include="PresentationFactory.cs" />
