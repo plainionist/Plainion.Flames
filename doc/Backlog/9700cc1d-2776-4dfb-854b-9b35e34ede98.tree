@@ -4,14 +4,17 @@
     <Caption><![CDATA[Planning]]></Caption>
     <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
       <Caption><![CDATA[Next steps]]></Caption>
-      <Node Id="2a97cae2-94da-44e1-bb4e-d42084e4cc63">
-        <Caption><![CDATA[Remove VisiblityMask from Activity]]></Caption>
-      </Node>
       <Node Id="62a639ef-d2f5-4158-bdfc-d3844b50affe">
         <Caption><![CDATA[Cleanup "BrokenStack" handling]]></Caption>
-        <Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5">
-          <Caption><![CDATA["BROKEN" pseudo frame]]></Caption>
+        <Node Id="e745300b-e7ef-486e-96bf-351463f82c53">
+          <Caption><![CDATA["BROKEN" pseudo frame not supported by BFlames]]></Caption>
         </Node>
+        <Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5">
+          <Caption><![CDATA[interpolate broken stacks to filters]]></Caption>
+        </Node>
+      </Node>
+      <Node Id="2a97cae2-94da-44e1-bb4e-d42084e4cc63">
+        <Caption><![CDATA[Remove VisiblityMask from Activity]]></Caption>
       </Node>
       <Node Id="67b4b922-7bb0-4b70-87b9-5124961a1ab7">
         <Caption><![CDATA[TrueFlames]]></Caption>

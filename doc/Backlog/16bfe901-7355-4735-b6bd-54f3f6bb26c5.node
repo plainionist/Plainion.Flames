@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5" Created="635628256729952062" LastModified="635662560252614113" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
-  <Caption><![CDATA["BROKEN" pseudo frame]]></Caption>
-  <Content><![CDATA[- a provider can create pseudo frames (statically defined in .infrastructure
-- BROKEN will be taken to indicate broken stacks
-
-- we could then remove the "interpolate broken stacks" from ETW tab has it can be handled 
-  in a general way
-  (which would also allow us to remove the traceloaderservice hack)]]></Content>
+<Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5" Created="635628256729952062" LastModified="635731721420130574" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
+  <Caption><![CDATA[interpolate broken stacks to filters]]></Caption>
+  <Content><![CDATA[- remove the "interpolate broken stacks" from ETW tab
+- remove the traceloaderservice hack]]></Content>
 </Node>
