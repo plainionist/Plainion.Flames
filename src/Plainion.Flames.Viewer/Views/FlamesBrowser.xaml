@@ -16,7 +16,7 @@
 
     <i:Interaction.Triggers>
         <prism:InteractionRequestTrigger SourceObject="{Binding SpawnSettingsRequest, Mode=OneWay}">
-            <pn:PopupViewAction WindowWidth="500" WindowHeight="500" UseNotificationContentAsDataContext="True"
+            <pn:PopupViewAction WindowWidth="500" WindowHeight="600" UseNotificationContentAsDataContext="True"
                                 prism:RegionManager.RegionName="{x:Static r:RegionNames.SettingsView}"/>
         </prism:InteractionRequestTrigger>
     </i:Interaction.Triggers>

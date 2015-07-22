@@ -16,6 +16,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
         {
             NameFilterViewModel = new NameFilterViewModel();
             DurationFilterViewModel = new DurationFilterViewModel();
+            OtherFiltersViewModel = new OtherFiltersViewModel();
         }
 
         public string Description { get { return "Method call filters"; } }
@@ -25,6 +26,8 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
         public NameFilterViewModel NameFilterViewModel { get; private set; }
 
         public DurationFilterViewModel DurationFilterViewModel { get; private set; }
+
+        public OtherFiltersViewModel OtherFiltersViewModel { get; private set; }
 
         protected override void OnProjectChanging()
         {
