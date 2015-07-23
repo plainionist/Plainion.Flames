@@ -80,7 +80,7 @@ namespace Plainion.Flames.Modules.ETW.Builders
         {
             if (frames != null && frames.Count > 0)
             {
-                if (!InterpolateBrokenStackSamples || frames[0] != Methods.BrokenCallstack)
+                if (!InterpolateBrokenStackSamples || !frames[0].IsBrokenCallstack())
                 {
                     myLastSample = WalkSample(time, myLastSample ?? new List<Method>(), frames);
                     myLastSampleTime = time;

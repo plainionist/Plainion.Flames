@@ -44,7 +44,7 @@ namespace Plainion.Flames.Modules.ETW.Builders
 
             if (frames.Count > 0 && IsBroken(frames[frames.Count - 1]))
             {
-                frames.Add(Methods.BrokenCallstack);
+                frames.Add(myBuilder.BrokenCallstackMethod());
             }
 
             frames.Reverse();

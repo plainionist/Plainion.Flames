@@ -15,7 +15,7 @@ namespace Plainion.Flames
         {
             myMethodIndex = new Dictionary<int, Method>();
 
-            myTraceLog = new TraceLog( new SymbolRepository() );
+            myTraceLog = new TraceLog(new SymbolRepository());
             myTraceLog.CreationTime = DateTime.MinValue;
             myTraceLog.TraceDuration = 0;
 
@@ -24,82 +24,83 @@ namespace Plainion.Flames
 
         public SymbolRepository Symbols { get { return myTraceLog.Symbols; } }
 
-        public void SetCreationTime( DateTime timestamp )
+        public void SetCreationTime(DateTime timestamp)
         {
-            if( myTraceLog.CreationTime == DateTime.MinValue )
+            if (myTraceLog.CreationTime == DateTime.MinValue)
             {
                 myTraceLog.CreationTime = timestamp.ToUniversalTime();
             }
-            else if( timestamp < myTraceLog.CreationTime )
+            else if (timestamp < myTraceLog.CreationTime)
             {
                 myTraceLog.CreationTime = timestamp.ToUniversalTime();
             }
         }
 
-        public void SetTraceDuration( long duration )
+        public void SetTraceDuration(long duration)
         {
-            myTraceLog.TraceDuration = Math.Max( myTraceLog.TraceDuration, duration );
+            myTraceLog.TraceDuration = Math.Max(myTraceLog.TraceDuration, duration);
         }
 
-        public TraceProcess CreateProcess( int processId )
+        public TraceProcess CreateProcess(int processId)
         {
-            return new TraceProcess( myTraceLog, processId );
+            return new TraceProcess(myTraceLog, processId);
         }
 
-        public TraceThread CreateThread( TraceProcess process, int threadId )
+        public TraceThread CreateThread(TraceProcess process, int threadId)
         {
-            Contract.Requires( process.Log == myTraceLog, "Process already attached to different TraceLog" );
+            Contract.Requires(process.Log == myTraceLog, "Process already attached to different TraceLog");
 
-            var thread = new TraceThread( process, threadId );
+            var thread = new TraceThread(process, threadId);
 
-            myTraceLog.Add( thread );
+            myTraceLog.Add(thread);
 
             return thread;
         }
 
-        public Method CreateMethod( string module, string callNamespace, string callClass, string methodName )
+        public Method CreateMethod(string module, string callNamespace, string callClass, string methodName)
         {
-            module = string.IsNullOrEmpty( module ) ? null : module;
-            callNamespace = string.IsNullOrEmpty( callNamespace ) ? null : callNamespace;
-            callClass = string.IsNullOrEmpty( callClass ) ? null : callClass;
+            module = string.IsNullOrEmpty(module) ? null : module;
+            callNamespace = string.IsNullOrEmpty(callNamespace) ? null : callNamespace;
+            callClass = string.IsNullOrEmpty(callClass) ? null : callClass;
 
-            var hashCode = Method.GetHashCode( module, callNamespace, callClass, methodName );
+            var hashCode = Method.GetHashCode(module, callNamespace, callClass, methodName);
             Method method = null;
-            if( !myMethodIndex.TryGetValue( hashCode, out method ) )
+            if (!myMethodIndex.TryGetValue(hashCode, out method))
             {
                 method = new Method(
-                   myTraceLog.Symbols.Modules.Intern( module ),
-                   myTraceLog.Symbols.Namespaces.Intern( callNamespace ),
-                   myTraceLog.Symbols.Classes.Intern( callClass ), myTraceLog.Symbols.Methods.Intern( methodName ) );
-                myMethodIndex[ hashCode ] = method;
+                   myTraceLog.Symbols.Modules.Intern(module),
+                   myTraceLog.Symbols.Namespaces.Intern(callNamespace),
+                   myTraceLog.Symbols.Classes.Intern(callClass),
+                   myTraceLog.Symbols.Methods.Intern(methodName));
+                myMethodIndex[hashCode] = method;
             }
 
             return method;
         }
 
         // TODO: have to be added manually
-        public Call CreateCall( TraceThread thread, long startTime, Method method )
+        public Call CreateCall(TraceThread thread, long startTime, Method method)
         {
-            Contract.Requires( myTraceLog.GetThreads( thread.Process ).Any( t => t == thread ), "Thread not found in TraceLog" );
+            Contract.Requires(myTraceLog.GetThreads(thread.Process).Any(t => t == thread), "Thread not found in TraceLog");
 
-            return new Call( thread, startTime, method );
+            return new Call(thread, startTime, method);
         }
 
-        public void AddAssociatedEvents( IAssociatedEvents events )
+        public void AddAssociatedEvents(IAssociatedEvents events)
         {
-            myTraceLog.Add( events );
+            myTraceLog.Add(events);
         }
 
-        public void AddCallstackRoot( Call call )
+        public void AddCallstackRoot(Call call)
         {
-            myTraceLog.Add( call );
+            myTraceLog.Add(call);
         }
 
         public TraceLog Complete()
         {
             try
             {
-                myTraceLog.Methods = new CollectionReadonlyCollectionAdapter<Method>( myMethodIndex.Values );
+                myTraceLog.Methods = new CollectionReadonlyCollectionAdapter<Method>(myMethodIndex.Values);
 
                 myTraceLog.Symbols.Freeze();
                 return myTraceLog;
