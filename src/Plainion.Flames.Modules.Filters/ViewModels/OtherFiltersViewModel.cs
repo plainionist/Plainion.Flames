@@ -15,9 +15,24 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             {
                 if (SetProperty(ref myInterpolateBrokenStackCalls, value))
                 {
-
+                    RemoveBrokenStacks();
                 }
             }
+        }
+
+        private void RemoveBrokenStacks()
+        {
+            if (Presentation == null)
+            {
+                return;
+            }
+
+            //foreach (var flame in Presentation.Flames)
+            //{
+            //    foreach (var activity in flame.Activities)
+            //    {
+            //    }
+            //}
         }
     }
 }
