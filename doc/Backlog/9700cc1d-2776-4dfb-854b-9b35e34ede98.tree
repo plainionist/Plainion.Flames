@@ -6,9 +6,6 @@
       <Caption><![CDATA[Next steps]]></Caption>
       <Node Id="62a639ef-d2f5-4158-bdfc-d3844b50affe">
         <Caption><![CDATA[Cleanup "BrokenStack" handling]]></Caption>
-        <Node Id="e745300b-e7ef-486e-96bf-351463f82c53">
-          <Caption><![CDATA["BROKEN" pseudo frame not supported by BFlames]]></Caption>
-        </Node>
         <Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5">
           <Caption><![CDATA[interpolate broken stacks to filters]]></Caption>
         </Node>
