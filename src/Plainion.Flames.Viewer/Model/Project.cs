@@ -40,11 +40,6 @@ namespace Plainion.Flames.Viewer.Model
 
         public IList<object> Items { get; private set; }
 
-        ITraceLog IProject.TraceLog
-        {
-            get { return TraceLog; }
-        }
-
         public bool WasDeserialized { get; set; }
     }
 }

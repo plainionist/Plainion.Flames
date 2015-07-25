@@ -12,7 +12,6 @@
                 <LineBreak/>
                 <Run>
                     The calls containing broken stacks will be removed. 
-                    The call before the broken one will be enlarged by the duration of the removed call.
                     The calls before and after the broken one will be merged upwards the stack as long as the method is the same.
                 </Run>
             </TextBlock>

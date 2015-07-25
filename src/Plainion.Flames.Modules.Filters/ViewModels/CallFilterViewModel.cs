@@ -45,6 +45,9 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
         protected override void OnProjectChanged()
         {
+            // actually we only need to set this once but here is ok as well
+            OtherFiltersViewModel.ProjectService = ProjectService;
+
             // new project - reset all user settings
             myModule = null;
         }

@@ -50,7 +50,7 @@ namespace Plainion.Flames.Model
             threads.Add( thread );
         }
 
-        public IReadOnlyCollection<Call> GetCallstacks( TraceThread thread )
+        public IReadOnlyList<Call> GetCallstacks( TraceThread thread )
         {
             List<Call> calls;
             if( !myCallstacks.TryGetValue( thread, out calls ) )

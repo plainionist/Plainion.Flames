@@ -9,9 +9,9 @@ namespace Plainion.Flames.Infrastructure.Model
     {
         IReadOnlyCollection<string> TraceFiles { get; }
 
-        ITraceLog TraceLog { get; }
+        TraceLog TraceLog { get; }
 
-        FlameSetPresentation Presentation { get; }
+        FlameSetPresentation Presentation { get; set; }
 
         IList<object> Items { get; }
 

@@ -19,7 +19,7 @@ namespace Plainion.Flames.Model
 
         IReadOnlyCollection<TraceThread> GetThreads( TraceProcess process );
 
-        IReadOnlyCollection<Call> GetCallstacks( TraceThread thread );
+        IReadOnlyList<Call> GetCallstacks( TraceThread thread );
 
         SymbolRepository Symbols { get; }
 

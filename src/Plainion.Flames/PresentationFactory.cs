@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Plainion.Collections;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
 using Plainion.Flames.Controls;
@@ -15,6 +16,8 @@ namespace Plainion.Flames
         {
             myColorLut = new DefaultColorLut();
         }
+
+        public bool InterpolateBrokenStackCalls { get; set; }
 
         public FlameSetPresentation CreateFlameSetPresentation( TraceLog traceLog )
         {
@@ -48,20 +51,77 @@ namespace Plainion.Flames
 
             var callstacks = flame.Model.Process.Log.GetCallstacks( flame.Model );
 
-            // TODO: can we calculate the size more presice?
-            var calls = new List<Activity>( callstacks.Count * 25 );
+            var activities = InterpolateBrokenStackCalls ?
+                CreateInterpolatedActivities( flame, callstacks ) :
+                CreateActivities( flame, callstacks );
 
-            foreach( var stack in callstacks )
-            {
-                Process( flame, stack, null, calls );
-            }
-
-            flame.SetActivities( calls );
+            flame.SetActivities( activities );
 
             return flame;
         }
 
-        private void Process( Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        private IReadOnlyCollection<Activity> CreateInterpolatedActivities( Flame flame, IReadOnlyList<Call> callstacks )
+        {
+            var firstNonBrokenStackIdx = callstacks.IndexOf( s => !s.Method.IsBrokenCallstack() );
+            if( firstNonBrokenStackIdx == -1 )
+            {
+                // everyting broken?
+                return new List<Activity>();
+            }
+
+            // TODO: can we calculate the size more presice?
+            var activities = new List<Activity>( ( callstacks.Count - firstNonBrokenStackIdx ) * 25 );
+
+            // ignore the broken stacks at the beginning
+            for( int i = firstNonBrokenStackIdx; i < callstacks.Count; ++i )
+            {
+                int nextNonBrokenStack = firstNonBrokenStackIdx + 1;
+                for( ; nextNonBrokenStack < callstacks.Count; ++nextNonBrokenStack )
+                {
+                    if( !callstacks[ nextNonBrokenStack ].Method.IsBrokenCallstack() )
+                    {
+                        break;
+                    }
+                }
+
+                if( nextNonBrokenStack == callstacks.Count )
+                {
+                    // all subsequent callstacks are broken
+                    // -> just process the current one and stop
+                    CreateActivitiesFromStack( flame, callstacks[ i ], null, activities );
+                    break;
+                }
+
+                if( i == nextNonBrokenStack )
+                {
+                    // no broken stacks between current stack and next stack
+                    // -> just process the current one and continue
+                    CreateActivitiesFromStack( flame, callstacks[ i ], null, activities );
+                    continue;
+                }
+
+                // at least one broken stack in between
+                // -> merge
+                CreateActivitiesFromStacksAndMerge( flame, callstacks[ i ], callstacks[ nextNonBrokenStack ], null, activities );
+            }
+
+            return activities;
+        }
+
+        private IReadOnlyCollection<Activity> CreateActivities( Flame flame, IReadOnlyList<Call> callstacks )
+        {
+            // TODO: can we calculate the size more presice?
+            var activities = new List<Activity>( callstacks.Count * 25 );
+
+            foreach( var stack in callstacks )
+            {
+                CreateActivitiesFromStack( flame, stack, null, activities );
+            }
+
+            return activities;
+        }
+
+        private void CreateActivitiesFromStack( Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame )
         {
             var activity = new Activity( flame, call );
             activity.Parent = parentActivity;
@@ -70,7 +130,47 @@ namespace Plainion.Flames
 
             foreach( var child in call.Children )
             {
-                Process( flame, child, activity, allActivitiesInFlame );
+                CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
+            }
+        }
+
+        private void CreateActivitiesFromStacksAndMerge( Flame flame, Call lhsCal, Call rhsCal, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        {
+            if( lhsCal.Method.Equals( rhsCal.Method ) )
+            {
+                var mergedCall = new Call( lhsCal.Thread, lhsCal.Start, lhsCal.Method );
+                mergedCall.SetEnd( rhsCal.End );
+
+                var activity = new Activity( flame, mergedCall );
+                activity.Parent = parentActivity;
+
+                allActivitiesInFlame.Add( activity );
+
+                var children = rhsCal.Children.Any() ? lhsCal.Children.Take( lhsCal.Children.Count - 1 ) : lhsCal.Children;
+                foreach( var child in children )
+                {
+                    mergedCall.AddChild( child );
+                    CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
+                }
+
+                if( lhsCal.Children.Any() && rhsCal.Children.Any() )
+                {
+                    mergedCall.AddChild( lhsCal.Children.Last() );
+                    mergedCall.AddChild( rhsCal.Children.First() );
+                    CreateActivitiesFromStacksAndMerge( flame, lhsCal.Children.Last(), rhsCal.Children.First(), activity, allActivitiesInFlame );
+                }
+
+                children = lhsCal.Children.Any() ? rhsCal.Children.Skip( 1 ) : rhsCal.Children;
+                foreach( var child in rhsCal.Children.Skip( 1 ) )
+                {
+                    mergedCall.AddChild( child );
+                    CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
+                }
+            }
+            else
+            {
+                CreateActivitiesFromStack( flame, lhsCal, parentActivity, allActivitiesInFlame );
+                CreateActivitiesFromStack( flame, rhsCal, parentActivity, allActivitiesInFlame );
             }
         }
     }

@@ -10,7 +10,7 @@ namespace Plainion.Flames.Infrastructure.ViewModels
 {
     public class ViewModelBase : BindableBase
     {
-        private ITraceLog myTraceLog;
+        private TraceLog myTraceLog;
         private FlameSetPresentation myPresentation;
         private IProjectService myProjectService;
 
@@ -18,7 +18,7 @@ namespace Plainion.Flames.Infrastructure.ViewModels
         // we would might have the need to call virtual methods from ctor (e.g. OnProjectChanged).
         // this would cause method calls on derived classes for which the ctor didnt completed yet
         [Import]
-        protected IProjectService ProjectService
+        public IProjectService ProjectService
         {
             get { return myProjectService; }
             set
@@ -26,7 +26,6 @@ namespace Plainion.Flames.Infrastructure.ViewModels
                 if (myProjectService == value)
                 {
                     return;
-
                 }
 
                 if (myProjectService != null)
@@ -84,7 +83,7 @@ namespace Plainion.Flames.Infrastructure.ViewModels
             Presentation = ProjectService.Project.Presentation;
         }
 
-        public ITraceLog TraceLog
+        public TraceLog TraceLog
         {
             get { return myTraceLog; }
             set

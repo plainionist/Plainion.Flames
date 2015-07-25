@@ -13,7 +13,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             get { return myInterpolateBrokenStackCalls; }
             set
             {
-                if (SetProperty(ref myInterpolateBrokenStackCalls, value))
+                if( SetProperty( ref myInterpolateBrokenStackCalls, value ) )
                 {
                     RemoveBrokenStacks();
                 }
@@ -22,17 +22,16 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
         private void RemoveBrokenStacks()
         {
-            if (Presentation == null)
+            if( Presentation == null )
             {
                 return;
             }
 
-            //foreach (var flame in Presentation.Flames)
-            //{
-            //    foreach (var activity in flame.Activities)
-            //    {
-            //    }
-            //}
+            var factory = new PresentationFactory();
+            factory.InterpolateBrokenStackCalls = true;
+            var presentation = factory.CreateFlameSetPresentation( TraceLog );
+
+            ProjectService.Project.Presentation = presentation;
         }
     }
 }
