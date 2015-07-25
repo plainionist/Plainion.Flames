@@ -75,7 +75,7 @@ namespace Plainion.Flames
             // ignore the broken stacks at the beginning
             for( int i = firstNonBrokenStackIdx; i < callstacks.Count; ++i )
             {
-                int nextNonBrokenStack = firstNonBrokenStackIdx + 1;
+                int nextNonBrokenStack = i + 1;
                 for( ; nextNonBrokenStack < callstacks.Count; ++nextNonBrokenStack )
                 {
                     if( !callstacks[ nextNonBrokenStack ].Method.IsBrokenCallstack() )
@@ -92,7 +92,7 @@ namespace Plainion.Flames
                     break;
                 }
 
-                if( i == nextNonBrokenStack )
+                if( i == nextNonBrokenStack + 1 )
                 {
                     // no broken stacks between current stack and next stack
                     // -> just process the current one and continue
@@ -102,7 +102,10 @@ namespace Plainion.Flames
 
                 // at least one broken stack in between
                 // -> merge
-                CreateActivitiesFromStacksAndMerge( flame, callstacks[ i ], callstacks[ nextNonBrokenStack ], null, activities );
+                CreateActivitiesFromStacksAndTryMerge( flame, callstacks[ i ], callstacks[ nextNonBrokenStack ], null, activities );
+
+                // skip the broken stacks
+                i = nextNonBrokenStack - 1;
             }
 
             return activities;
@@ -134,44 +137,52 @@ namespace Plainion.Flames
             }
         }
 
-        private void CreateActivitiesFromStacksAndMerge( Flame flame, Call lhsCal, Call rhsCal, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        private Call CreateActivitiesFromStacksAndTryMerge( Flame flame, Call lhsCal, Call rhsCal, Activity parentActivity, IList<Activity> allActivitiesInFlame )
         {
-            if( lhsCal.Method.Equals( rhsCal.Method ) )
-            {
-                var mergedCall = new Call( lhsCal.Thread, lhsCal.Start, lhsCal.Method );
-                mergedCall.SetEnd( rhsCal.End );
-
-                var activity = new Activity( flame, mergedCall );
-                activity.Parent = parentActivity;
-
-                allActivitiesInFlame.Add( activity );
-
-                var children = rhsCal.Children.Any() ? lhsCal.Children.Take( lhsCal.Children.Count - 1 ) : lhsCal.Children;
-                foreach( var child in children )
-                {
-                    mergedCall.AddChild( child );
-                    CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
-                }
-
-                if( lhsCal.Children.Any() && rhsCal.Children.Any() )
-                {
-                    mergedCall.AddChild( lhsCal.Children.Last() );
-                    mergedCall.AddChild( rhsCal.Children.First() );
-                    CreateActivitiesFromStacksAndMerge( flame, lhsCal.Children.Last(), rhsCal.Children.First(), activity, allActivitiesInFlame );
-                }
-
-                children = lhsCal.Children.Any() ? rhsCal.Children.Skip( 1 ) : rhsCal.Children;
-                foreach( var child in rhsCal.Children.Skip( 1 ) )
-                {
-                    mergedCall.AddChild( child );
-                    CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
-                }
-            }
-            else
+            if( !lhsCal.Method.Equals( rhsCal.Method ) )
             {
                 CreateActivitiesFromStack( flame, lhsCal, parentActivity, allActivitiesInFlame );
                 CreateActivitiesFromStack( flame, rhsCal, parentActivity, allActivitiesInFlame );
+                return null;
             }
+
+            var mergedCall = new Call( lhsCal.Thread, lhsCal.Start, lhsCal.Method );
+            mergedCall.SetEnd( rhsCal.End );
+
+            var activity = new Activity( flame, mergedCall );
+            activity.Parent = parentActivity;
+
+            allActivitiesInFlame.Add( activity );
+
+            var children = rhsCal.Children.Any() ? lhsCal.Children.Take( lhsCal.Children.Count - 1 ) : lhsCal.Children;
+            foreach( var child in children )
+            {
+                mergedCall.AddChild( child );
+                CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
+            }
+
+            if( lhsCal.Children.Any() && rhsCal.Children.Any() )
+            {
+                var child = CreateActivitiesFromStacksAndTryMerge( flame, lhsCal.Children.Last(), rhsCal.Children.First(), activity, allActivitiesInFlame );
+                if( child != null )
+                {
+                    mergedCall.AddChild( child );
+                }
+                else
+                {
+                    mergedCall.AddChild( lhsCal.Children.Last() );
+                    mergedCall.AddChild( rhsCal.Children.First() );
+                }
+            }
+
+            children = lhsCal.Children.Any() ? rhsCal.Children.Skip( 1 ) : rhsCal.Children;
+            foreach( var child in rhsCal.Children.Skip( 1 ) )
+            {
+                mergedCall.AddChild( child );
+                CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
+            }
+
+            return mergedCall;
         }
     }
 }
