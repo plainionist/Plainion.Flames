@@ -139,6 +139,9 @@ namespace Plainion.Flames
 
             allActivitiesInFlame.Add( activity );
 
+            // TODO: we do not want to merge everything - we want to merge only those callstacks which
+            // were previously splitted because of broken stacks in between
+            
             var allChildren = callsToMerge
                 .SelectMany( call => call.Children )
                 .ToList();
