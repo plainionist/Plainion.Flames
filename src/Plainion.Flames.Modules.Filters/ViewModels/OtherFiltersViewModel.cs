@@ -33,5 +33,14 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
             ProjectService.Project.Presentation = presentation;
         }
+
+        protected override void OnProjectChanging()
+        {
+            // set presentation already to null to ensure that we do not recalc flames by accident
+            Presentation = null;
+
+            // do not remember this setting - always start new tracelog without interpolation
+            InterpolateBrokenStackCalls = false;
+        }
     }
 }

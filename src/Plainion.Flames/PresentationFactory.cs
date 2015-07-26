@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Plainion.Collections;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;
-using Plainion.Flames.Controls;
 
 namespace Plainion.Flames
 {
     public class PresentationFactory
     {
+        private const int EstimatedAverageCallstackDepth = 25;
+
         private IColorLut myColorLut;
 
         public PresentationFactory()
@@ -62,59 +61,20 @@ namespace Plainion.Flames
 
         private IReadOnlyCollection<Activity> CreateInterpolatedActivities( Flame flame, IReadOnlyList<Call> callstacks )
         {
-            var firstNonBrokenStackIdx = callstacks.IndexOf( s => !s.Method.IsBrokenCallstack() );
-            if( firstNonBrokenStackIdx == -1 )
-            {
-                // everyting broken?
-                return new List<Activity>();
-            }
+            var nonBrokenCallstacks = callstacks
+                .Where( c => !c.Method.IsBrokenCallstack() )
+                .ToList();
 
-            // TODO: can we calculate the size more presice?
-            var activities = new List<Activity>( ( callstacks.Count - firstNonBrokenStackIdx ) * 25 );
+            var activities = new List<Activity>( nonBrokenCallstacks.Count * EstimatedAverageCallstackDepth );
 
-            // ignore the broken stacks at the beginning
-            for( int i = firstNonBrokenStackIdx; i < callstacks.Count; ++i )
-            {
-                int nextNonBrokenStack = i + 1;
-                for( ; nextNonBrokenStack < callstacks.Count; ++nextNonBrokenStack )
-                {
-                    if( !callstacks[ nextNonBrokenStack ].Method.IsBrokenCallstack() )
-                    {
-                        break;
-                    }
-                }
-
-                if( nextNonBrokenStack == callstacks.Count )
-                {
-                    // all subsequent callstacks are broken
-                    // -> just process the current one and stop
-                    CreateActivitiesFromStack( flame, callstacks[ i ], null, activities );
-                    break;
-                }
-
-                if( i == nextNonBrokenStack + 1 )
-                {
-                    // no broken stacks between current stack and next stack
-                    // -> just process the current one and continue
-                    CreateActivitiesFromStack( flame, callstacks[ i ], null, activities );
-                    continue;
-                }
-
-                // at least one broken stack in between
-                // -> merge
-                CreateActivitiesFromStacksAndTryMerge( flame, callstacks[ i ], callstacks[ nextNonBrokenStack ], null, activities );
-
-                // skip the broken stacks
-                i = nextNonBrokenStack - 1;
-            }
+            CreateActivitiesFromStacksAndTryMerge( flame, nonBrokenCallstacks, null, activities );
 
             return activities;
         }
 
         private IReadOnlyCollection<Activity> CreateActivities( Flame flame, IReadOnlyList<Call> callstacks )
         {
-            // TODO: can we calculate the size more presice?
-            var activities = new List<Activity>( callstacks.Count * 25 );
+            var activities = new List<Activity>( callstacks.Count * EstimatedAverageCallstackDepth );
 
             foreach( var stack in callstacks )
             {
@@ -137,52 +97,58 @@ namespace Plainion.Flames
             }
         }
 
-        private Call CreateActivitiesFromStacksAndTryMerge( Flame flame, Call lhsCal, Call rhsCal, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        private void CreateActivitiesFromStacksAndTryMerge( Flame flame, IReadOnlyList<Call> calls, Activity parentActivity, IList<Activity> allActivitiesInFlame )
         {
-            if( !lhsCal.Method.Equals( rhsCal.Method ) )
+            var callsToMerge = new List<Call>();
+            foreach( var call in calls )
             {
-                CreateActivitiesFromStack( flame, lhsCal, parentActivity, allActivitiesInFlame );
-                CreateActivitiesFromStack( flame, rhsCal, parentActivity, allActivitiesInFlame );
-                return null;
+                if( callsToMerge.Count == 0 || callsToMerge[ 0 ].Method.Equals( call.Method ) )
+                {
+                    callsToMerge.Add( call );
+                    continue;
+                }
+
+                MergeCalls( flame, callsToMerge, parentActivity, allActivitiesInFlame );
+
+                callsToMerge.Clear();
+                callsToMerge.Add( call );
             }
 
-            var mergedCall = new Call( lhsCal.Thread, lhsCal.Start, lhsCal.Method );
-            mergedCall.SetEnd( rhsCal.End );
+            if( callsToMerge.Count > 0 )
+            {
+                MergeCalls( flame, callsToMerge, parentActivity, allActivitiesInFlame );
+            }
+        }
+
+        private void MergeCalls( Flame flame, IReadOnlyList<Call> callsToMerge, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        {
+            if( callsToMerge.Count == 1 )
+            {
+                CreateActivitiesFromStack( flame, callsToMerge[ 0 ], parentActivity, allActivitiesInFlame );
+                return;
+            }
+
+            var first = callsToMerge[ 0 ];
+            var last = callsToMerge[ callsToMerge.Count - 1 ];
+
+            var mergedCall = new Call( first.Thread, first.Start, first.Method );
+            mergedCall.SetEnd( last.End );
 
             var activity = new Activity( flame, mergedCall );
             activity.Parent = parentActivity;
 
             allActivitiesInFlame.Add( activity );
 
-            var children = rhsCal.Children.Any() ? lhsCal.Children.Take( lhsCal.Children.Count - 1 ) : lhsCal.Children;
-            foreach( var child in children )
+            var allChildren = callsToMerge
+                .SelectMany( call => call.Children )
+                .ToList();
+
+            foreach( var child in allChildren )
             {
                 mergedCall.AddChild( child );
-                CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
             }
 
-            if( lhsCal.Children.Any() && rhsCal.Children.Any() )
-            {
-                var child = CreateActivitiesFromStacksAndTryMerge( flame, lhsCal.Children.Last(), rhsCal.Children.First(), activity, allActivitiesInFlame );
-                if( child != null )
-                {
-                    mergedCall.AddChild( child );
-                }
-                else
-                {
-                    mergedCall.AddChild( lhsCal.Children.Last() );
-                    mergedCall.AddChild( rhsCal.Children.First() );
-                }
-            }
-
-            children = lhsCal.Children.Any() ? rhsCal.Children.Skip( 1 ) : rhsCal.Children;
-            foreach( var child in rhsCal.Children.Skip( 1 ) )
-            {
-                mergedCall.AddChild( child );
-                CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
-            }
-
-            return mergedCall;
+            CreateActivitiesFromStacksAndTryMerge( flame, allChildren, activity, allActivitiesInFlame );
         }
     }
 }
