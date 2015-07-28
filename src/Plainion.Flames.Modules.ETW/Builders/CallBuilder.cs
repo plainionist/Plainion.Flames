@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Plainion.Flames.Model;
 using Microsoft.Diagnostics.Tracing;
 using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
 using Plainion.Collections;
 using Plainion.Diagnostics;
+using Plainion.Flames.Model;
 
 namespace Plainion.Flames.Modules.ETW.Builders
 {
@@ -16,53 +16,47 @@ namespace Plainion.Flames.Modules.ETW.Builders
         private ProcessThreadIndex<ThreadCallBuilder> myBuilders;
         private CallstackBuilder myCallstackBuilder;
 
-        public CallBuilder( TraceModelBuilder traceLogBuilder, IReadOnlyCollection<int> processesToLoad )
+        public CallBuilder(TraceModelBuilder traceLogBuilder, IReadOnlyCollection<int> processesToLoad)
         {
             myBuilder = traceLogBuilder;
             myProcessesToLoad = processesToLoad;
 
-            myProcesses = new Index<int, TraceProcess>( pid => myBuilder.CreateProcess( pid ) );
+            myProcesses = new Index<int, TraceProcess>(pid => myBuilder.CreateProcess(pid));
 
-            myCallstackBuilder = new CallstackBuilder( myBuilder );
+            myCallstackBuilder = new CallstackBuilder(myBuilder);
 
-            myBuilders = new ProcessThreadIndex<ThreadCallBuilder>( ( pid, tid ) =>
-                new ThreadCallBuilder( myBuilder, myBuilder.CreateThread( myProcesses[ pid ], tid ), myCallstackBuilder )
-                    {
-                        InterpolateBrokenStackSamples = InterpolateBrokenStackSamples
-                    }
-                );
+            myBuilders = new ProcessThreadIndex<ThreadCallBuilder>((pid, tid) =>
+                new ThreadCallBuilder(myBuilder, myBuilder.CreateThread(myProcesses[pid], tid), myCallstackBuilder));
         }
 
-        public bool InterpolateBrokenStackSamples { get; set; }
-
-        public void Consume( TraceEvent e )
+        public void Consume(TraceEvent e)
         {
             var profileSample = e as SampledProfileTraceData;
-            if( profileSample != null )
+            if (profileSample != null)
             {
-                if( myProcessesToLoad.Contains( e.ProcessID ) )
+                if (myProcessesToLoad.Contains(e.ProcessID))
                 {
-                    myBuilders[ e.ProcessID ][ e.ThreadID ].CpuSampled( profileSample );
+                    myBuilders[e.ProcessID][e.ThreadID].CpuSampled(profileSample);
                 }
             }
 
             var cswitch = e as CSwitchTraceData;
-            if( cswitch != null )
+            if (cswitch != null)
             {
-                if( myProcessesToLoad.Contains( cswitch.OldProcessID ) )
+                if (myProcessesToLoad.Contains(cswitch.OldProcessID))
                 {
-                    myBuilders[ cswitch.OldProcessID ][ cswitch.OldThreadID ].SwitchedOut( cswitch );
+                    myBuilders[cswitch.OldProcessID][cswitch.OldThreadID].SwitchedOut(cswitch);
                 }
-                if( myProcessesToLoad.Contains( cswitch.ProcessID ) )
+                if (myProcessesToLoad.Contains(cswitch.ProcessID))
                 {
-                    myBuilders[ cswitch.ProcessID ][ cswitch.ThreadID ].SwitchedIn( cswitch );
+                    myBuilders[cswitch.ProcessID][cswitch.ThreadID].SwitchedIn(cswitch);
                 }
             }
         }
 
         public void Complete()
         {
-            foreach( var builder in myBuilders.Values )
+            foreach (var builder in myBuilders.Values)
             {
                 builder.Complete();
             }

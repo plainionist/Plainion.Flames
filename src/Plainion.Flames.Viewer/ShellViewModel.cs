@@ -29,11 +29,9 @@ namespace Plainion.Flames.Viewer
         private IProgressInfo myCurrentProgress;
 
         [ImportingConstructor]
-        internal ShellViewModel( IEventAggregator eventAggregator, LoaderSerivce loaderService, TraceLoaderService traceLoader )
+        internal ShellViewModel( IEventAggregator eventAggregator, LoaderSerivce loaderService )
         {
             myLoaderService = loaderService;
-
-            traceLoader.UILoadAction = LoadTraces;
 
             OpenCommand = new DelegateCommand( OnOpen );
             SaveAsCommand = new DelegateCommand( OnSaveAs, () => myLoaderService.Project != null );

@@ -112,7 +112,6 @@
     <Compile Include="Services\LoggingSink.cs" />
     <Compile Include="Services\LoaderSerivce.cs" />
     <Compile Include="Services\ProfilingService.cs" />
-    <Compile Include="Services\TraceLoaderService.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Compile Include="ViewModels\TraceLogOverviewViewModel.cs" />
     <Compile Include="ViewModels\ThreadSelectionViewModel.cs" />

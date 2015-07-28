@@ -27,8 +27,6 @@ namespace Plainion.Flames.Modules.ETW.Builders
             myCallstack = new List<Call>(100);
         }
 
-        public bool InterpolateBrokenStackSamples { get; set; }
-
         public TraceThread Thread { get; private set; }
 
         public void CpuSampled(SampledProfileTraceData evt)
@@ -80,11 +78,8 @@ namespace Plainion.Flames.Modules.ETW.Builders
         {
             if (frames != null && frames.Count > 0)
             {
-                if (!InterpolateBrokenStackSamples || !frames[0].IsBrokenCallstack())
-                {
-                    myLastSample = WalkSample(time, myLastSample ?? new List<Method>(), frames);
-                    myLastSampleTime = time;
-                }
+                myLastSample = WalkSample(time, myLastSample ?? new List<Method>(), frames);
+                myLastSampleTime = time;
             }
             else
             {

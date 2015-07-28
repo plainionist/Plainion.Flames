@@ -96,11 +96,6 @@
     <Compile Include="Builders\CSwitchBookmarksBuilder.cs" />
     <Compile Include="Builders\CallBuilder.cs" />
     <Compile Include="LoadSettings.cs" />
-    <Compile Include="FlamesSettingsView.xaml.cs">
-      <DependentUpon>FlamesSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EtwModule.cs" />
-    <Compile Include="FlamesSettingsViewModel.cs" />
     <Compile Include="IEventConsumer.cs" />
     <Compile Include="OpenTraceView.xaml.cs">
       <DependentUpon>OpenTraceView.xaml</DependentUpon>
@@ -129,10 +124,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="FlamesSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="OpenTraceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

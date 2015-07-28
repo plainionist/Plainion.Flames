@@ -20,11 +20,6 @@ namespace Plainion.Flames.Modules.ETW
         private TraceFile myLastTraceFile;
         private LoadSettings myLoadSettings;
 
-#pragma warning disable 649
-        [Import]
-        private FlamesSettingsViewModel myFlamesSettings;
-#pragma warning restore 649
-
         [ImportingConstructor]
         public EtwTraceReader(IAsyncWindowRequestFactory windowFactory)
         {
@@ -138,10 +133,7 @@ namespace Plainion.Flames.Modules.ETW
 
         private IEnumerable<IEventConsumer> GetConsumers(TraceModelBuilder builder, IReadOnlyCollection<int> processesToLoad)
         {
-            yield return new CallBuilder(builder, processesToLoad)
-                {
-                    InterpolateBrokenStackSamples = myFlamesSettings.InterpolateBrokenStackSamples
-                };
+            yield return new CallBuilder(builder, processesToLoad);
 
             yield return new CSwitchBookmarksBuilder(builder, processesToLoad);
 

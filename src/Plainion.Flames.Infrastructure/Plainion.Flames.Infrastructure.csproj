@@ -73,7 +73,6 @@
     <Compile Include="Model\IProject.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="Services\IProjectService.cs" />
-    <Compile Include="Services\ITraceLoaderService.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
