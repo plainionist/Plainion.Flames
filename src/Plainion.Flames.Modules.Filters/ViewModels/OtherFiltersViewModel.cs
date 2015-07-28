@@ -28,7 +28,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             }
 
             var factory = new PresentationFactory();
-            factory.InterpolateBrokenStackCalls = true;
+            factory.InterpolateBrokenStackCalls = myInterpolateBrokenStackCalls;
             var presentation = factory.CreateFlameSetPresentation( TraceLog );
 
             ProjectService.Project.Presentation = presentation;
