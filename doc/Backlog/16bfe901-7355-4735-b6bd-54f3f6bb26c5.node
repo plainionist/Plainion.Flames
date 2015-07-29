@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5" Created="635628256729952062" LastModified="635731721420130574" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
-  <Caption><![CDATA[interpolate broken stacks to filters]]></Caption>
-  <Content><![CDATA[- remove the "interpolate broken stacks" from ETW tab
-- remove the traceloaderservice hack]]></Content>
+<Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5" Created="635628256729952062" LastModified="635737688620214837" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
+  <Caption><![CDATA[Fine tune interpolate broken stacks feature]]></Caption>
+  <Content><![CDATA[currently we interpolate all children but should only merge those
+which were previously split only because of the broken stack in between]]></Content>
 </Node>
