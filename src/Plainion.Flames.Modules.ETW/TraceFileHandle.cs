@@ -14,10 +14,10 @@ namespace Plainion.Flames.Modules.ETW
 {
     class TraceFileHandle : IDisposable
     {
-        [DllImport( "kernel32.dll" )]
-        static extern bool CreateSymbolicLink( string lpSymlinkFileName, string lpTargetFileName, int dwFlags );
+        [DllImport("kernel32.dll")]
+        static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
 
-        public TraceFileHandle( TraceFile traceFile )
+        public TraceFileHandle(TraceFile traceFile)
         {
             TraceFile = traceFile;
             WorkspaceRoot = @"c:\flames.db";
@@ -36,9 +36,9 @@ namespace Plainion.Flames.Modules.ETW
 
         public bool AlwaysGenerateNewEtlx { get; set; }
 
-        internal void Open( IProgress<IProgressInfo> progress )
+        internal void Open(IProgress<IProgressInfo> progress)
         {
-            if( Trace != null )
+            if (Trace != null)
             {
                 // already open
                 return;
@@ -50,15 +50,15 @@ namespace Plainion.Flames.Modules.ETW
             options.AlwaysResolveSymbols = false;
 
             //myLog = new StreamWriter( Path.Combine( WorkspaceRoot, "flames.log" ) );
-            using( var log = new QueueTextWriter() )
+            using (var log = new QueueTextWriter())
             {
                 options.ConversionLog = log;
 
-                options.ShouldResolveSymbols = ( s ) => true;
+                options.ShouldResolveSymbols = (s) => true;
 
-                var task = StartProgressObserverAsync( log, progress );
+                var task = StartProgressObserverAsync(log, progress);
 
-                Trace = EtwTraceLog.OpenOrConvert( Path.Combine( WorkspaceRoot, Path.GetFileName( TraceFile.Etl ) ), options );
+                Trace = EtwTraceLog.OpenOrConvert(Path.Combine(WorkspaceRoot, Path.GetFileName(TraceFile.Etl)), options);
 
                 log.Close();
 
@@ -66,59 +66,59 @@ namespace Plainion.Flames.Modules.ETW
             }
         }
 
-        private static Task StartProgressObserverAsync( QueueTextWriter log, IProgress<IProgressInfo> progress )
+        private static Task StartProgressObserverAsync(QueueTextWriter log, IProgress<IProgressInfo> progress)
         {
-            var progressInfo = new CountingProgress( "Step 2: Preparing ETLx" );
-            progress.Report( progressInfo );
+            var progressInfo = new CountingProgress("Step 2: Preparing ETLx");
+            progress.Report(progressInfo);
 
-            var task = Task.Run( () =>
+            var task = Task.Run(() =>
             {
                 var query = log.Queue.GetConsumingEnumerable()
-                    .Where( l => l.StartsWith( "[", StringComparison.OrdinalIgnoreCase ) )
-                    .Select( l => l.TrimStart( '[' ).TrimEnd( ']', '\r', '\n' ) );
+                    .Where(l => l.StartsWith("[", StringComparison.OrdinalIgnoreCase))
+                    .Select(l => l.TrimStart('[').TrimEnd(']', '\r', '\n'));
 
-                foreach( var line in query )
+                foreach (var line in query)
                 {
-                    progressInfo.IncrementBy( 1 );
+                    progressInfo.IncrementBy(1);
                     progressInfo.Details = line;
 
-                    progress.Report( progressInfo );
+                    progress.Report(progressInfo);
                 }
-            } );
+            });
             return task;
         }
 
         private void SetupWorkspace()
         {
-            if( Directory.Exists( WorkspaceRoot ) )
+            if (Directory.Exists(WorkspaceRoot))
             {
-                System.Console.WriteLine( "Removing analysis workspace" );
-                Directory.Delete( WorkspaceRoot );
+                System.Console.WriteLine("Removing analysis workspace");
+                Directory.Delete(WorkspaceRoot);
             }
 
-            if( !CreateSymbolicLink( WorkspaceRoot, Path.GetDirectoryName( TraceFile.Etl ), 0x1 ) )
+            if (!CreateSymbolicLink(WorkspaceRoot, Path.GetDirectoryName(TraceFile.Etl), 0x1))
             {
-                throw new Exception( "Failed to setup workspace" );
+                throw new Exception(string.Format("Failed to setup workspace. Couldn't create symbolic link from {0} to {1}. Start the application with 'Run as administrator' and try again.", Path.GetDirectoryName(TraceFile.Etl), WorkspaceRoot));
             }
 
-            if( AlwaysGenerateNewEtlx && TraceFile.EtlxExists )
+            if (AlwaysGenerateNewEtlx && TraceFile.EtlxExists)
             {
-                File.Delete( TraceFile.Etlx );
+                File.Delete(TraceFile.Etlx);
             }
         }
 
         public void Close()
         {
-            if( Trace != null )
+            if (Trace != null)
             {
                 Trace.Dispose();
                 Trace = null;
             }
 
-            if( Directory.Exists( WorkspaceRoot ) )
+            if (Directory.Exists(WorkspaceRoot))
             {
-                System.Console.WriteLine( "Removing analysis workspace" );
-                Directory.Delete( WorkspaceRoot );
+                System.Console.WriteLine("Removing analysis workspace");
+                Directory.Delete(WorkspaceRoot);
             }
         }
 
