@@ -18,25 +18,25 @@ namespace Plainion.Flames
 
         public bool InterpolateBrokenStackCalls { get; set; }
 
-        public FlameSetPresentation CreateFlameSetPresentation( TraceLog traceLog )
+        public FlameSetPresentation CreateFlameSetPresentation(TraceLog traceLog)
         {
-            var presentation = new FlameSetPresentation( traceLog, myColorLut );
+            var presentation = new FlameSetPresentation(traceLog, myColorLut);
 
             presentation.Flames = traceLog.Processes
-                .SelectMany( p => traceLog.GetThreads( p ) )
-                .OrderBy( c => c.Process.ProcessId )
-                .ThenBy( c => c.ThreadId )
-                .Select( t => CreateFlame( t, presentation ) )
+                .SelectMany(p => traceLog.GetThreads(p))
+                .OrderBy(c => c.Process.ProcessId)
+                .ThenBy(c => c.ThreadId)
+                .Select(t => CreateFlame(t, presentation))
                 .ToList();
 
             return presentation;
         }
 
-        private Flame CreateFlame( TraceThread thread, FlameSetPresentation presentation )
+        private Flame CreateFlame(TraceThread thread, FlameSetPresentation presentation)
         {
-            var flamePresentation = CreateFlame( thread, presentation.TimelineViewport, presentation.ColorLut );
+            var flamePresentation = CreateFlame(thread, presentation.TimelineViewport, presentation.ColorLut);
 
-            if( flamePresentation.Activities.Count == 0 && presentation.HideEmptyFlames )
+            if (flamePresentation.Activities.Count == 0 && presentation.HideEmptyFlames)
             {
                 flamePresentation.Visibility = ContentVisibility.Hidden;
             }
@@ -44,114 +44,177 @@ namespace Plainion.Flames
             return flamePresentation;
         }
 
-        public Flame CreateFlame( TraceThread thread, TimelineViewport timelineViewport, IColorLut colorLut )
+        public Flame CreateFlame(TraceThread thread, TimelineViewport timelineViewport, IColorLut colorLut)
         {
-            var flame = new Flame( thread, timelineViewport, colorLut );
+            var flame = new Flame(thread, timelineViewport, colorLut);
 
-            var callstacks = flame.Model.Process.Log.GetCallstacks( flame.Model );
+            var callstacks = flame.Model.Process.Log.GetCallstacks(flame.Model);
 
             var activities = InterpolateBrokenStackCalls ?
-                CreateInterpolatedActivities( flame, callstacks ) :
-                CreateActivities( flame, callstacks );
+                CreateInterpolatedActivities(flame, callstacks) :
+                CreateActivities(flame, callstacks);
 
-            flame.SetActivities( activities );
+            flame.SetActivities(activities);
 
             return flame;
         }
 
-        private IReadOnlyCollection<Activity> CreateInterpolatedActivities( Flame flame, IReadOnlyList<Call> callstacks )
+        private IReadOnlyCollection<Activity> CreateInterpolatedActivities(Flame flame, IReadOnlyList<Call> callstacks)
         {
             var nonBrokenCallstacks = callstacks
-                .Where( c => !c.Method.IsBrokenCallstack() )
+                .Where(c => !c.Method.IsBrokenCallstack())
+                .Select(c => new[] { c })
                 .ToList();
 
-            var activities = new List<Activity>( nonBrokenCallstacks.Count * EstimatedAverageCallstackDepth );
+            var activities = new List<Activity>(nonBrokenCallstacks.Count * EstimatedAverageCallstackDepth);
 
-            CreateActivitiesFromStacksAndTryMerge( flame, nonBrokenCallstacks, null, activities );
+            CreateActivitiesFromStacksAndTryMerge(flame, nonBrokenCallstacks, null, activities);
 
             return activities;
         }
 
-        private IReadOnlyCollection<Activity> CreateActivities( Flame flame, IReadOnlyList<Call> callstacks )
+        private IReadOnlyCollection<Activity> CreateActivities(Flame flame, IReadOnlyList<Call> callstacks)
         {
-            var activities = new List<Activity>( callstacks.Count * EstimatedAverageCallstackDepth );
+            var activities = new List<Activity>(callstacks.Count * EstimatedAverageCallstackDepth);
 
-            foreach( var stack in callstacks )
+            foreach (var stack in callstacks)
             {
-                CreateActivitiesFromStack( flame, stack, null, activities );
+                CreateActivitiesFromStack(flame, stack, null, activities);
             }
 
             return activities;
         }
 
-        private void CreateActivitiesFromStack( Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        private void CreateActivitiesFromStack(Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame)
         {
-            var activity = new Activity( flame, call );
-            activity.Parent = parentActivity;
+            var activity = AddActivity(flame, call, parentActivity, allActivitiesInFlame);
 
-            allActivitiesInFlame.Add( activity );
-
-            foreach( var child in call.Children )
+            foreach (var child in call.Children)
             {
-                CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
+                CreateActivitiesFromStack(flame, child, activity, allActivitiesInFlame);
             }
         }
 
-        private void CreateActivitiesFromStacksAndTryMerge( Flame flame, IReadOnlyList<Call> calls, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        // recursive merge algorithm (for every callstack level):
+        // - for two groups: merge most right call of LHS group with the most left cal of the RHS group (if both call same method)
+        // - if one group consists only of a single call it will be merged with LHS group and RHS group
+        private void CreateActivitiesFromStacksAndTryMerge(Flame flame, IReadOnlyList<IReadOnlyList<Call>> callGroups, Activity parentActivity, IList<Activity> allActivitiesInFlame)
         {
             var callsToMerge = new List<Call>();
-            foreach( var call in calls )
+            foreach (var calls in callGroups)
             {
-                if( callsToMerge.Count == 0 || callsToMerge[ 0 ].Method.Equals( call.Method ) )
+                if (calls.Count == 0)
                 {
-                    callsToMerge.Add( call );
+                    // nothing to merge -> just ignore
                     continue;
                 }
 
-                MergeCalls( flame, callsToMerge, parentActivity, allActivitiesInFlame );
+                if (callsToMerge.Count == 0)
+                {
+                    // merge start -> just take the most right call
+                    callsToMerge.Add(calls[calls.Count - 1]);
 
+                    // build activities for remaining calls in this group (recursively)
+                    for (int i = 0; i < calls.Count - 1; ++i)
+                    {
+                        CreateActivitiesFromStack(flame, calls[i], parentActivity, allActivitiesInFlame);
+                    }
+
+                    continue;
+                }
+
+                // now we have already s.th. considered for merging
+
+                int idx = 0;
+
+                // does the most left one fit?
+                if (callsToMerge[0].Method.Equals(calls[0].Method))
+                {
+                    callsToMerge.Add(calls[0]);
+                    idx++;
+
+                    if (calls.Count == 1)
+                    {
+                        // only one call in this group
+                        // -> continue searching for merge candidates in the other groups
+                        continue;
+                    }
+                }
+
+                // either current call group does not match to merge candidates 
+                // OR there is more than 1 call in current call group
+
+                // stop collecting merge candidates - we do not merge within groups
+                CreateMergedActivityRecursively(flame, callsToMerge, parentActivity, allActivitiesInFlame);
+
+                // start new collection of merge candidates with the most right call
                 callsToMerge.Clear();
-                callsToMerge.Add( call );
+                callsToMerge.Add(calls[calls.Count - 1]);
+
+                // build activities for remaining calls in this group (recursively)
+                for (; idx < calls.Count - 1; ++idx)
+                {
+                    CreateActivitiesFromStack(flame, calls[idx], parentActivity, allActivitiesInFlame);
+                }
             }
 
-            if( callsToMerge.Count > 0 )
+            if (callsToMerge.Count > 0)
             {
-                MergeCalls( flame, callsToMerge, parentActivity, allActivitiesInFlame );
+                // unmerged merge candidates left -> merge now
+                CreateMergedActivityRecursively(flame, callsToMerge, parentActivity, allActivitiesInFlame);
             }
         }
 
-        private void MergeCalls( Flame flame, IReadOnlyList<Call> callsToMerge, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        private void CreateMergedActivityRecursively(Flame flame, List<Call> callsToMerge, Activity parentActivity, IList<Activity> allActivitiesInFlame)
         {
-            if( callsToMerge.Count == 1 )
-            {
-                CreateActivitiesFromStack( flame, callsToMerge[ 0 ], parentActivity, allActivitiesInFlame );
-                return;
-            }
+            // merge all calls if necessary
+            var call = MergeCallsOnDemand(callsToMerge);
 
-            var first = callsToMerge[ 0 ];
-            var last = callsToMerge[ callsToMerge.Count - 1 ];
+            // new activity
+            var activity = AddActivity(flame, call, parentActivity, allActivitiesInFlame);
 
-            var mergedCall = new Call( first.Thread, first.Start, first.Method );
-            mergedCall.SetEnd( last.End );
-
-            var activity = new Activity( flame, mergedCall );
-            activity.Parent = parentActivity;
-
-            allActivitiesInFlame.Add( activity );
-
-            // TODO: we do not want to merge everything - we want to merge only those callstacks which
-            // were previously splitted because of broken stacks in between
-            
-            var allChildren = callsToMerge
-                .SelectMany( call => call.Children )
+            // continue with children
+            // (candidate list should have exactly one call per group passed into this method)
+            var childGropus = callsToMerge
+                .Select(c => c.Children)
                 .ToList();
 
-            foreach( var child in allChildren )
+            CreateActivitiesFromStacksAndTryMerge(flame, childGropus, activity, allActivitiesInFlame);
+        }
+
+        private static Call MergeCallsOnDemand(IReadOnlyList<Call> callsToMerge)
+        {
+            if (callsToMerge.Count == 1)
             {
-                mergedCall.AddChild( child );
+                return callsToMerge[0];
             }
 
-            CreateActivitiesFromStacksAndTryMerge( flame, allChildren, activity, allActivitiesInFlame );
+            var first = callsToMerge[0];
+            var last = callsToMerge[callsToMerge.Count - 1];
+
+            var mergedCall = new Call(first.Thread, first.Start, first.Method);
+            mergedCall.SetEnd(last.End);
+
+            var allChildren = callsToMerge
+                .SelectMany(call => call.Children)
+                .ToList();
+
+            foreach (var child in allChildren)
+            {
+                mergedCall.AddChild(child);
+            }
+
+            return mergedCall;
+        }
+
+        private static Activity AddActivity(Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame)
+        {
+            var activity = new Activity(flame, call);
+            activity.Parent = parentActivity;
+
+            allActivitiesInFlame.Add(activity);
+
+            return activity;
         }
     }
 }

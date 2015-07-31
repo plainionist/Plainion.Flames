@@ -4,9 +4,6 @@
     <Caption><![CDATA[Planning]]></Caption>
     <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
       <Caption><![CDATA[Next steps]]></Caption>
-      <Node Id="16bfe901-7355-4735-b6bd-54f3f6bb26c5">
-        <Caption><![CDATA[Fine tune interpolate broken stacks feature]]></Caption>
-      </Node>
       <Node Id="2a97cae2-94da-44e1-bb4e-d42084e4cc63">
         <Caption><![CDATA[Remove VisiblityMask from Activity]]></Caption>
       </Node>

@@ -63,7 +63,7 @@ namespace Plainion.Flames.Model
 
         public Call Parent { get; private set; }
 
-        public IReadOnlyCollection<Call> Children { get { return myChildren; } }
+        public IReadOnlyList<Call> Children { get { return myChildren; } }
 
         public void AddChild( Call child )
         {
