@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="3f2e1fd9-d3c0-4268-b54d-5e0fa0b8741d" Created="635554623974268715" LastModified="635655631313867566" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
-  <Caption><![CDATA[Where to use RX?]]></Caption>
-  <Content><![CDATA[ (Line based tracing back to home with sample impl and plugable parser? Reader selection based in file extension nicht not work then. Config + selection Dialog needed)
-]]></Content>
-</Node>

@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="dc39d0af-0a60-41a0-ab88-5d40b3a90ece" Created="635561541574082752" LastModified="635561555897893707">
-  <Caption><![CDATA[optimizations]]></Caption>
-  <Content><![CDATA[can we store less CallDomains?
-(as the builder also has a cache/pool)]]></Content>
-</Node>

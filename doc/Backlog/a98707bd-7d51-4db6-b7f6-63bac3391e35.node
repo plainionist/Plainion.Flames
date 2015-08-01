@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="a98707bd-7d51-4db6-b7f6-63bac3391e35" Created="635565771343369828" LastModified="635565771774324477">
-  <Caption><![CDATA[TraceEvent supports RX]]></Caption>
-  <Content><![CDATA[can we use RX when fetching initial overview of threads and processes?]]></Content>
-</Node>

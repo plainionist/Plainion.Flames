@@ -41,15 +41,6 @@
         <Caption><![CDATA[additional info related to controlflow]]></Caption>
       </Node>
     </Node>
-    <Node Id="58316b0f-8275-4a7e-99bf-754be55e104e">
-      <Caption><![CDATA[BFlames]]></Caption>
-      <Node Id="dc39d0af-0a60-41a0-ab88-5d40b3a90ece">
-        <Caption><![CDATA[optimizations]]></Caption>
-      </Node>
-      <Node Id="bc203d6a-6b9b-4572-b9ae-9775f90406b7">
-        <Caption><![CDATA[add support for preselecting processes]]></Caption>
-      </Node>
-    </Node>
     <Node Id="fd7d047d-3fd2-43e0-ba20-5c12a9df31f1">
       <Caption><![CDATA[Efficency]]></Caption>
       <Node Id="8e4a18a8-be04-4caa-a053-d80845dfcd21">
@@ -57,9 +48,6 @@
       </Node>
       <Node Id="47624b21-83bc-4488-9c15-b89b6421d848">
         <Caption><![CDATA[we allocate gigabytes of CallRepresentation[] in RenderCalls]]></Caption>
-      </Node>
-      <Node Id="7e59942a-eec9-430e-989c-a08dfeba2ee5">
-        <Caption><![CDATA[CallRepresentation performance]]></Caption>
       </Node>
       <Node Id="bbf995da-3499-4048-a27f-0f2b46c784d7">
         <Caption><![CDATA[Can we handle collections more efficient in TraceLog]]></Caption>
@@ -75,9 +63,6 @@
       </Node>
       <Node Id="3ce7c819-7531-40be-b64f-8e2f91092e60">
         <Caption><![CDATA[check for weak events]]></Caption>
-      </Node>
-      <Node Id="22bf45bc-29c1-4791-9eda-e2c430c63e0b">
-        <Caption><![CDATA[memory leaks?]]></Caption>
       </Node>
       <Node Id="5f6a25b4-1b43-4c15-b561-1a209ae711bb">
         <Caption><![CDATA[Activity trees]]></Caption>
@@ -98,12 +83,6 @@
         <Caption><![CDATA[convert IStringTraceParser APIs to IObservable (RX)]]></Caption>
       </Node>
     </Node>
-    <Node Id="3f2e1fd9-d3c0-4268-b54d-5e0fa0b8741d">
-      <Caption><![CDATA[Where to use RX?]]></Caption>
-      <Node Id="a98707bd-7d51-4db6-b7f6-63bac3391e35">
-        <Caption><![CDATA[TraceEvent supports RX]]></Caption>
-      </Node>
-    </Node>
     <Node Id="ef725bc7-7ab8-4cfc-ad08-825473ede168">
       <Caption><![CDATA[Design Decisions]]></Caption>
       <Node Id="2b5d5447-392d-4b8c-80e9-36c16971a215">
@@ -118,12 +97,6 @@
     </Node>
     <Node Id="199ebe05-f2b7-430a-a553-d538cbfaf3d0">
       <Caption><![CDATA[Reorder flames via drag and drop]]></Caption>
-    </Node>
-    <Node Id="c6582e14-104c-4d2e-9280-373d27be0022">
-      <Caption><![CDATA[Move all TODOs from code to backlog]]></Caption>
-    </Node>
-    <Node Id="9677c90e-0fab-4f3c-809f-197ee4b5149f">
-      <Caption><![CDATA[Reintroduce aggregate flames]]></Caption>
     </Node>
     <Node Id="88c674f8-e452-4e63-a62f-b9a8c7014b33">
       <Caption><![CDATA[Microsoft-Windows-Win32k]]></Caption>

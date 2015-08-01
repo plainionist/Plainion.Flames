@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="7e59942a-eec9-430e-989c-a08dfeba2ee5" Created="635560096790480843" LastModified="635561556888990814">
-  <Caption><![CDATA[CallRepresentation performance]]></Caption>
-  <Content><![CDATA[should we remember height and y instead of visiblelevel?]]></Content>
-</Node>
