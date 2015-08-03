@@ -12,6 +12,7 @@
                     <!-- TODO: find better way than this implicit contract to DataContext -->
                     <CheckBox IsChecked="{Binding Presentation.HideEmptyFlames}" Content="Hide empty flames" Margin="3"/>
                     <CheckBox IsChecked="{Binding Presentation.TimelineViewport.ShowAbsoluteTimestamps}" Content="Show absolute timestamps" Margin="3"/>
+                    <CheckBox IsChecked="{Binding ShowSumFlames}" Content="Show sum flames" Margin="3"/>
                 </StackPanel>
             </GroupBox>
 

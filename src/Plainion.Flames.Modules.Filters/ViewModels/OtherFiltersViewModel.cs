@@ -15,12 +15,12 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             {
                 if( SetProperty( ref myInterpolateBrokenStackCalls, value ) )
                 {
-                    RemoveBrokenStacks();
+                    OnInterpolateBrokenStackCallsChanged();
                 }
             }
         }
 
-        private void RemoveBrokenStacks()
+        private void OnInterpolateBrokenStackCallsChanged()
         {
             if( Presentation == null )
             {

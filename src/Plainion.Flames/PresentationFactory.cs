@@ -7,7 +7,9 @@ namespace Plainion.Flames
     {
         public bool InterpolateBrokenStackCalls { get; set; }
 
-        public FlameSetPresentation CreateFlameSetPresentation( TraceLog traceLog )
+        public bool ShowSumFlames { get; set; }
+
+        public FlameSetPresentation CreateFlameSetPresentation(TraceLog traceLog)
         {
             if( InterpolateBrokenStackCalls )
             {

@@ -12,6 +12,7 @@ namespace Plainion.Flames.Viewer.ViewModels
         private int myProcessCount;
         private int myThreadCount;
         private int myCallCount;
+        private bool myShowSumFlames;
 
         public string Description { get { return "General"; } }
 
@@ -66,6 +67,41 @@ namespace Plainion.Flames.Viewer.ViewModels
         {
             get { return myCallCount; }
             set { SetProperty(ref myCallCount, value); }
+        }
+
+        public bool ShowSumFlames
+        {
+            get { return myShowSumFlames; }
+            set
+            {
+                if (SetProperty(ref myShowSumFlames, value))
+                {
+                    OnShowSumFlamesChanged();
+                }
+            }
+        }
+
+        private void OnShowSumFlamesChanged()
+        {
+            if (Presentation == null)
+            {
+                return;
+            }
+
+            var factory = new PresentationFactory();
+            factory.ShowSumFlames = myShowSumFlames;
+            var presentation = factory.CreateFlameSetPresentation(TraceLog);
+
+            ProjectService.Project.Presentation = presentation;
+        }
+
+        protected override void OnProjectChanging()
+        {
+            // set presentation already to null to ensure that we do not recalc flames by accident
+            Presentation = null;
+
+            // do not remember this setting - always start new tracelog without interpolation
+            ShowSumFlames = false;
         }
     }
 }
