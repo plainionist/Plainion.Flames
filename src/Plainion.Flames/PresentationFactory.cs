@@ -9,6 +9,10 @@ namespace Plainion.Flames
 
         public bool ShowSumFlames { get; set; }
 
+        public bool HideEmptyFlames { get; set; }
+
+        public bool ShowAbsoluteTimestamps { get; set; }
+
         public FlameSetPresentation CreateFlameSetPresentation(TraceLog traceLog)
         {
             if( InterpolateBrokenStackCalls )

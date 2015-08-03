@@ -13,31 +13,39 @@ namespace Plainion.Flames.Presentation
         public AbstractPresentationBuilder()
         {
             myColorLut = new DefaultColorLut();
+
+            HideEmptyFlames = true;
         }
 
-        public FlameSetPresentation CreateFlameSetPresentation( TraceLog traceLog )
+        public bool HideEmptyFlames { get; set; }
+
+        public bool ShowAbsoluteTimestamps { get; set; }
+
+        public FlameSetPresentation CreateFlameSetPresentation(TraceLog traceLog)
         {
-            var presentation = new FlameSetPresentation( traceLog, myColorLut );
+            var presentation = new FlameSetPresentation(traceLog, myColorLut);
+            presentation.HideEmptyFlames = HideEmptyFlames;
+            presentation.TimelineViewport.ShowAbsoluteTimestamps = ShowAbsoluteTimestamps;
 
             presentation.Flames = traceLog.Processes
-                .SelectMany( p => traceLog.GetThreads( p ) )
-                .OrderBy( c => c.Process.ProcessId )
-                .ThenBy( c => c.ThreadId )
-                .Select( t => CreateFlame( t, presentation ) )
+                .SelectMany(p => traceLog.GetThreads(p))
+                .OrderBy(c => c.Process.ProcessId)
+                .ThenBy(c => c.ThreadId)
+                .Select(t => CreateFlame(t, presentation))
                 .ToList();
 
             return presentation;
         }
 
-        private Flame CreateFlame( TraceThread thread, FlameSetPresentation presentation )
+        private Flame CreateFlame(TraceThread thread, FlameSetPresentation presentation)
         {
-            var flame = new Flame( thread, presentation.TimelineViewport, presentation.ColorLut );
+            var flame = new Flame(thread, presentation.TimelineViewport, presentation.ColorLut);
 
-            var callstacks = flame.Model.Process.Log.GetCallstacks( flame.Model );
-            var activities = CreateActivities( flame, callstacks );
-            flame.SetActivities( activities );
+            var callstacks = flame.Model.Process.Log.GetCallstacks(flame.Model);
+            var activities = CreateActivities(flame, callstacks);
+            flame.SetActivities(activities);
 
-            if( flame.Activities.Count == 0 && presentation.HideEmptyFlames )
+            if (flame.Activities.Count == 0 && presentation.HideEmptyFlames)
             {
                 flame.Visibility = ContentVisibility.Hidden;
             }
@@ -45,24 +53,24 @@ namespace Plainion.Flames.Presentation
             return flame;
         }
 
-        protected abstract IReadOnlyCollection<Activity> CreateActivities( Flame flame, IReadOnlyList<Call> callstacks );
+        protected abstract IReadOnlyCollection<Activity> CreateActivities(Flame flame, IReadOnlyList<Call> callstacks);
 
-        protected void CreateActivitiesFromStack( Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        protected void CreateActivitiesFromStack(Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame)
         {
-            var activity = AddActivity( flame, call, parentActivity, allActivitiesInFlame );
+            var activity = AddActivity(flame, call, parentActivity, allActivitiesInFlame);
 
-            foreach( var child in call.Children )
+            foreach (var child in call.Children)
             {
-                CreateActivitiesFromStack( flame, child, activity, allActivitiesInFlame );
+                CreateActivitiesFromStack(flame, child, activity, allActivitiesInFlame);
             }
         }
 
-        protected Activity AddActivity( Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame )
+        protected Activity AddActivity(Flame flame, Call call, Activity parentActivity, IList<Activity> allActivitiesInFlame)
         {
-            var activity = new Activity( flame, call );
+            var activity = new Activity(flame, call);
             activity.Parent = parentActivity;
 
-            allActivitiesInFlame.Add( activity );
+            allActivitiesInFlame.Add(activity);
 
             return activity;
         }

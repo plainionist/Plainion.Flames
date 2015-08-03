@@ -2,7 +2,6 @@
 using System.ComponentModel.Composition;
 using System.Linq;
 using Plainion.Flames.Infrastructure.ViewModels;
-using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Viewer.ViewModels
 {
