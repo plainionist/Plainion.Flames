@@ -71,6 +71,7 @@
     <Compile Include="Model\IBookmarks.cs" />
     <Compile Include="Model\ITraceLog.cs" />
     <Compile Include="Model\Method.cs" />
+    <Compile Include="PresentationFactorySettings.cs" />
     <Compile Include="Presentation\AbstractPresentationBuilder.cs" />
     <Compile Include="Presentation\InterpolatingBrokenStacksPresentationBuilder.cs" />
     <Compile Include="Presentation\DefaultPresentationBuilder.cs" />

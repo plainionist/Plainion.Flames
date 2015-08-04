@@ -72,6 +72,7 @@
     <Compile Include="Model\IDocumentMetadata.cs" />
     <Compile Include="Model\IProject.cs" />
     <Compile Include="RegionNames.cs" />
+    <Compile Include="Services\IPresentationCreationService.cs" />
     <Compile Include="Services\IProjectService.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>

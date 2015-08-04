@@ -13,7 +13,7 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
             get { return myInterpolateBrokenStackCalls; }
             set
             {
-                if( SetProperty( ref myInterpolateBrokenStackCalls, value ) )
+                if (SetProperty(ref myInterpolateBrokenStackCalls, value))
                 {
                     OnInterpolateBrokenStackCallsChanged();
                 }
@@ -22,14 +22,15 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
 
         private void OnInterpolateBrokenStackCallsChanged()
         {
-            if( Presentation == null )
+            if (Presentation == null)
             {
                 return;
             }
 
+            var settings = new PresentationFactorySettings();
+            settings.InterpolateBrokenStackCalls = myInterpolateBrokenStackCalls;
             var factory = new PresentationFactory();
-            factory.InterpolateBrokenStackCalls = myInterpolateBrokenStackCalls;
-            var presentation = factory.CreateFlameSetPresentation( TraceLog );
+            var presentation = factory.CreateFlameSetPresentation(TraceLog, settings);
 
             ProjectService.Project.Presentation = presentation;
         }

@@ -5,25 +5,28 @@ namespace Plainion.Flames
 {
     public class PresentationFactory
     {
-        public bool InterpolateBrokenStackCalls { get; set; }
-
-        public bool ShowSumFlames { get; set; }
-
-        public bool HideEmptyFlames { get; set; }
-
-        public bool ShowAbsoluteTimestamps { get; set; }
-
         public FlameSetPresentation CreateFlameSetPresentation(TraceLog traceLog)
         {
-            if( InterpolateBrokenStackCalls )
+            return CreateFlameSetPresentation(traceLog, new PresentationFactorySettings());
+        }
+
+        public FlameSetPresentation CreateFlameSetPresentation(TraceLog traceLog, PresentationFactorySettings settings)
+        {
+            var builder = CreateBuilder(settings);
+            builder.HideEmptyFlames = settings.HideEmptyFlames;
+            builder.ShowAbsoluteTimestamps = settings.ShowAbsoluteTimestamps;
+            return builder.CreateFlameSetPresentation(traceLog);
+        }
+
+        private AbstractPresentationBuilder CreateBuilder(PresentationFactorySettings settings)
+        {
+            if (settings.InterpolateBrokenStackCalls)
             {
-                var builder = new InterpolatingBrokenStacksPresentationBuilder();
-                return builder.CreateFlameSetPresentation( traceLog );
+                return new InterpolatingBrokenStacksPresentationBuilder();
             }
             else
             {
-                var builder = new DefaultPresentationBuilder();
-                return builder.CreateFlameSetPresentation( traceLog );
+                return new DefaultPresentationBuilder();
             }
         }
     }

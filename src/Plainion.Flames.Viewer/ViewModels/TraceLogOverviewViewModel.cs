@@ -87,9 +87,10 @@ namespace Plainion.Flames.Viewer.ViewModels
                 return;
             }
 
+            var settings = new PresentationFactorySettings();
+            settings.ShowSumFlames = myShowSumFlames;
             var factory = new PresentationFactory();
-            factory.ShowSumFlames = myShowSumFlames;
-            var presentation = factory.CreateFlameSetPresentation(TraceLog);
+            var presentation = factory.CreateFlameSetPresentation(TraceLog, settings);
 
             ProjectService.Project.Presentation = presentation;
         }
