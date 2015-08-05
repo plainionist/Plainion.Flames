@@ -111,6 +111,7 @@
     <Compile Include="Model\SelectedThreadsDocument.cs" />
     <Compile Include="Services\LoggingSink.cs" />
     <Compile Include="Services\LoaderSerivce.cs" />
+    <Compile Include="Services\PresentationCreationService.cs" />
     <Compile Include="Services\ProfilingService.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Compile Include="ViewModels\TraceLogOverviewViewModel.cs" />

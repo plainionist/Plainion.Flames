@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Infrastructure.ViewModels;
 
 namespace Plainion.Flames.Viewer.ViewModels
@@ -11,7 +13,15 @@ namespace Plainion.Flames.Viewer.ViewModels
         private int myProcessCount;
         private int myThreadCount;
         private int myCallCount;
-        private bool myShowSumFlames;
+        private IPresentationCreationService myPresentationCreationService;
+
+        [ImportingConstructor]
+        public TraceLogOverviewViewModel(IPresentationCreationService presentationService)
+        {
+            myPresentationCreationService = presentationService;
+
+            PropertyChangedEventManager.AddHandler(myPresentationCreationService.Settings, OnShowSumFlames, "ShowSumFlames");
+        }
 
         public string Description { get { return "General"; } }
 
@@ -70,38 +80,26 @@ namespace Plainion.Flames.Viewer.ViewModels
 
         public bool ShowSumFlames
         {
-            get { return myShowSumFlames; }
-            set
-            {
-                if (SetProperty(ref myShowSumFlames, value))
-                {
-                    OnShowSumFlamesChanged();
-                }
-            }
+            get { return myPresentationCreationService.Settings.ShowSumFlames; }
+            set { myPresentationCreationService.Settings.ShowSumFlames = value; }
         }
 
-        private void OnShowSumFlamesChanged()
+        private void OnShowSumFlames(object sender, PropertyChangedEventArgs e)
         {
+            OnPropertyChanged(e.PropertyName);
+
             if (Presentation == null)
             {
                 return;
             }
 
-            var settings = new PresentationFactorySettings();
-            settings.ShowSumFlames = myShowSumFlames;
-            var factory = new PresentationFactory();
-            var presentation = factory.CreateFlameSetPresentation(TraceLog, settings);
-
-            ProjectService.Project.Presentation = presentation;
+            ProjectService.Project.Presentation = myPresentationCreationService.CreateFlameSetPresentation(TraceLog);
         }
 
         protected override void OnProjectChanging()
         {
             // set presentation already to null to ensure that we do not recalc flames by accident
             Presentation = null;
-
-            // do not remember this setting - always start new tracelog without interpolation
-            ShowSumFlames = false;
         }
     }
 }

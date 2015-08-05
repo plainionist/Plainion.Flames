@@ -8,8 +8,6 @@ namespace Plainion.Flames.Infrastructure.Services
     {
         PresentationFactorySettings Settings { get; }
         
-        event Action SettingsChanged;
-
         FlameSetPresentation CreateFlameSetPresentation(TraceLog traceLog);
     }
 }

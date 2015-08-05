@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Linq;
-using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Infrastructure.ViewModels;
 using Plainion.Flames.Modules.Filters.Model;
-using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters.ViewModels
 {
@@ -12,11 +10,13 @@ namespace Plainion.Flames.Modules.Filters.ViewModels
     {
         private CallFilterModule myModule;
 
-        public CallFilterViewModel()
+        [ImportingConstructor]
+        public CallFilterViewModel(OtherFiltersViewModel otherFiltersViewModel)
         {
+            OtherFiltersViewModel = otherFiltersViewModel;
+
             NameFilterViewModel = new NameFilterViewModel();
             DurationFilterViewModel = new DurationFilterViewModel();
-            OtherFiltersViewModel = new OtherFiltersViewModel();
         }
 
         public string Description { get { return "Method call filters"; } }

@@ -28,10 +28,13 @@ namespace Plainion.Flames.Viewer.Services
         private Project myProject;
         private string myOpenTraceFilter;
         private string mySaveTraceFilter;
+        private IPresentationCreationService myPresentationCreationService;
 
         [ImportingConstructor]
-        public LoaderSerivce( IEventAggregator eventAggregator )
+        public LoaderSerivce(IPresentationCreationService presentationService, IEventAggregator eventAggregator)
         {
+            myPresentationCreationService = presentationService;
+
             eventAggregator.GetEvent<ApplicationShutdownEvent>().Subscribe( x =>
             {
                 // enforce unload of project incl. ProjectChanging event
@@ -122,8 +125,9 @@ namespace Plainion.Flames.Viewer.Services
 
             project.WasDeserialized = File.Exists( file );
 
-            // unload old project
+            // unload old project and reset project specific settings
             Project = null;
+            myPresentationCreationService.Settings.Reset();
 
             if( File.Exists( file ) )
             {
@@ -256,6 +260,7 @@ namespace Plainion.Flames.Viewer.Services
             return Path.Combine( Path.GetDirectoryName( mainTraceFile ), Path.GetFileNameWithoutExtension( mainTraceFile ) + ".pfp" );
         }
 
+        // TODO: move to IPresentationCreationService?
         public Task CreatePresentationAsync( IProgress<IProgressInfo> progress )
         {
             Contract.Invariant( Project != null, "No project exists" );
@@ -264,8 +269,7 @@ namespace Plainion.Flames.Viewer.Services
                 {
                     progress.Report( new UndefinedProgress( "Creating presentation" ) );
 
-                    var factory = new PresentationFactory();
-                    return factory.CreateFlameSetPresentation( Project.TraceLog );
+                    return myPresentationCreationService.CreateFlameSetPresentation( Project.TraceLog );
                 } )
                 .RethrowExceptionsInUIThread()
                 .ContinueWith( t =>
