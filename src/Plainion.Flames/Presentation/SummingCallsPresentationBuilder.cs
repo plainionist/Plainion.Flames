@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Plainion.Flames.Model;
 
 namespace Plainion.Flames.Presentation
@@ -16,6 +17,17 @@ namespace Plainion.Flames.Presentation
 
         private void CreateActivitiesFromStacksAndSumUp(Flame flame, IReadOnlyList<Call> calls, Activity parentActivity, IList<Activity> allActivitiesInFlame)
         {
+            var groupedCalls = calls
+                .GroupBy(c => c.Method)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            foreach (var group in groupedCalls)
+            {
+
+                //var sumCall = new Call(
+            }
+
         }
   }
 }
