@@ -20,7 +20,11 @@ namespace Plainion.Flames
 
         private AbstractPresentationBuilder CreateBuilder(PresentationFactorySettings settings)
         {
-            if (settings.InterpolateBrokenStackCalls)
+            if (settings.ShowSumFlames)
+            {
+                return new SummingCallsPresentationBuilder();
+            }
+            else if (settings.InterpolateBrokenStackCalls)
             {
                 return new InterpolatingBrokenStacksPresentationBuilder();
             }
