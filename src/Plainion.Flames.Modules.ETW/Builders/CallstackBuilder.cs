@@ -124,6 +124,10 @@ namespace Plainion.Flames.Modules.ETW.Builders
             {
                 // c++
                 method = fullName.Substring(pos + 2);
+
+                // not sure what usecase that is but we had one example
+                method = string.IsNullOrEmpty(method) ? "?" : method;
+
                 var domain = fullName.Substring(0, pos);
 
                 pos = domain.IndexOf('<');
