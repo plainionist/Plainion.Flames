@@ -26,3 +26,4 @@
 /packages/Plainion.Prism.1.6.0.0
 /packages/Microsoft.Diagnostics.Tracing.TraceEvent.1.0.40
 /build/.fake
+/TestResult.xml
