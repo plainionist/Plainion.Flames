@@ -47,6 +47,7 @@
     <Compile Include="BookmarksSerializer.cs" />
     <Compile Include="IAssociatedEventsSerializer.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="Properties\AssemblyDefs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

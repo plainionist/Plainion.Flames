@@ -102,6 +102,7 @@
       <DependentUpon>OpenTraceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="OpenTraceViewModel.cs" />
+    <Compile Include="Properties\AssemblyDefs.cs" />
     <Compile Include="QueueTextWriter.cs" />
     <Compile Include="Builders\BuilderUtils.cs" />
     <Compile Include="TraceFile.cs" />

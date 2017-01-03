@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames", "src\Plainion.Flames\Plainion.Flames.csproj", "{F32FF1AF-14D4-43B4-A0F3-4AA399DFFF55}"
 EndProject
@@ -23,8 +23,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Viewer", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1FAE8A61-F4B3-4ABE-B2B9-90EF40BB30EC}"
 	ProjectSection(SolutionItems) = preProject
-		build\GlobalAssemblyInfo.cs = build\GlobalAssemblyInfo.cs
-		build\packager.msbuild = build\packager.msbuild
+		ChangeLog.md = ChangeLog.md
+		README.md = README.md
+		build\Targets.fsx = build\Targets.fsx
 	EndProjectSection
 EndProject
 Global

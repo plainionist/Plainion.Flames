@@ -76,6 +76,7 @@
     <Compile Include="Presentation\InterpolatingBrokenStacksPresentationBuilder.cs" />
     <Compile Include="Presentation\DefaultPresentationBuilder.cs" />
     <Compile Include="Presentation\SummingCallsPresentationBuilder.cs" />
+    <Compile Include="Properties\AssemblyDefs.cs" />
     <Compile Include="PseudoMethods.cs" />
     <Compile Include="Model\ModelReference.cs" />
     <Compile Include="Model\Bookmarks.cs" />
