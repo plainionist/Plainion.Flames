@@ -27,3 +27,4 @@
 /packages/Microsoft.Diagnostics.Tracing.TraceEvent.1.0.40
 /build/.fake
 /TestResult.xml
+/Plainion*.gc.*
