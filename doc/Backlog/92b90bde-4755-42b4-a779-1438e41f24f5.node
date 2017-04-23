@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="92b90bde-4755-42b4-a779-1438e41f24f5" Created="635815531661333543" LastModified="635815531995726979">
-  <Caption><![CDATA[Bug: CallFilter]]></Caption>
-  <Content><![CDATA[- if i add show filters and later on remove "apply" i am not able to easily 
-  toggle back to "see all"]]></Content>
-</Node>
