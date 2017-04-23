@@ -47,26 +47,14 @@ namespace Plainion.Flames.Modules.Streams
 
         private void Build( TraceModelBuilder builder, FileInfo file, IStreamTraceParser parser )
         {
-            var lines = new List<TraceLineBase>( ( int )( file.Length / 120 ) );
-
-            var factory = new TraceLineFactory( builder );
+            var context = new ParserContext( builder, ( int )( file.Length / 120 ) );
 
             using( var stream = new FileStream( file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read ) )
             {
-                parser.TraceLine = line => lines.Add( line );
-                parser.TraceInfo = info =>
-                    {
-                        builder.SetCreationTime( info.CreationTimestamp );
-                        builder.SetTraceDuration( info.TraceDuration );
-                    };
-
-                parser.Process( stream, factory );
-
-                parser.TraceLine = null;
-                parser.TraceInfo = null;
+                parser.Process( stream, context );
             }
 
-            foreach( var group in lines.GroupBy( e => e.ProcessId ) )
+            foreach( var group in context.Lines.GroupBy( e => e.ProcessId ) )
             {
                 BuildProcess( builder, group.Key, group.ToList() );
             }

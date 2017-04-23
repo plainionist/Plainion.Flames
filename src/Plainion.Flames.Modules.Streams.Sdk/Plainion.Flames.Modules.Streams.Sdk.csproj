@@ -29,7 +29,7 @@
   <ItemGroup>
     <Compile Include="EnteringTraceLine.cs" />
     <Compile Include="IStreamTraceParser.cs" />
-    <Compile Include="ITraceLineFactory.cs" />
+    <Compile Include="IParserContext.cs" />
     <Compile Include="LeavingTraceLine.cs" />
     <Compile Include="Properties\AssemblyDefs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

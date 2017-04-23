@@ -37,7 +37,7 @@
   <ItemGroup>
     <Compile Include="StreamTraceReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TraceLineFactory.cs" />
+    <Compile Include="ParserContext.cs" />
     <Compile Include="TraceThreadBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,10 +6,7 @@ namespace Plainion.Flames.Modules.Streams
 {
     class SampleTraceParser : IStreamTraceParser
     {
-        public Action<TraceLineBase> TraceLine { get; set; }
-        public Action<TraceInfo> TraceInfo { get; set; }
-
-        public void Process( Stream stream, ITraceLineFactory factory )
+        public void Process( Stream stream, IParserContext context )
         {
             using( var reader = new StreamReader( stream ) )
             {
@@ -36,28 +33,19 @@ namespace Plainion.Flames.Modules.Streams
 
                     //if( is entering trace )
                     {
-                        if( TraceLine != null )
-                        {
-                            TraceLine( factory.CreateEnteringLine( time, pid, tid, module, nameSpace, className, methodName ) );
-                        }
+                        context.Emit( context.CreateEnteringLine( time, pid, tid, module, nameSpace, className, methodName ) );
                     }
                     //else if( leaving trace )
                     {
-                        if( TraceLine != null )
-                        {
-                            TraceLine( factory.CreateLeavingLine( time, pid, tid, module, nameSpace, className, methodName ));
-                        }
+                        context.Emit( context.CreateLeavingLine( time, pid, tid, module, nameSpace, className, methodName ) );
                     }
                 }
 
-                if( TraceInfo != null )
+                context.Emit( new TraceInfo
                 {
-                    TraceInfo( new TraceInfo
-                    {
-                        CreationTimestamp = creationTime.Value,
-                        TraceDuration = time
-                    } );
-                }
+                    CreationTimestamp = creationTime.Value,
+                    TraceDuration = time
+                } );
             }
         }
     }
