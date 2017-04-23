@@ -241,8 +241,11 @@ namespace Plainion.Flames.Viewer.Services
                 }
             }
 
-            project.TraceLog.Dispose();
-            project.TraceLog = null;
+            if( project.TraceLog != null )
+            {
+                project.TraceLog.Dispose();
+                project.TraceLog = null;
+            }
 
             // http://stackoverflow.com/questions/13026826/execute-command-after-view-is-loaded-wpf-mvvm
             // trigger GC after application does idle so that all Unload handlers could cleanup so that

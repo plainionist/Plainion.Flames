@@ -11,9 +11,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="330">
 
+    <UserControl.Resources>
+        <pn:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>
+    </UserControl.Resources>
+    
     <Grid Margin="3">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -41,26 +46,14 @@
         </Grid>
 
         <Grid Grid.Row="1" Margin="0,3,0,0">
-            <Grid.Resources>
-                <pn:NotConverter x:Key="NotOp"/>
-            </Grid.Resources>
+            <CheckBox Content="Start/Stop events only" IsChecked="{Binding StartStopEventsOnly}"/>
+        </Grid>
 
-            <Grid.Visibility>
-                <MultiBinding>
-                    <MultiBinding.Converter>
-                        <pn:OrConverter>
-                            <pn:BoolToVisibilityConverter/>
-                        </pn:OrConverter>
-                    </MultiBinding.Converter>
-                    <Binding Path="HasCpuSamples" Converter="{StaticResource NotOp}"/>
-                    <Binding Path="HasCSwitches"  Converter="{StaticResource NotOp}"/>
-                </MultiBinding>
-            </Grid.Visibility>
-
+        <Grid Grid.Row="2" Margin="0,3,0,0" Visibility="{Binding ShowMissingEvents, Converter={StaticResource BoolToVisiblity}}">
             <TextBlock TextWrapping="Wrap"> 
                 <Bold Foreground="Red">Attention:</Bold>
                 <Run>
-                Some important events were not enabled in the trace which results in missing important callstack and thread state chances.
+                Some important events were not enabled in the trace which results in missing important callstack and thread state changes.
                 Therefore, the thread time might be attributed to the wrong method call.
                 </Run>
                 <LineBreak/>
@@ -69,7 +62,7 @@
             </TextBlock>
         </Grid>
 
-        <StackPanel Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
+        <StackPanel Grid.Row="3"  Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
             <Button Grid.Column="1" Content="Load" Margin="0,0,3,0" Command="{Binding LoadCommand}"/>
             <Button Grid.Column="2" Content="Cancel" Command="{Binding CancelCommand}"/>
         </StackPanel>

@@ -74,6 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\StartStopCallBuilder.cs" />
     <Compile Include="Builders\CallstackBuilder.cs" />
     <Compile Include="Builders\ThreadLifecycleBookmarksBuilder.cs" />
     <Compile Include="Builders\CpuSamplingBookmarksBuilder.cs" />

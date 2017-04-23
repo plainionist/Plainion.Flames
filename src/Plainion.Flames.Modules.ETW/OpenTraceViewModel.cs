@@ -20,21 +20,23 @@ namespace Plainion.Flames.Modules.ETW
     {
         private string mySymbolPath;
         private bool myUseDefaultWebProxy;
+        private bool myShowMissingEvents;
         private bool myHasCpuSamples;
         private bool myHasCSwitches;
+        private bool myStartStopEventsOnly;
         private LoadSettings myModel;
 
-        public OpenTraceViewModel(LoadSettings loadSettings)
+        public OpenTraceViewModel( LoadSettings loadSettings )
         {
-            Contract.RequiresNotNull(loadSettings, "loadSettings");
+            Contract.RequiresNotNull( loadSettings, "loadSettings" );
 
             myModel = loadSettings;
 
             SymbolPath = myModel.SymbolPath;
             UseDefaultWebProxy = myModel.UseDefaultWebProxy;
 
-            LoadCommand = new DelegateCommand(OnLoad);
-            CancelCommand = new DelegateCommand(OnCancel);
+            LoadCommand = new DelegateCommand( OnLoad );
+            CancelCommand = new DelegateCommand( OnCancel );
         }
 
         public ICommand LoadCommand { get; private set; }
@@ -43,17 +45,18 @@ namespace Plainion.Flames.Modules.ETW
         {
             myModel.SymbolPath = SymbolPath;
             myModel.UseDefaultWebProxy = UseDefaultWebProxy;
-            myModel.SelectedProcesses.Clear();
+            myModel.StartStopEventsOnly = StartStopEventsOnly;
 
-            foreach (var process in TracesTreeSource.Processes)
+            myModel.SelectedProcesses.Clear();
+            foreach( var process in TracesTreeSource.Processes )
             {
-                if (process.IsVisible == true)
+                if( process.IsVisible == true )
                 {
-                    myModel.SelectedProcesses.Add(process.ProcessId);
+                    myModel.SelectedProcesses.Add( process.ProcessId );
                 }
             }
 
-            Notification.TrySetConfirmed(true);
+            Notification.TrySetConfirmed( true );
             FinishInteraction();
         }
 
@@ -61,61 +64,73 @@ namespace Plainion.Flames.Modules.ETW
 
         private void OnCancel()
         {
-            Notification.TrySetConfirmed(false);
+            Notification.TrySetConfirmed( false );
             FinishInteraction();
         }
 
         public string SymbolPath
         {
             get { return mySymbolPath; }
-            set { SetProperty(ref mySymbolPath, value); }
+            set { SetProperty( ref mySymbolPath, value ); }
         }
 
         public bool UseDefaultWebProxy
         {
             get { return myUseDefaultWebProxy; }
-            set { SetProperty(ref myUseDefaultWebProxy, value); }
+            set { SetProperty( ref myUseDefaultWebProxy, value ); }
         }
 
         public TracesTree TracesTreeSource { get; private set; }
 
         public Visibility SymbolSettingsVisibility { get; private set; }
 
-        public bool HasCpuSamples
+        public bool StartStopEventsOnly
         {
-            get { return myHasCpuSamples; }
-            set { SetProperty(ref myHasCpuSamples, value); }
+            get { return myStartStopEventsOnly; }
+            set
+            {
+                if( SetProperty( ref myStartStopEventsOnly, value ) )
+                {
+                    EvaluateMissingEvents();
+                }
+            }
         }
 
-        public bool HasCSwitches
+        public bool ShowMissingEvents
         {
-            get { return myHasCSwitches; }
-            set { SetProperty(ref myHasCSwitches, value); }
+            get { return myShowMissingEvents; }
+            set
+            {
+                if( SetProperty( ref myShowMissingEvents, value ) )
+                {
+                    OnPropertyChanged( () => MissingEvents );
+                }
+            }
         }
 
         public string MissingEvents
         {
             get
             {
-                var events = new List<string>(2);
-                if (!HasCpuSamples)
+                var events = new List<string>( 2 );
+                if( !myHasCpuSamples )
                 {
-                    events.Add("CPU samples");
+                    events.Add( "CPU samples" );
                 }
-                if (!HasCSwitches)
+                if( !myHasCSwitches )
                 {
-                    events.Add("CSwitches");
+                    events.Add( "CSwitches" );
                 }
 
-                return string.Join(",", events);
+                return string.Join( ",", events );
             }
         }
 
-        internal static OpenTraceViewModel Create(TraceFile traceFile, LoadSettings model, IProgress<IProgressInfo> progress)
+        internal static OpenTraceViewModel Create( TraceFile traceFile, LoadSettings model, IProgress<IProgressInfo> progress )
         {
-            var dataContext = new OpenTraceViewModel(model);
+            var dataContext = new OpenTraceViewModel( model );
 
-            if (traceFile.EtlxExists)
+            if( traceFile.EtlxExists )
             {
                 dataContext.SymbolSettingsVisibility = Visibility.Collapsed;
             }
@@ -124,55 +139,62 @@ namespace Plainion.Flames.Modules.ETW
                 dataContext.SymbolSettingsVisibility = Visibility.Visible;
             }
 
-            dataContext.Initialize(traceFile, progress);
+            dataContext.Initialize( traceFile, progress );
 
             return dataContext;
         }
 
-        private void Initialize(TraceFile traceFile, IProgress<IProgressInfo> progress)
+        private void Initialize( TraceFile traceFile, IProgress<IProgressInfo> progress )
         {
             var processes = new Dictionary<int, TraceProcessNode>();
 
-            if (File.Exists(traceFile.Etl))
+            if( File.Exists( traceFile.Etl ) )
             {
-                GetProcessesFromEtl(traceFile.Etl, processes, progress);
+                GetProcessesFromEtl( traceFile.Etl, processes, progress );
             }
             else
             {
                 // handle the case that only ETLX was saved
-                GetProcessesFromEtlx(traceFile.Etlx, processes, progress);
+                GetProcessesFromEtlx( traceFile.Etlx, processes, progress );
             }
+
+            EvaluateMissingEvents();
 
             TracesTreeSource = new TracesTree
             {
                 Processes = processes.Values
-                    .OrderBy(p => p.Name)
-                    .ThenBy(p => p.ProcessId)
+                    .OrderBy( p => p.Name )
+                    .ThenBy( p => p.ProcessId )
                     .ToList()
             };
 
-            if (myModel.SelectedProcesses.Any())
+            if( myModel.SelectedProcesses.Any() )
             {
-                foreach (var process in processes.Values)
+                foreach( var process in processes.Values )
                 {
-                    process.IsVisible = myModel.SelectedProcesses.Contains(process.ProcessId);
+                    process.IsVisible = myModel.SelectedProcesses.Contains( process.ProcessId );
                 }
             }
         }
 
-        private void GetProcessesFromEtl(string etl, Dictionary<int, TraceProcessNode> processes, IProgress<IProgressInfo> progress)
+        private void EvaluateMissingEvents()
         {
-            using (var source = new ETWTraceEventSource(etl))
+            ShowMissingEvents = !( myHasCSwitches && myHasCpuSamples ) && !StartStopEventsOnly;
+        }
+
+        private void GetProcessesFromEtl( string etl, Dictionary<int, TraceProcessNode> processes, IProgress<IProgressInfo> progress )
+        {
+            using( var source = new ETWTraceEventSource( etl ) )
             {
-                var progressInfo = new PercentageProgress("Step 1: Getting all processes", source.SessionDuration.TotalMilliseconds);
-                progress.Report(progressInfo);
+                var progressInfo = new PercentageProgress( "Step 1: Getting all processes", source.SessionDuration.TotalMilliseconds );
+                progress.Report( progressInfo );
 
                 Action<ProcessTraceData> OnProcessStartEnd = e =>
                 {
                     progressInfo.Value = e.TimeStampRelativeMSec;
-                    progress.Report(progressInfo);
+                    progress.Report( progressInfo );
 
-                    AddProcess(processes, e);
+                    AddProcess( processes, e );
                 };
 
                 source.Kernel.ProcessStartGroup += OnProcessStartEnd;
@@ -181,7 +203,7 @@ namespace Plainion.Flames.Modules.ETW
                 Action<SampledProfileTraceData> OnCpuSample = null;
                 OnCpuSample = e =>
                 {
-                    HasCpuSamples = true;
+                    myHasCpuSamples = true;
                     source.Kernel.PerfInfoSample -= OnCpuSample;
                 };
                 source.Kernel.PerfInfoSample += OnCpuSample;
@@ -189,7 +211,7 @@ namespace Plainion.Flames.Modules.ETW
                 Action<CSwitchTraceData> OnCSwitch = null;
                 OnCSwitch = e =>
                 {
-                    HasCSwitches = true;
+                    myHasCSwitches = true;
                     source.Kernel.ThreadCSwitch -= OnCSwitch;
                 };
                 source.Kernel.ThreadCSwitch += OnCSwitch;
@@ -197,15 +219,15 @@ namespace Plainion.Flames.Modules.ETW
                 source.Process();
 
                 progressInfo.Value = progressInfo.Maximum;
-                progress.Report(progressInfo);
+                progress.Report( progressInfo );
             }
         }
 
-        private static void AddProcess(Dictionary<int, TraceProcessNode> processes, ProcessTraceData e)
+        private static void AddProcess( Dictionary<int, TraceProcessNode> processes, ProcessTraceData e )
         {
-            if (!processes.ContainsKey(e.ProcessID))
+            if( !processes.ContainsKey( e.ProcessID ) )
             {
-                processes[e.ProcessID] = new TraceProcessNode
+                processes[ e.ProcessID ] = new TraceProcessNode
                 {
                     ProcessId = e.ProcessID,
                     Name = e.ImageFileName
@@ -213,41 +235,41 @@ namespace Plainion.Flames.Modules.ETW
             }
         }
 
-        private void GetProcessesFromEtlx(string etlx, Dictionary<int, TraceProcessNode> processes, IProgress<IProgressInfo> progress)
+        private void GetProcessesFromEtlx( string etlx, Dictionary<int, TraceProcessNode> processes, IProgress<IProgressInfo> progress )
         {
-            var source = TraceLog.OpenOrConvert(etlx);
+            var source = TraceLog.OpenOrConvert( etlx );
 
-            var progressInfo = new PercentageProgress("Step 1: Getting all processes", source.SessionDuration.TotalMilliseconds);
-            progress.Report(progressInfo);
+            var progressInfo = new PercentageProgress( "Step 1: Getting all processes", source.SessionDuration.TotalMilliseconds );
+            progress.Report( progressInfo );
 
-            foreach (var p in source.Processes)
+            foreach( var p in source.Processes )
             {
-                processes[p.ProcessID] = new TraceProcessNode
+                processes[ p.ProcessID ] = new TraceProcessNode
                 {
                     ProcessId = p.ProcessID,
                     Name = p.ImageFileName
                 };
             }
 
-            foreach (var evt in source.Events)
+            foreach( var evt in source.Events )
             {
-                if (evt is SampledProfileIntervalTraceData)
+                if( evt is SampledProfileIntervalTraceData )
                 {
-                    HasCpuSamples = true;
+                    myHasCpuSamples = true;
                 }
-                else if (evt is CSwitchTraceData)
+                else if( evt is CSwitchTraceData )
                 {
-                    HasCSwitches = true;
+                    myHasCSwitches = true;
                 }
 
-                if (HasCpuSamples && HasCSwitches)
+                if( myHasCpuSamples && myHasCSwitches )
                 {
                     break;
                 }
             }
 
             progressInfo.Value = progressInfo.Maximum;
-            progress.Report(progressInfo);
+            progress.Report( progressInfo );
         }
 
         public Action FinishInteraction { get; set; }
