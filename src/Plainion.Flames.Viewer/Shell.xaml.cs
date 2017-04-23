@@ -15,10 +15,10 @@ namespace Plainion.Flames.Viewer
 
             DataContext = model;
 
-            if (Debugger.IsAttached)
-            {
-                new InspectionWindow().Show();
-            }
+            //if (Debugger.IsAttached)
+            //{
+            //    new InspectionWindow().Show();
+            //}
         }
     }
 }

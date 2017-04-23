@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Plainion.Flames.Infrastructure;
+using Plainion.Logging;
 using Plainion.Progress;
 
 namespace Plainion.Flames.Modules.Streams
@@ -13,16 +14,21 @@ namespace Plainion.Flames.Modules.Streams
     [Export( typeof( ITraceReader ) )]
     class StreamTraceReader : ITraceReader
     {
+        private static readonly ILogger myLogger = LoggerFactory.GetLogger( typeof( StreamTraceReader ) );
+
         public StreamTraceReader()
         {
-            FileFilters = new[] { new FileFilter( ".log", "String trace file (*.log)" ) };
+            FileFilters = new[] { 
+                new FileFilter( ".log", "Stream trace file (*.log)" ),
+                new FileFilter( ".txt", "Stream trace file (*.txt)" ),
+                new FileFilter( ".trace", "Stream trace file (*.trace)" ) };
         }
 
         public IEnumerable<FileFilter> FileFilters { get; private set; }
 
         public Task ReadAsync( string filename, TraceModelBuilder builder, IProgress<IProgressInfo> progress )
         {
-            return Task.Run( ()=>
+            return Task.Run( () =>
                 {
                     var moduleLocation = Path.GetDirectoryName( GetType().Assembly.Location );
                     var catalog = new DirectoryCatalog( moduleLocation, "Plainion.Flames.Modules.Streams.*.dll" );
@@ -32,8 +38,15 @@ namespace Plainion.Flames.Modules.Streams
 
                     var parsers = container.GetExportedValues<IStreamTraceParser>();
 
-                    Contract.Requires( parsers != null && parsers.Any(), "No parser implementation found for " + typeof( IStreamTraceParser ).Name );
-                    Contract.Requires( parsers.Count() == 1, "Multiple parser implementations found for" + typeof( IStreamTraceParser ).Name );
+                    if( parsers != null && parsers.Any() )
+                    {
+                        myLogger.Warning( "No parser implementation found for {0}. Using default implementation: {1}", typeof( IStreamTraceParser ).Name, typeof( SampleTraceParser ).FullName );
+                        parsers = new[] { new SampleTraceParser() };
+                    }
+                    else
+                    {
+                        Contract.Requires( parsers.Count() == 1, "Multiple parser implementations found for" + typeof( IStreamTraceParser ).Name );
+                    }
 
                     var fileInfo = new FileInfo( filename );
                     if( fileInfo.Length == 0 )
@@ -42,7 +55,7 @@ namespace Plainion.Flames.Modules.Streams
                     }
 
                     Build( builder, fileInfo, parsers.Single() );
-                });
+                } );
         }
 
         private void Build( TraceModelBuilder builder, FileInfo file, IStreamTraceParser parser )
