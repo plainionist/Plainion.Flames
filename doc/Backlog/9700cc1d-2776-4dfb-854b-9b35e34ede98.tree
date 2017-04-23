@@ -2,12 +2,6 @@
 <Tree>
   <Node Id="9700cc1d-2776-4dfb-854b-9b35e34ede98">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="1324975d-6a1f-4c0f-968e-28661bfd82e0">
-      <Caption><![CDATA[bug: show hide in threads and process view does not work anylonger]]></Caption>
-    </Node>
-    <Node Id="67b4b922-7bb0-4b70-87b9-5124961a1ab7">
-      <Caption><![CDATA[TrueFlames]]></Caption>
-    </Node>
     <Node Id="abbc6b7d-e829-424a-acf8-0af0df03fb34">
       <Caption><![CDATA[create flames based on ETW "start"/"stop" opcodes]]></Caption>
     </Node>
