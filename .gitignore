@@ -11,7 +11,6 @@
 /packages/Prism.Interactivity.5.0.0/
 /packages/Prism.5.0.0/
 /packages/Prism.MEFExtensions.5.0.0/
-/packages/Microsoft.Diagnostics.Tracing.TraceEvent.1.0.26
 /packages/Plainion.AppFw.Wpf.1.0.0.0/
 /packages/Plainion.Core.2.1.0.0/
 /packages/Plainion.Windows.1.4.0.0
@@ -24,7 +23,7 @@
 /packages/Plainion.Windows.1.8.0.0
 /packages/Plainion.Windows.1.9.0.0
 /packages/Plainion.Prism.1.6.0.0
-/packages/Microsoft.Diagnostics.Tracing.TraceEvent.1.0.40
+/packages/Microsoft.Diagnostics.Tracing.TraceEvent*
 /build/.fake
 /TestResult.xml
 /Plainion*.gc.*
