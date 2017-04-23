@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.Practices.Prism.Mvvm;
+using Prism.Mvvm;
 namespace Plainion.Flames
 {
     public class PresentationFactorySettings : BindableBase

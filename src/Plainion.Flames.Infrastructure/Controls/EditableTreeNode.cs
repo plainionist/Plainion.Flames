@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Mvvm;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace Plainion.Flames.Infrastructure.Controls
 {

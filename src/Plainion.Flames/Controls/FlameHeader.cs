@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Practices.Prism.Commands;
+using Prism.Commands;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Controls

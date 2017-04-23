@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows;
 using Plainion.Flames.Viewer.Services;
 using Plainion.Logging;
-using Microsoft.Practices.Prism.Interactivity;
+using Prism.Interactivity;
 using Plainion.Prism.Interactivity;
 using Plainion.AppFw.Wpf;
 
@@ -27,7 +27,7 @@ namespace Plainion.Flames.Viewer
             }
         }
 
-        protected override Microsoft.Practices.Prism.Regions.RegionAdapterMappings ConfigureRegionAdapterMappings()
+        protected override global::Prism.Regions.RegionAdapterMappings ConfigureRegionAdapterMappings()
         {
             var mappings = base.ConfigureRegionAdapterMappings();
             mappings.RegisterMapping( typeof( PopupWindowAction ), Container.GetExportedValue<PopupWindowActionRegionAdapter>() );
@@ -36,12 +36,12 @@ namespace Plainion.Flames.Viewer
 
         public override void Run( bool runWithDefaultConfiguration )
         {
-            LoggerFactory.Implementation = new LoggingSinkLoggerFactory();
+            LoggerFactory.Implementation = new DefaultLoggerFactory();
             LoggerFactory.LogLevel = LogLevel.Info;
 
             base.Run( runWithDefaultConfiguration );
 
-            LoggerFactory.AddGuiAppender( Container.GetExportedValue<LoggingSink>() );
+            LoggerFactory.AddSink( Container.GetExportedValue<LoggingSink>() );
             Container.GetExportedValue<ProfilingService>().Start();
         }
 

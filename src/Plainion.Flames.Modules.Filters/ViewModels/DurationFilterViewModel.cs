@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.Prism.Mvvm;
+﻿using Prism.Mvvm;
 
 namespace Plainion.Flames.Modules.Filters.ViewModels
 {

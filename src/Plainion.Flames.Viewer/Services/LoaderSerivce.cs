@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using Microsoft.Practices.Prism.PubSubEvents;
 using Plainion.Flames.Infrastructure;
 using Plainion.Flames.Infrastructure.Model;
 using Plainion.Flames.Infrastructure.Services;
@@ -19,6 +18,7 @@ using Plainion.Prism.Events;
 using Plainion.Progress;
 using Plainion.Windows;
 using Plainion.Windows.Diagnostics;
+using Prism.Events;
 
 namespace Plainion.Flames.Viewer.Services
 {

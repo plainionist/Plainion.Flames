@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Controls;
-using Microsoft.Practices.Prism.Regions;
+using Prism.Regions;
 using Plainion.Flames.Viewer.ViewModels;
 
 namespace Plainion.Flames.Viewer.Views

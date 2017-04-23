@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Practices.Prism.Regions;
+using Prism.Regions;
 using Plainion.Flames.Viewer.ViewModels;
 
 namespace Plainion.Flames.Viewer.Views

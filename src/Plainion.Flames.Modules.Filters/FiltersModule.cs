@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.Composition;
 using Plainion.Flames.Infrastructure;
 using Plainion.Flames.Modules.Filters.Views;
-using Microsoft.Practices.Prism.MefExtensions.Modularity;
-using Microsoft.Practices.Prism.Modularity;
-using Microsoft.Practices.Prism.Regions;
+using Prism.Mef.Modularity;
+using Prism.Modularity;
+using Prism.Regions;
 
 namespace Plainion.Flames.Modules.Filters
 {

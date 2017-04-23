@@ -1,5 +1,5 @@
 ﻿using System.Runtime.Serialization;
-using Microsoft.Practices.Prism.Mvvm;
+using Prism.Mvvm;
 using Plainion.Flames.Presentation;
 
 namespace Plainion.Flames.Modules.Filters.Model

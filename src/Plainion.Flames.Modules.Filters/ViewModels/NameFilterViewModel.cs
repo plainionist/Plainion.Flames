@@ -6,7 +6,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
-using Microsoft.Practices.Prism.Commands;
+using Prism.Commands;
 using Plainion.Flames.Modules.Filters.Model;
 using Plainion.Flames.Presentation;
 using Plainion.Prism.Mvvm;

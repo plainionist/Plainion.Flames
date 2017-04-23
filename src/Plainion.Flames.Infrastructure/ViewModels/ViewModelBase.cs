@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using Microsoft.Practices.Prism.Mvvm;
+using Prism.Mvvm;
 using Plainion.Flames.Infrastructure.Services;
 using Plainion.Flames.Model;
 using Plainion.Flames.Presentation;

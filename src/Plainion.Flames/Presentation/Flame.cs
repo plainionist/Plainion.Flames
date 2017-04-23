@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Plainion.Flames.Model;
-using Microsoft.Practices.Prism.Mvvm;
+using Prism.Mvvm;
 using Plainion;
 
 namespace Plainion.Flames.Presentation
