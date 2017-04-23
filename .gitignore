@@ -11,3 +11,4 @@
 /build/.fake
 /TestResult.xml
 /Plainion*.gc.*
+/packages/System.Reactive*

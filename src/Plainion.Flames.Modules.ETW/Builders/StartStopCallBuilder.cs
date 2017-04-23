@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Diagnostics.Tracing;
-using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
 using Plainion.Collections;
 using Plainion.Diagnostics;
 using Plainion.Flames.Model;
@@ -13,50 +12,34 @@ namespace Plainion.Flames.Modules.ETW.Builders
         private TraceModelBuilder myBuilder;
         private IReadOnlyCollection<int> myProcessesToLoad;
         private Index<int, TraceProcess> myProcesses;
-        private ProcessThreadIndex<ThreadCallBuilder> myBuilders;
-        private CallstackBuilder myCallstackBuilder;
+        private ProcessThreadIndex<StartStopThreadCallBuilder> myBuilders;
 
-        public StartStopCallBuilder(TraceModelBuilder traceLogBuilder, IReadOnlyCollection<int> processesToLoad)
+        public StartStopCallBuilder( TraceModelBuilder traceLogBuilder, IReadOnlyCollection<int> processesToLoad )
         {
             myBuilder = traceLogBuilder;
             myProcessesToLoad = processesToLoad;
 
-            myProcesses = new Index<int, TraceProcess>(pid => myBuilder.CreateProcess(pid));
+            myProcesses = new Index<int, TraceProcess>( pid => myBuilder.CreateProcess( pid ) );
 
-            myCallstackBuilder = new CallstackBuilder(myBuilder);
-
-            myBuilders = new ProcessThreadIndex<ThreadCallBuilder>((pid, tid) =>
-                new ThreadCallBuilder(myBuilder, myBuilder.CreateThread(myProcesses[pid], tid), myCallstackBuilder));
+            myBuilders = new ProcessThreadIndex<StartStopThreadCallBuilder>( ( pid, tid ) =>
+                new StartStopThreadCallBuilder( myBuilder, myBuilder.CreateThread( myProcesses[ pid ], tid ) ) );
         }
 
-        public void Consume(TraceEvent e)
+        public void Consume( TraceEvent e )
         {
-            var profileSample = e as SampledProfileTraceData;
-            if (profileSample != null)
+            if( e.Opcode == TraceEventOpcode.Start || e.Opcode == TraceEventOpcode.DataCollectionStart ||
+                e.Opcode == TraceEventOpcode.Stop || e.Opcode == TraceEventOpcode.DataCollectionStop )
             {
-                if (myProcessesToLoad.Contains(e.ProcessID))
+                if( myProcessesToLoad.Contains( e.ProcessID ) )
                 {
-                    myBuilders[e.ProcessID][e.ThreadID].CpuSampled(profileSample);
-                }
-            }
-
-            var cswitch = e as CSwitchTraceData;
-            if (cswitch != null)
-            {
-                if (myProcessesToLoad.Contains(cswitch.OldProcessID))
-                {
-                    myBuilders[cswitch.OldProcessID][cswitch.OldThreadID].SwitchedOut(cswitch);
-                }
-                if (myProcessesToLoad.Contains(cswitch.ProcessID))
-                {
-                    myBuilders[cswitch.ProcessID][cswitch.ThreadID].SwitchedIn(cswitch);
+                    myBuilders[ e.ProcessID ][ e.ThreadID ].Process( e );
                 }
             }
         }
 
         public void Complete()
         {
-            foreach (var builder in myBuilders.Values)
+            foreach( var builder in myBuilders.Values )
             {
                 builder.Complete();
             }
