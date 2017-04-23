@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Plainion.Flames.Model;
 
-namespace Plainion.Flames.Modules.StringTracing
+namespace Plainion.Flames.Modules.Streams
 {
     class TraceThreadBuilder
     {

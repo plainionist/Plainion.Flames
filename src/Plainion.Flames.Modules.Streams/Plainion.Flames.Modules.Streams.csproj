@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\..\build\Globals.msbuild" />
+  <PropertyGroup>
+    <ProjectGuid>{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Plainion.Flames.Modules.Streams</RootNamespace>
+    <AssemblyName>Plainion.Flames.Modules.Streams</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Plainion.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11fdbc7b87b9a0de, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Plainion.Core.3.0.0.0\lib\NET45\Plainion.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Prism, Version=6.1.0.0, Culture=neutral, PublicKeyToken=91a96d2a154366d8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Prism.Core.6.1.0\lib\net45\Prism.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StreamTraceReader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TraceLineFactory.cs" />
+    <Compile Include="TraceThreadBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plainion.Flames.Infrastructure\Plainion.Flames.Infrastructure.csproj">
+      <Project>{ec688153-4525-4688-9e28-69b3b8eee215}</Project>
+      <Name>Plainion.Flames.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plainion.Flames.Modules.Streams.Sdk\Plainion.Flames.Modules.Streams.Sdk.csproj">
+      <Project>{bb6a38af-9b65-435f-91f6-621101ba1ed0}</Project>
+      <Name>Plainion.Flames.Modules.Streams.Sdk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plainion.Flames\Plainion.Flames.csproj">
+      <Project>{f32ff1af-14d4-43b4-a0f3-4aa399dfff55}</Project>
+      <Name>Plainion.Flames</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

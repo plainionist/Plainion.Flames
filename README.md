@@ -25,9 +25,9 @@ PerfView or Windows Performance Recorder.
 
 But you can also make it load your custom semantic traces by
 
-- Implementing "IStringTraceParser" (you need to link to Plainion.Flames.Modules.StringTracing)
+- Implementing "IStreamTraceParser" (you need to link to Plainion.Flames.Modules.Streams.Sdk)
 - export it via MEF
-- put it into an assembly with the naming convention: "Plainion.Flames.Modules.*.dll"
+- put it into an assembly with the naming convention: "Plainion.Flames.Modules.Streams.*.dll"
 - and put this into the folder where you unpacked Plainion.Flames
 
 Plainion.Flames will then visualize your custom semantic traces!

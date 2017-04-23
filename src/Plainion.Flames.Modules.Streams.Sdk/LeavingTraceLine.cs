@@ -1,5 +1,5 @@
 ﻿
-namespace Plainion.Flames.Modules.StringTracing
+namespace Plainion.Flames.Modules.Streams
 {
     public class LeavingTraceLine : TraceLineBase
     {

@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Modules.ETW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Modules.Filters", "src\Plainion.Flames.Modules.Filters\Plainion.Flames.Modules.Filters.csproj", "{6A5122F7-A736-4452-975D-81C1EB849BC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Modules.StringTracing", "src\Plainion.Flames.Modules.StringTracing\Plainion.Flames.Modules.StringTracing.csproj", "{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Tutorial", "src\Plainion.Flames.Tutorial\Plainion.Flames.Tutorial.csproj", "{861FB73A-BDB4-4B62-827A-BC63E15167C3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Viewer", "src\Plainion.Flames.Viewer\Plainion.Flames.Viewer.csproj", "{9BEFEC18-2B4B-43C3-B251-435205901C71}"
@@ -27,6 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		build\Targets.fsx = build\Targets.fsx
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Modules.Streams", "src\Plainion.Flames.Modules.Streams\Plainion.Flames.Modules.Streams.csproj", "{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.Flames.Modules.Streams.Sdk", "src\Plainion.Flames.Modules.Streams.Sdk\Plainion.Flames.Modules.Streams.Sdk.csproj", "{BB6A38AF-9B65-435F-91F6-621101BA1ED0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,10 +60,6 @@ Global
 		{6A5122F7-A736-4452-975D-81C1EB849BC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A5122F7-A736-4452-975D-81C1EB849BC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A5122F7-A736-4452-975D-81C1EB849BC4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{861FB73A-BDB4-4B62-827A-BC63E15167C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{861FB73A-BDB4-4B62-827A-BC63E15167C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{861FB73A-BDB4-4B62-827A-BC63E15167C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -70,6 +68,14 @@ Global
 		{9BEFEC18-2B4B-43C3-B251-435205901C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BEFEC18-2B4B-43C3-B251-435205901C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BEFEC18-2B4B-43C3-B251-435205901C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E25B4D7C-98FC-45C3-8E17-521ACA9FB4AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB6A38AF-9B65-435F-91F6-621101BA1ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB6A38AF-9B65-435F-91F6-621101BA1ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB6A38AF-9B65-435F-91F6-621101BA1ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB6A38AF-9B65-435F-91F6-621101BA1ED0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

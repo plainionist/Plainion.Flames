@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using Plainion.Flames.Infrastructure;
 using Plainion.Progress;
 
-namespace Plainion.Flames.Modules.StringTracing
+namespace Plainion.Flames.Modules.Streams
 {
     [Export( typeof( ITraceReader ) )]
-    class StringTraceReader : ITraceReader
+    class StreamTraceReader : ITraceReader
     {
-        public StringTraceReader()
+        public StreamTraceReader()
         {
             FileFilters = new[] { new FileFilter( ".log", "String trace file (*.log)" ) };
         }
@@ -25,15 +25,15 @@ namespace Plainion.Flames.Modules.StringTracing
             return Task.Run( ()=>
                 {
                     var moduleLocation = Path.GetDirectoryName( GetType().Assembly.Location );
-                    var catalog = new DirectoryCatalog( moduleLocation, "Plainion.Flames.Modules.*.dll" );
+                    var catalog = new DirectoryCatalog( moduleLocation, "Plainion.Flames.Modules.Streams.*.dll" );
                     var container = new CompositionContainer( catalog );
 
                     container.Compose( new CompositionBatch() );
 
-                    var parsers = container.GetExportedValues<IStringTraceParser>();
+                    var parsers = container.GetExportedValues<IStreamTraceParser>();
 
-                    Contract.Requires( parsers != null && parsers.Any(), "No parser implementation found for " + typeof( IStringTraceParser ).Name );
-                    Contract.Requires( parsers.Count() == 1, "Multiple parser implementations found for" + typeof( IStringTraceParser ).Name );
+                    Contract.Requires( parsers != null && parsers.Any(), "No parser implementation found for " + typeof( IStreamTraceParser ).Name );
+                    Contract.Requires( parsers.Count() == 1, "Multiple parser implementations found for" + typeof( IStreamTraceParser ).Name );
 
                     var fileInfo = new FileInfo( filename );
                     if( fileInfo.Length == 0 )
@@ -45,7 +45,7 @@ namespace Plainion.Flames.Modules.StringTracing
                 });
         }
 
-        private void Build( TraceModelBuilder builder, FileInfo file, IStringTraceParser parser )
+        private void Build( TraceModelBuilder builder, FileInfo file, IStreamTraceParser parser )
         {
             var lines = new List<TraceLineBase>( ( int )( file.Length / 120 ) );
 

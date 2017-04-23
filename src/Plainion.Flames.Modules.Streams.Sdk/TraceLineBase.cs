@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Plainion.Flames.Model;
 
-namespace Plainion.Flames.Modules.StringTracing
+namespace Plainion.Flames.Modules.Streams
 {
     public abstract class TraceLineBase
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Plainion.Flames.Modules.StringTracing
+namespace Plainion.Flames.Modules.Streams
 {
-    class SampleTraceParser : IStringTraceParser
+    class SampleTraceParser : IStreamTraceParser
     {
         public Action<TraceLineBase> TraceLine { get; set; }
         public Action<TraceInfo> TraceInfo { get; set; }
