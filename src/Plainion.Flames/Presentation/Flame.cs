@@ -71,7 +71,7 @@ namespace Plainion.Flames.Presentation
 
             // after ordering and as there is no visibility mask applied yet we can
             // safely just set the highest level as MaxVisibleLevel
-            if( activities.Count == 0 )
+            if( Activities.Count == 0 )
             {
                 MaxVisibleDepth = 0;
             }
