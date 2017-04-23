@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="3ec99b94-9e6e-4f91-9a3f-22156c679b36" Created="636285395757251619" LastModified="636285396103601429">
-  <Caption><![CDATA[should we provide more generic "tracing SPI" then string based?]]></Caption>
-  <Content><![CDATA[then we would have to provide kind of SDK which then provides interfaces
-
-or we go for json?]]></Content>
-</Node>
