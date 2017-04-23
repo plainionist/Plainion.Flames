@@ -4,9 +4,6 @@
     <Caption><![CDATA[Planning]]></Caption>
     <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
       <Caption><![CDATA[Next steps]]></Caption>
-      <Node Id="317ab4d0-d038-45fe-ac45-eedd66ab5412">
-        <Caption><![CDATA[Settings window width and height wrong]]></Caption>
-      </Node>
       <Node Id="92b90bde-4755-42b4-a779-1438e41f24f5">
         <Caption><![CDATA[Bug: CallFilter]]></Caption>
       </Node>
