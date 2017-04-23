@@ -4,9 +4,6 @@
     <Caption><![CDATA[Planning]]></Caption>
     <Node Id="949fcebe-89de-4fcc-a65a-76889f666ebe">
       <Caption><![CDATA[Next steps]]></Caption>
-      <Node Id="0a3e6325-eee0-4a19-97a2-6018eae8c21c">
-        <Caption><![CDATA[HideEmptyFlames does not toggle]]></Caption>
-      </Node>
       <Node Id="67b4b922-7bb0-4b70-87b9-5124961a1ab7">
         <Caption><![CDATA[TrueFlames]]></Caption>
       </Node>

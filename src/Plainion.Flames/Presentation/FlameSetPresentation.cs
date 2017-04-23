@@ -53,7 +53,32 @@ namespace Plainion.Flames.Presentation
         public bool HideEmptyFlames
         {
             get { return myHideEmptyFlames; }
-            set { SetProperty( ref myHideEmptyFlames, value ); }
+            set
+            {
+                if( SetProperty( ref myHideEmptyFlames, value ) )
+                {
+                    foreach( var flame in myFlames )
+                    {
+                        ApplyEmptyBehavior( flame, flame.IsEmpty() );
+                    }
+                }
+            }
+        }
+
+        public void ApplyEmptyBehavior( Flame flame, bool isEmpty )
+        {
+            if( isEmpty && myHideEmptyFlames )
+            {
+                flame.Visibility = ContentVisibility.Hidden;
+            }
+            else if( isEmpty && !myHideEmptyFlames )
+            {
+                flame.Unhide();
+            }
+            else if( !isEmpty && flame.Visibility == ContentVisibility.Hidden )
+            {
+                flame.Unhide();
+            }
         }
     }
 }

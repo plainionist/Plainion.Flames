@@ -202,25 +202,12 @@ namespace Plainion.Flames.Modules.Filters
                         continue;
                     }
 
-                    foreach (var activity in flame.Activities)
-                    {
-                        if (activity.VisiblityMask == 0)
-                        {
-                            isEmpty = false;
-                            break;
-                        }
-                    }
+                    isEmpty = flame.IsEmpty();
+
                     FlamesEventSource.Log.CallVisibilityModified(flame.GetHashCode());
                 }
 
-                if (Presentation.HideEmptyFlames && isEmpty)
-                {
-                    flame.Visibility = ContentVisibility.Hidden;
-                }
-                else if (flame.Visibility == ContentVisibility.Hidden && !isEmpty)
-                {
-                    flame.Unhide();
-                }
+                Presentation.ApplyEmptyBehavior( flame, isEmpty );
             }
         }
 

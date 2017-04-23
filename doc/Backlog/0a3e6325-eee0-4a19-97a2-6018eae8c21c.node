@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="0a3e6325-eee0-4a19-97a2-6018eae8c21c" Created="635742172875970963" LastModified="635742173124875851">
-  <Caption><![CDATA[HideEmptyFlames does not toggle]]></Caption>
-  <Content><![CDATA[when i toggle the checkbox in the settings nothing happens]]></Content>
-</Node>

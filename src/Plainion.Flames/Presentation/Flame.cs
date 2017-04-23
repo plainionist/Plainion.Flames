@@ -133,6 +133,18 @@ namespace Plainion.Flames.Presentation
             Visibility = myExplicitVisibility;
         }
 
+        public bool IsEmpty()
+        {
+            foreach( var activity in Activities )
+            {
+                if( activity.VisiblityMask == 0 )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public bool IsExpanded
         {
             get { return myIsExpanded; }
