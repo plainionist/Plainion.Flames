@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="abbc6b7d-e829-424a-acf8-0af0df03fb34" Created="636285554480940094" LastModified="636285554748465396">
-  <Caption><![CDATA[create flames based on ETW "start"/"stop" opcodes]]></Caption>
-  <Content><![CDATA[should give much nicer semantic traces for controlflow analysis]]></Content>
-</Node>

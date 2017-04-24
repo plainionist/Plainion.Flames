@@ -2,8 +2,5 @@
 <Tree>
   <Node Id="9700cc1d-2776-4dfb-854b-9b35e34ede98">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="abbc6b7d-e829-424a-acf8-0af0df03fb34">
-      <Caption><![CDATA[create flames based on ETW "start"/"stop" opcodes]]></Caption>
-    </Node>
   </Node>
 </Tree>
