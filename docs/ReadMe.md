@@ -25,10 +25,11 @@ To load custom semantic traces see [Extensibility](Development.md).
 Once loaded you can navigate the traces using
 
 - mouse wheel to zoom in and out
-- left mouse button drag for panning
-- right mouse button drag for zooming
+- left mouse button to zoom in
+- use context menu "row header" to expand and collapse flames
+- use context menu "row header" to rename or hide threads
 
-Click the triangle in the upper left corner to open the settings dialog.
+Click the triangle or the arrow button in the upper left corner to open the settings dialog.
 You will find further setting and trace filtering options there.
 
 
