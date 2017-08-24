@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="32715587-1bbd-4151-9cf3-05239340e65d" Created="635623100142362771" LastModified="635623100739732502">
-  <Caption><![CDATA[Associated data]]></Caption>
-  <Content><![CDATA[we keep AssociatedEvents / data with TraceLog for now and persist those in 
-BFlames as well ... they belong to the trace
-
-if we once support user created bookmarks/measurements/notes we keep those
-separated in kind of "analysis project"]]></Content>
-</Node>

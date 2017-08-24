@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="67b4b922-7bb0-4b70-87b9-5124961a1ab7" Created="635662553563401512" LastModified="636286112156836958" Origin="9700cc1d-2776-4dfb-854b-9b35e34ede98">
+  <Caption><![CDATA[TrueFlames: pseudo calls]]></Caption>
+  <Content><![CDATA["true" flames sum up the time spent in same call stacks usually for CPU.
+This gives a histogram in which callstacks most of the time is spent - 
+independent from the call time and call count of a particular call stack.
+
+PerfView also supports "pseudo" calls called "BLOCKED" to visualize
+that certain callstack initiates wait time.
+
+1) create true flames by simply suming call stacks --> DOME
+
+2) inject pseudo calls like "CPU" and "BLOCKED" to group calls according to
+   CPU and wait time. 
+   Hint: we may need to incorp. knowledge from bookmarks (for which we dont
+   have unified names yet - e.g. constants)
+]]></Content>
+</Node>

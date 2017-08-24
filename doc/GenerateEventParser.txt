@@ -1,8 +1,0 @@
-
-To generate an EventParser for the FlamesEventSource:
- - get TraceParserGen as mentioned here http://blogs.msdn.com/b/vancem/archive/2013/08/15/traceevent-etw-library-published-as-a-nuget-package.aspx
- - run PerfView.exe /noGui userCommand DumpEventSourceManifests <sample etl from plainion.flames.viewer>
- - run TraceParserGen <manifest>
- - include the cs in your project
- 
- 

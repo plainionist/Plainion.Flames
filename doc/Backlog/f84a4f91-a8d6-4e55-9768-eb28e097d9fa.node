@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="f84a4f91-a8d6-4e55-9768-eb28e097d9fa" Created="635545947875542857" LastModified="635655631154738464" Origin="cc0e506b-d95e-46b1-ac97-44e5727511cd">
-  <Caption><![CDATA[interop with perfview/wpa]]></Caption>
-  <Content><![CDATA[copy "range" for PerfView
-- needs to be relative time in ms]]></Content>
-</Node>

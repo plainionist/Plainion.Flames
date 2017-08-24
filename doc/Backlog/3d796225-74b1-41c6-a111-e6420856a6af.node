@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="3d796225-74b1-41c6-a111-e6420856a6af" Created="635613949776387552" LastModified="635655631752407593" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
-  <Caption><![CDATA[Filter enhancements]]></Caption>
-  <Content><![CDATA[- combined filters
-  - would be great if we could save a bunch of filters as one for
-    reuse across traces]]></Content>
-</Node>

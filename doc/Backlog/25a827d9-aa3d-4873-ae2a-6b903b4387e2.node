@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="25a827d9-aa3d-4873-ae2a-6b903b4387e2" Created="635558944249826935" LastModified="635655631203621260">
-  <Caption><![CDATA[FlameSetView: Lookless]]></Caption>
-  <Content><![CDATA[- convert into lookless control 
-- use themes
-- http://www.codeproject.com/Articles/789957/WPF-Control-Patterns-WPF-and-XAML-Patterns-of-Code
-- how to get the trace header customizable?
-  - then we also can cleanup FlamePresentation and remove ProcessId and ProcessName properties]]></Content>
-</Node>

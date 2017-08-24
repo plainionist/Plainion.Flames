@@ -1,41 +1,10 @@
 
-# X-Ray vision for your Apps' runtime
+# Plainion.Flames: X-ray your Apps' runtime
 
-Do you want to know what is really going on in your app at runtime?
-Of course sematic traces can give you a great insight.
-And if you dont have any profilers like Windows Performance Analyser can provide nice insights too.
+The Plainion.Flames project visualizes the control flow of applications based on 
+[Event Tracing for Windows](https://msdn.microsoft.com/en-us/library/windows/desktop/bb968803(v=vs.85).asp)
+or custom traces.
 
-But wouldnt it be great if you could just "see" the control flow in a natural way?
+![](docs/Screenshots/Flames.Filter.png)
 
-Plainion.Flames gives you exactly that view:
-
-
-![](doc/Screenshots/Flames.Overview.png)
-
-![](doc/Screenshots/Flames.Filter.png)
-
-## Installation
-
-Just download the [latest release](https://github.com/plainionist/Plainion.Flames/releases), unpack it where ever you want and launch it.
-
-## Usage
-
-Plainion.Flames is an extensible "trace viewer". Out of the box it supports ETW traces e.g. produced with
-PerfView or Windows Performance Recorder.
-
-But you can also make it load your custom semantic traces by
-
-- Implementing "IStreamTraceParser" (you need to link to Plainion.Flames.Modules.Streams.Sdk)
-- export it via MEF
-- put it into an assembly with the naming convention: "Plainion.Flames.Modules.Streams.*.dll"
-- and put this into the folder where you unpacked Plainion.Flames
-
-Plainion.Flames will then visualize your custom semantic traces!
-
-
-
-# References
-
-The idea of the visualization is based on [FlameGraph](http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html).
-
-
+Visit the [Plainion.Flames](http://plainionist.github.io/Plainion.Flames/) project homepage to learn how to install and use it!

@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="842d44a7-593e-4366-a4bf-c3cbc7978585" Created="635562288255240429" LastModified="635562288505405443">
-  <Caption><![CDATA[Avoid creating EnteringTraceLines]]></Caption>
-  <Content><![CDATA[can we avoid creating so much objects as we anyway crete a Call for every entering?]]></Content>
-</Node>

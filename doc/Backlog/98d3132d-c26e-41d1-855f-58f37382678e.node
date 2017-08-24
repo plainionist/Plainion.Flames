@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="98d3132d-c26e-41d1-855f-58f37382678e" Created="635603711001292693" LastModified="635662553096104784">
-  <Caption><![CDATA[TracesTree: cleanup UI]]></Caption>
-  <Content><![CDATA[should be independent of "show"/"hide"/"visiblity" it is more about 
-selecting nodes (processes, threads)]]></Content>
-</Node>

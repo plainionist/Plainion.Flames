@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="2c1fbf4a-3b7f-4d5c-838a-57a8fc60f522" Created="635590015874390512" LastModified="635601234963932956">
-  <Caption><![CDATA[convert IStringTraceParser APIs to IObservable (RX)]]></Caption>
-  <Content><![CDATA[]]></Content>
-</Node>

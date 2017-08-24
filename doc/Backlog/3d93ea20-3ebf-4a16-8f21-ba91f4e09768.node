@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="3d93ea20-3ebf-4a16-8f21-ba91f4e09768" Created="635585143666266317" LastModified="635586816009487553" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
-  <Caption><![CDATA[measure etl file loading]]></Caption>
-  <Content><![CDATA[since async UI thread is unblocked but it feels slower]]></Content>
-</Node>

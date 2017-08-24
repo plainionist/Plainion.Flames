@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="bbf995da-3499-4048-a27f-0f2b46c784d7" Created="635558312636351228" LastModified="635561557047583348" Origin="eb94b1ff-eccb-4c5d-8fed-cf4779eb5529">
-  <Caption><![CDATA[Can we handle collections more efficient in TraceLog]]></Caption>
-  <Content><![CDATA[by knowing size of the threads and callstacks added?]]></Content>
-</Node>

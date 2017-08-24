@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="c797450d-5bf6-4a88-953c-baf1a8e88a4d" Created="635621825431054255" LastModified="635655631716729352">
-  <Caption><![CDATA[rethink what is library and what not]]></Caption>
-  <Content><![CDATA[- should we make the ctors of the presentation stuff public?
-- how do i provide variations? (e.g. IColorLut)]]></Content>
-</Node>

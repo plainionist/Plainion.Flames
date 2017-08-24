@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="8e4a18a8-be04-4caa-a053-d80845dfcd21" Created="635561499686846922" LastModified="635561556835402585">
-  <Caption><![CDATA[TraceLogBuilder - BuilderHints]]></Caption>
-  <Content><![CDATA[give api for TraceReader to provide builder hints
-e.g. BFlames: already know the number of calls and threads so we could 
-initialize the lists with correct capacity]]></Content>
-</Node>

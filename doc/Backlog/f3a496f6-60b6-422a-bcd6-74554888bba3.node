@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="f3a496f6-60b6-422a-bcd6-74554888bba3" Created="635626275754958301" LastModified="635626276326330981">
-  <Caption><![CDATA[additional info related to controlflow]]></Caption>
-  <Content><![CDATA[- can we relate diskio events to threads? (e.g. separate flame or
-  some specific AssociatedEvent)
-- Readying path?
-- GC activity (start, stop, suspend)
-- thread contention]]></Content>
-</Node>

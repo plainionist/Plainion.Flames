@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="3ce7c819-7531-40be-b64f-8e2f91092e60" Created="635638404664521626" LastModified="635662545645158614" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
-  <Caption><![CDATA[check for weak events]]></Caption>
-  <Content><![CDATA[- PropertyChangedEventManager]]></Content>
-</Node>

@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="fdaa0dc7-846e-4d8e-9042-e7a322f5444a" Created="635572539343624038" LastModified="635662553229302402">
-  <Caption><![CDATA[how to handle event handler cleanup in wpf?]]></Caption>
-  <Content><![CDATA[dispose?]]></Content>
-</Node>

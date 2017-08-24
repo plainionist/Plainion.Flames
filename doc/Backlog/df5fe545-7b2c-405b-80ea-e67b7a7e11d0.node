@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="df5fe545-7b2c-405b-80ea-e67b7a7e11d0" Created="635558943283997472" LastModified="635655631186580285">
-  <Caption><![CDATA[IsOnScreen]]></Caption>
-  <Content><![CDATA[- can we find a better design solution?
-- would be good if we could put it into the FlameView itself]]></Content>
-</Node>

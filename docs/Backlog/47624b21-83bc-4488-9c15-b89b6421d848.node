@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="47624b21-83bc-4488-9c15-b89b6421d848" Created="635560675671253771" LastModified="635561556865590773" Origin="949fcebe-89de-4fcc-a65a-76889f666ebe">
+  <Caption><![CDATA[we allocate gigabytes of CallRepresentation[] in RenderCalls]]></Caption>
+  <Content><![CDATA[because we create two lists here.
+
+can we do "list reuse"?
+should we add the "Buffer" class again?
+(see changeset 28d83aed8b85ad4949f94753b233c9aeb6642d54)]]></Content>
+</Node>

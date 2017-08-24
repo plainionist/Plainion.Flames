@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="5b3eaf27-fc24-4e94-9094-7570f607bca7" Created="635622838085569863" LastModified="635655631737945389" Origin="f8d56b14-0a4c-43ba-b9bb-7e38fddcb85c">
+  <Caption><![CDATA[Presentation module owners]]></Caption>
+  <Content><![CDATA[who owns/references which module?
+
+- should the BookmrksModule be owned by Flame?
+  - or should we work with some more indirection e.g. got from 
+    FlameSetPresentation
+
+]]></Content>
+</Node>

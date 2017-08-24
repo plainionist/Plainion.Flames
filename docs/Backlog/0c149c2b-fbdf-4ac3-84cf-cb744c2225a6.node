@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="0c149c2b-fbdf-4ac3-84cf-cb744c2225a6" Created="635617711083138629" LastModified="635617711358836196">
+  <Caption><![CDATA[Settings window does not close when main window closes]]></Caption>
+  <Content><![CDATA[because of async?]]></Content>
+</Node>
