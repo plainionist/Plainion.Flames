@@ -1,5 +1,5 @@
-**/bin/**
 .vs/**
+**/bin/**
 **/obj/**
 /*.suo
 /packages/NUnit.*
