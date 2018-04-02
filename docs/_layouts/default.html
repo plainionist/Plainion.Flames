@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ site.lang | default: "en-US" }}">
 <head>
     <meta charset='utf-8'>
@@ -26,19 +26,17 @@
             {% endif %}
         </div>
     </header>
-
     <div id="content-wrapper">
         <div class="inner clearfix">
             <section id="main-content">
                 {{ content }}
             </section>
-
             <aside id="sidebar" style="font-size:15px">
                 {% assign navigation_pages = site.pages | sort: 'navigation_weight' %}
                 {% for p in navigation_pages %}
                 {% if p.navigation_weight %}
                 <div>
-                    <a href="{{ '/' | absolute_url }}{{ p.url }}" {% if p.url == page.url %} style="font-weight:bold" {% endif %}>
+                    <a href="{{ '/' | absolute_url }}{{ p.url }}" {% if p.url= =page.url %} style="font-weight:bold" {% endif %}>
                         {{ p.title }}
                     </a>
                 </div>
@@ -47,6 +45,8 @@
             </aside>
         </div>
     </div>
+
+    {% include analytics.html %}
 </body>
 </html>
 
